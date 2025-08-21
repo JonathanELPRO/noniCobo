@@ -47,11 +47,6 @@ fun SigninPage(modifier: Modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Button(modifier = Modifier.fillMaxWidth(),
-            onClick = {})
-        {
-            Text("Ir a la pantalla de github")
-        }
         Text(text = "Sign In")
 
         TextField(
