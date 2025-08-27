@@ -9,9 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.calyrsoft.ucbp1.presentation.GithubScreen
+import com.calyrsoft.ucbp1.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.presentation.SigninPage
 import org.koin.androidx.compose.koinViewModel
+import java.net.URLEncoder
 
 @Composable
 fun AppNavigation(modifier: Modifier){
@@ -29,8 +32,12 @@ fun AppNavigation(modifier: Modifier){
             SigninPage(
                 modifier = modifier,
                 vm = koinViewModel(),
-                onSuccess = {
-                    navController.navigate(Screen.GithubScreen.route)
+                onSuccess = { name ->
+                    val encodedName = URLEncoder.encode(name, "UTF-8")
+
+                    navController.navigate(
+                        "profile_screen/$encodedName"
+                    )
                 }
             )
         }
@@ -44,5 +51,25 @@ fun AppNavigation(modifier: Modifier){
                 vm = koinViewModel()
             )
         }
+
+        composable(
+            route = "profile_screen/{name}",
+            arguments = listOf(
+                navArgument("name") { defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name") ?: ""
+
+
+            ProfileScreen(
+                modifier = modifier,
+                name = name,
+
+
+            )
+        }
+
+
+
     }
 }

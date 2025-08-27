@@ -33,7 +33,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SigninPage(modifier: Modifier,
                vm : LoginViewModel = koinViewModel(),
-               onSuccess: () -> Unit) {
+               onSuccess: (name: String) -> Unit) {
     //arriba estamos definiendo un callback
     var userSignIn by remember { mutableStateOf("") }
     var passwordSignIn by remember { mutableStateOf("") }
@@ -99,7 +99,9 @@ fun SigninPage(modifier: Modifier,
             }
             is LoginViewModel.LoginStateUI.Success -> {
                 Text("Se logueo correctamente al usuario: " + st.loginUser.name)
-                onSuccess()
+                onSuccess(
+                    st.loginUser.name
+                )
 
             }
         }
@@ -122,3 +124,6 @@ fun SigninPage(modifier: Modifier,
 //        }
 //    }
 }
+
+
+
