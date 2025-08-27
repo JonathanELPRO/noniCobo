@@ -30,7 +30,8 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     name: String,
     vm: ProfileViewModel = koinViewModel(),
-    onEndSession: () -> Unit
+    onEndSession: () -> Unit,
+    onAskExchangeRate: () -> Unit
 ) {
     val state by vm.state.collectAsState()
 
@@ -127,6 +128,13 @@ fun ProfileScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Cerrar sesión")
+                }
+
+                OutlinedButton(
+                    onClick = { onAskExchangeRate() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Tasa de cambio")
                 }
             }
 

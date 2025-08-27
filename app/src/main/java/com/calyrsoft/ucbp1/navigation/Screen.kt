@@ -7,4 +7,7 @@ sealed class Screen(val route: String) {
     val ProfileScreen = object {
         val route = "profile_screen/{name}"
     }
+
+    object ExchangeRateScreen : Screen("exchangeRate")
+
 }

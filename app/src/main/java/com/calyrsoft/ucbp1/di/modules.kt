@@ -1,13 +1,17 @@
 package com.calyrsoft.ucbp1.di
 
+import com.calyrsoft.ucbp1.data.repository.ExchangeRateRepository
 import com.calyrsoft.ucbp1.data.repository.GithubRepository
 import com.calyrsoft.ucbp1.data.repository.LoginRepository
+import com.calyrsoft.ucbp1.domain.repository.IExchangeRateRepository
 import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
 import com.calyrsoft.ucbp1.domain.repository.ILoginRepository
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameAndPasswordUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNickNameUseCase
+import com.calyrsoft.ucbp1.domain.usecase.GetExchangeRateUseCase
 import com.calyrsoft.ucbp1.domain.usecase.UpdateUserProfileUseCase
+import com.calyrsoft.ucbp1.presentation.ExchangeRateViewModel
 import com.calyrsoft.ucbp1.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.presentation.ProfileViewModel
@@ -19,6 +23,8 @@ val appModule = module {
     single<IGithubRepository>{ GithubRepository() }
     //eso de ahi crea un singleton de GithubRepository la cosa es que este singleton podra ser usado solo si los programadores ponenIGithubRepository
     single<ILoginRepository> { LoginRepository() }
+    single<IExchangeRateRepository> { ExchangeRateRepository() }
+
 
 
     //casos de uso
@@ -27,6 +33,8 @@ val appModule = module {
     factory { FindByNameAndPasswordUseCase(get()) }
     factory { FindByNameUseCase(get()) }
     factory { UpdateUserProfileUseCase(get()) }
+    factory { GetExchangeRateUseCase(get()) }
+
 
 
 
@@ -35,6 +43,8 @@ val appModule = module {
     //este get le inyecta el caso e uso que ya sabemos como crear en la linea anterior
     viewModel { LoginViewModel(get()) }
     viewModel { ProfileViewModel(get(), get()) }
+    viewModel { ExchangeRateViewModel(get()) }
+
 
 }
 

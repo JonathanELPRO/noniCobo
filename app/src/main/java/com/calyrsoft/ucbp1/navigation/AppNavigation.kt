@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.calyrsoft.ucbp1.presentation.ExchangeRateScreen
 import com.calyrsoft.ucbp1.presentation.GithubScreen
 import com.calyrsoft.ucbp1.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.presentation.SigninPage
@@ -70,7 +71,20 @@ fun AppNavigation(modifier: Modifier){
                     navController.navigate(
                         "login"
                     )
+                },
+
+                onAskExchangeRate = {
+                    navController.navigate(
+                        "exchangeRate"
+                    )
                 }
+            )
+        }
+
+        composable(Screen.ExchangeRateScreen.route) {
+            ExchangeRateScreen(
+                modifier = modifier,
+                vm = koinViewModel()
             )
         }
 
