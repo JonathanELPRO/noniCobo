@@ -10,7 +10,8 @@ interface ILoginRepository {
         name: String,
         newName: String? = null,
         newPhone: String? = null,
-        newImageUrl: String? = null
+        newImageUrl: String? = null,
+        newPassword: String? = null
     ): Result<LoginUserModel>
 
 }

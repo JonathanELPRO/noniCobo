@@ -10,9 +10,10 @@ class UpdateUserProfileUseCase(
         name: String,
         newName: String? = null,
         newPhone: String? = null,
-        newImageUrl: String? = null
+        newImageUrl: String? = null,
+        newPassword: String? = null
     ): Result<LoginUserModel> {
-        return repository.updateUserProfile(name, newName, newPhone, newImageUrl)
+        return repository.updateUserProfile(name, newName, newPhone, newImageUrl, newPassword)
     }
 }
 

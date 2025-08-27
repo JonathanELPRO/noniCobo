@@ -18,12 +18,11 @@ class ProfileViewModel(
     private val updateUserProfileUseCase: UpdateUserProfileUseCase
 ) : ViewModel() {
 
-    // Estados de la UI
     sealed class ProfileStateUI {
         object Init : ProfileStateUI()
         object Loading : ProfileStateUI() //
         object Updating : ProfileStateUI()
-        object UpdateSuccess : ProfileStateUI()
+        data class UpdateSuccess(val user: LoginUserModel) : ProfileStateUI()
         class UpdateError(val message: String) : ProfileStateUI()//
 
         class DataLoaded(val user: LoginUserModel) : ProfileStateUI() //
@@ -33,7 +32,7 @@ class ProfileViewModel(
     val state: StateFlow<ProfileStateUI> = _state.asStateFlow()
 
     fun loadProfile(userId: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+
             _state.value = ProfileStateUI.Loading
 
             val result = findByNameUseCase.invoke(userId)
@@ -46,25 +45,29 @@ class ProfileViewModel(
                     _state.value = ProfileStateUI.UpdateError(error.message ?: "Error al cargar perfil")
                 }
             )
-        }
+
     }
 
-    fun updateName(userId: String, newName: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun updateProfile(name: String,
+                      newName: String? = null,
+                      newPhone: String? = null,
+                      newImageUrl: String? = null,
+                      newPassword: String? = null) {
+
             _state.value = ProfileStateUI.Updating
 
-            val result = updateUserProfileUseCase.invoke(userId, newName)
+            val result = updateUserProfileUseCase.invoke(name, newName, newPhone, newImageUrl, newPassword)
 
             result.fold(
-                onSuccess = {
-                    _state.value = ProfileStateUI.UpdateSuccess
+                onSuccess = { updatedUser ->
+                    _state.value = ProfileStateUI.UpdateSuccess(updatedUser)
                 },
                 onFailure = { error ->
                     _state.value =
                         ProfileStateUI.UpdateError(error.message ?: "Error al actualizar nombre")
                 }
             )
-        }
+
     }
 
     // Puedes crear funciones similares para actualizar phone, password, imageUrl, etc.

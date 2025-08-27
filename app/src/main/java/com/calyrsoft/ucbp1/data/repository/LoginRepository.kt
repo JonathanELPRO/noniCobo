@@ -5,7 +5,7 @@ import com.calyrsoft.ucbp1.domain.repository.ILoginRepository
 
 
 class LoginRepository : ILoginRepository {
-    private val users = listOf(
+    private val users = mutableListOf(
         LoginUserModel("calyr", "1234", "12345678", "https://avatars.githubusercontent.com/u/874321?v=4"),
         LoginUserModel("admin", "abcd","87654321", "https://avatars.githubusercontent.com/u/874321?v=4")
     )
@@ -30,20 +30,26 @@ class LoginRepository : ILoginRepository {
         }
     }
 
+
     override fun updateUserProfile(
         name: String,
         newName: String?,
         newPhone: String?,
-        newImageUrl: String?
+        newImageUrl: String?,
+        newPassword: String?
     ): Result<LoginUserModel> {
-        val user = users.find { it.name == name } ?: return Result.failure(Exception("Usuario no encontrado"))
+        val index = users.indexOfFirst { it.name == name }
+        if (index == -1) return Result.failure(Exception("Usuario no encontrado"))
 
+        val user = users[index]
         val updatedUser = user.copy(
             name = newName ?: user.name,
             phone = newPhone ?: user.phone,
-            imageUrl = newImageUrl ?: user.imageUrl
+            imageUrl = newImageUrl ?: user.imageUrl,
+            password = newPassword ?: user.password
         )
 
+        users[index] = updatedUser
         return Result.success(updatedUser)
     }
 }

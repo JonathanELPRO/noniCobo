@@ -64,8 +64,13 @@ fun AppNavigation(modifier: Modifier){
             ProfileScreen(
                 modifier = modifier,
                 name = name,
+                vm = koinViewModel(),
 
-
+                onEndSession = {
+                    navController.navigate(
+                        "login"
+                    )
+                }
             )
         }
 
