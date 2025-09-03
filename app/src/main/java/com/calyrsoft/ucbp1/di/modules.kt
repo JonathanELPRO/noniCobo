@@ -3,15 +3,19 @@ package com.calyrsoft.ucbp1.di
 import com.calyrsoft.ucbp1.data.repository.ExchangeRateRepository
 import com.calyrsoft.ucbp1.data.repository.GithubRepository
 import com.calyrsoft.ucbp1.data.repository.LoginRepository
+import com.calyrsoft.ucbp1.data.repository.WhatsappRepository
 import com.calyrsoft.ucbp1.domain.repository.IExchangeRateRepository
 import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
 import com.calyrsoft.ucbp1.domain.repository.ILoginRepository
+import com.calyrsoft.ucbp1.domain.repository.IWhatsappRepository
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameAndPasswordUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNickNameUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetExchangeRateUseCase
+import com.calyrsoft.ucbp1.domain.usecase.GetFirstWhatsappNumberUseCase
 import com.calyrsoft.ucbp1.domain.usecase.UpdateUserProfileUseCase
 import com.calyrsoft.ucbp1.presentation.ExchangeRateViewModel
+import com.calyrsoft.ucbp1.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.presentation.ProfileViewModel
@@ -24,6 +28,7 @@ val appModule = module {
     //eso de ahi crea un singleton de GithubRepository la cosa es que este singleton podra ser usado solo si los programadores ponenIGithubRepository
     single<ILoginRepository> { LoginRepository() }
     single<IExchangeRateRepository> { ExchangeRateRepository() }
+    single<IWhatsappRepository> { WhatsappRepository() }
 
 
 
@@ -34,6 +39,7 @@ val appModule = module {
     factory { FindByNameUseCase(get()) }
     factory { UpdateUserProfileUseCase(get()) }
     factory { GetExchangeRateUseCase(get()) }
+    factory { GetFirstWhatsappNumberUseCase(get()) }
 
 
 
@@ -41,9 +47,11 @@ val appModule = module {
     //view models
     viewModel { GithubViewModel(get()) }
     //este get le inyecta el caso e uso que ya sabemos como crear en la linea anterior
-    viewModel { LoginViewModel(get()) }
+    viewModel { LoginViewModel(get(),get()) }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ExchangeRateViewModel(get()) }
+    viewModel { ForgotPasswordViewModel(get(), get()) }
+
 
 
 }

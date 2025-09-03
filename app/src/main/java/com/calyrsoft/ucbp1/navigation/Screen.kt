@@ -9,5 +9,6 @@ sealed class Screen(val route: String) {
     }
 
     object ExchangeRateScreen : Screen("exchangeRate")
+    object ForgotPasswordScreen : Screen("forgot_password")
 
 }

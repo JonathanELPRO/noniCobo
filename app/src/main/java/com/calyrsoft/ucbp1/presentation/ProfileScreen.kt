@@ -56,6 +56,7 @@ fun ProfileScreen(
             is ProfileViewModel.ProfileStateUI.Loading -> Text("Cargando perfil...")
 
             is ProfileViewModel.ProfileStateUI.DataLoaded -> {
+
                 val user = st.user
 
                 if (editableName.isEmpty()) editableName = user.name
