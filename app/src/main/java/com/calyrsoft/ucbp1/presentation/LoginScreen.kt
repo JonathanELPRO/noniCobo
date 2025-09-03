@@ -97,25 +97,7 @@ fun SigninPage(modifier: Modifier,
             Text("Olvidé mi contraseña")
         }
 
-        val context = LocalContext.current
-
-        Button(
-            onClick = {
-                val number = vm.openWhatsapp()
-                val url = "https://wa.me/$number"
-
-                // Crear el intent de forma concisa usando toUri()
-                val intent = android.content.Intent(
-                    android.content.Intent.ACTION_VIEW,
-                    url.toUri()
-                )
-
-                context.startActivity(intent)
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Contactar por WhatsApp")
-        }
+        WhatsappButton()
 
         when(val st = state){
             is LoginViewModel.LoginStateUI.Error -> {
@@ -132,9 +114,9 @@ fun SigninPage(modifier: Modifier,
                 onSuccess(
                     st.loginUser.name
                 )
-
             }
         }
+
 
 
     }

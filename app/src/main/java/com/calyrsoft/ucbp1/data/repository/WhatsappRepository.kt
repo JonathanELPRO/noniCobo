@@ -10,8 +10,13 @@ class WhatsappRepository : IWhatsappRepository {
         "+59170112233"
     )
 
-    override fun getFirstNumber(): String {
-        return numbers.firstOrNull() ?: throw Exception("No hay números disponibles")
+    override fun getFirstNumber(): Result<String> {
+        val number = numbers.firstOrNull()
+        return if (number != null) {
+            Result.success(number)
+        } else {
+            Result.failure(Exception("No hay números disponibles"))
+        }
     }
 
 }

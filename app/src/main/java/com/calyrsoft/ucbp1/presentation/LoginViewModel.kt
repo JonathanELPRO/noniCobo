@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.domain.model.LoginUserModel
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameAndPasswordUseCase
-import com.calyrsoft.ucbp1.domain.usecase.GetFirstWhatsappNumberUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,9 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    val useCase: FindByNameAndPasswordUseCase,
-    val getFirstWhatsappNumberUseCase: GetFirstWhatsappNumberUseCase
-): ViewModel()  {
+    val useCase: FindByNameAndPasswordUseCase): ViewModel()  {
     sealed class LoginStateUI {
         object Init: LoginStateUI()
         object Loading: LoginStateUI()
@@ -47,10 +44,6 @@ class LoginViewModel(
 
 
         }
-    }
-
-    fun openWhatsapp(): String {
-        return getFirstWhatsappNumberUseCase.invoke()
     }
 
 }

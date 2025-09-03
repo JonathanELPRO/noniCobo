@@ -19,6 +19,7 @@ import com.calyrsoft.ucbp1.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.presentation.ProfileViewModel
+import com.calyrsoft.ucbp1.presentation.WhatsappViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -47,11 +48,11 @@ val appModule = module {
     //view models
     viewModel { GithubViewModel(get()) }
     //este get le inyecta el caso e uso que ya sabemos como crear en la linea anterior
-    viewModel { LoginViewModel(get(),get()) }
+    viewModel { LoginViewModel(get()) }
     viewModel { ProfileViewModel(get(), get()) }
     viewModel { ExchangeRateViewModel(get()) }
     viewModel { ForgotPasswordViewModel(get(), get()) }
-
+    viewModel { WhatsappViewModel(get ()) }
 
 
 }
