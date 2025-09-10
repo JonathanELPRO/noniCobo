@@ -91,6 +91,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
     implementation(libs.navigation.compose)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
 
 }

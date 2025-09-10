@@ -6,7 +6,7 @@ import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
 class FindByNickNameUseCase(
     val repository: IGithubRepository,
 ) {
-    fun invoke(nickname: String): Result<UserModel> {
+    suspend fun invoke(nickname: String): Result<UserModel> {
         return repository.findByNick(nickname)
     }
 }
