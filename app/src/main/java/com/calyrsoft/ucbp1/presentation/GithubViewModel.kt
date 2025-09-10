@@ -1,9 +1,12 @@
 package com.calyrsoft.ucbp1.presentation
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.calyrsoft.ucbp1.domain.error.Failure
 import com.calyrsoft.ucbp1.domain.model.UserModel
 import com.calyrsoft.ucbp1.domain.usecase.FindByNickNameUseCase
+import com.calyrsoft.ucbp1.presentation.error.ErrorMessageProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +15,8 @@ import kotlinx.coroutines.launch
 import okhttp3.Dispatcher
 
 class GithubViewModel(
-    val useCase: FindByNickNameUseCase
+    val useCase: FindByNickNameUseCase,
+    val context: Context
 ): ViewModel() {
     sealed class GithubStateUI {
         object Init: GithubStateUI()
@@ -41,6 +45,7 @@ class GithubViewModel(
     //como soy el orquestador voy a trabajar con el caso de uso abajo
     //esto de abajo es el puente
     fun fetchAlias(nickname: String) {
+        val errorMessageProvider = ErrorMessageProvider(context)
         //este en si es el puente, pues aqui se usara un caso de uso, y este metodo sera llamado desde el screen
         //y nos debemos a poner a pensar en que hara en como funcionara este fetch alias?, pues podemos decir que si es
         //un puente entre el boton(vista) y el caso de uso, pues se presionara un boton y se llamara a este fecth alias
@@ -68,7 +73,11 @@ class GithubViewModel(
                 //en este caso le daremos el valor de uno de los estados que definimos antes: GithubStateUI.Success(user)
                 //esto es correcto porque si nos vamos a la definicion de ese estado pues si esta esperando un UserModel
                 onFailure = { error ->
-                    _state.value = GithubStateUI.Error(message = error.message ?: "Error desconocido")
+                    val message = errorMessageProvider.getMessage(error as Failure)
+
+
+                    _state.value = GithubStateUI.Error(message = message)
+
                 }
                 //error viene de la informacion del fold del result
             )

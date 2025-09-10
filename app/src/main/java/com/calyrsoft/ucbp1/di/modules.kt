@@ -29,6 +29,7 @@ import com.calyrsoft.ucbp1.presentation.MoviesViewModel
 import com.calyrsoft.ucbp1.presentation.ProfileViewModel
 import com.calyrsoft.ucbp1.presentation.WhatsappViewModel
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -114,7 +115,7 @@ val appModule = module {
 
 
     //view models
-    viewModel { GithubViewModel(get()) }
+    viewModel { GithubViewModel(get(), androidContext()) }
     //este get le inyecta el caso e uso que ya sabemos como crear en la linea anterior
     viewModel { LoginViewModel(get()) }
     viewModel { ProfileViewModel(get(), get()) }

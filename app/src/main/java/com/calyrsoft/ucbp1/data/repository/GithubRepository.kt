@@ -1,6 +1,8 @@
 package com.calyrsoft.ucbp1.data.repository
 
 import com.calyrsoft.ucbp1.data.datasource.GithubRemoteDataSource
+import com.calyrsoft.ucbp1.data.error.DataException
+import com.calyrsoft.ucbp1.domain.error.Failure
 import com.calyrsoft.ucbp1.domain.model.UserModel
 import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
 
@@ -25,9 +27,18 @@ class GithubRepository(
                     pathUrl = it.url
                 ))
             },
-            onFailure = {
-                return Result.failure(it)
+
+            onFailure = { exception ->
+                val failure = when (exception) {
+                    is DataException.Network -> Failure.NetworkConnection
+                    is DataException.HttpNotFound -> Failure.NotFound
+                    is DataException.NoContent -> Failure.EmptyBody
+                    is DataException.Unknown -> Failure.Unknown(exception)
+                    else -> Failure.Unknown(exception)
+                }
+                return Result.failure(failure)
             }
+
         )
     }
 }
