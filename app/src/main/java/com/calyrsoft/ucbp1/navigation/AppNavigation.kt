@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.calyrsoft.ucbp1.presentation.ExchangeRateScreen
 import com.calyrsoft.ucbp1.presentation.ForgotPasswordScreen
 import com.calyrsoft.ucbp1.presentation.GithubScreen
+import com.calyrsoft.ucbp1.presentation.MoviesScreen
 import com.calyrsoft.ucbp1.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.presentation.SigninPage
 import org.koin.androidx.compose.koinViewModel
@@ -24,7 +25,7 @@ fun AppNavigation(modifier: Modifier){
 
     NavHost(
         navController = navController,
-        startDestination = Screen.GithubScreen.route,
+        startDestination = Screen.MoviesScreen.route,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
@@ -101,6 +102,13 @@ fun AppNavigation(modifier: Modifier){
                         popUpTo(Screen.LoginScreen.route) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable(Screen.MoviesScreen.route) {
+            MoviesScreen(
+                modifier = modifier,
+                vm = koinViewModel()
             )
         }
 
