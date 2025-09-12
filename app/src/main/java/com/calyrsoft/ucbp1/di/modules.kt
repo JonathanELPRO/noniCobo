@@ -1,31 +1,38 @@
 package com.calyrsoft.ucbp1.di
 
 import com.calyrsoft.ucbp1.data.api.GithubService
+import com.calyrsoft.ucbp1.data.api.PostsService
 import com.calyrsoft.ucbp1.data.api.TmdbService
 import com.calyrsoft.ucbp1.data.datasource.GithubRemoteDataSource
 import com.calyrsoft.ucbp1.data.datasource.MoviesRemoteDataSource
+import com.calyrsoft.ucbp1.data.datasource.PostsRemoteDataSource
 import com.calyrsoft.ucbp1.data.repository.ExchangeRateRepository
 import com.calyrsoft.ucbp1.data.repository.GithubRepository
 import com.calyrsoft.ucbp1.data.repository.LoginRepository
 import com.calyrsoft.ucbp1.data.repository.MoviesRepository
+import com.calyrsoft.ucbp1.data.repository.PostRepository
 import com.calyrsoft.ucbp1.data.repository.WhatsappRepository
 import com.calyrsoft.ucbp1.domain.repository.IExchangeRateRepository
 import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
 import com.calyrsoft.ucbp1.domain.repository.ILoginRepository
 import com.calyrsoft.ucbp1.domain.repository.IMoviesRepository
+import com.calyrsoft.ucbp1.domain.repository.IPostRepository
 import com.calyrsoft.ucbp1.domain.repository.IWhatsappRepository
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameAndPasswordUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNickNameUseCase
+import com.calyrsoft.ucbp1.domain.usecase.GetCommentsForOnePostUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetExchangeRateUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetFirstWhatsappNumberUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetPopularMoviesUseCase
+import com.calyrsoft.ucbp1.domain.usecase.GetPostsUseCase
 import com.calyrsoft.ucbp1.domain.usecase.UpdateUserProfileUseCase
 import com.calyrsoft.ucbp1.presentation.ExchangeRateViewModel
 import com.calyrsoft.ucbp1.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.presentation.MoviesViewModel
+import com.calyrsoft.ucbp1.presentation.PostsViewModel
 import com.calyrsoft.ucbp1.presentation.ProfileViewModel
 import com.calyrsoft.ucbp1.presentation.WhatsappViewModel
 import okhttp3.OkHttpClient
@@ -67,6 +74,14 @@ val appModule = module {
             .build()
     }
 
+    single(named("PPS")) {
+        Retrofit.Builder()
+            .baseUrl("https://jsonplaceholder.typicode.com/")
+            .client(get())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
 
     // Services
     single<GithubService> {
@@ -84,10 +99,15 @@ val appModule = module {
     single<TmdbService> {
         get<Retrofit>(named("TMDB")).create(TmdbService::class.java)
     }
+    single<PostsService> {
+        get<Retrofit>(named("PPS")).create(PostsService::class.java)
+    }
 
     // DataSource
     single{ GithubRemoteDataSource(get()) }
     single { MoviesRemoteDataSource(get()) }
+    single { PostsRemoteDataSource(get()) }
+
 
     //repositorios
     single<IGithubRepository>{ GithubRepository(get()) }
@@ -96,6 +116,9 @@ val appModule = module {
     single<IExchangeRateRepository> { ExchangeRateRepository() }
     single<IWhatsappRepository> { WhatsappRepository() }
     single<IMoviesRepository> { MoviesRepository(get()) }
+    single<IPostRepository> { PostRepository(get()) }
+
+
 
 
 
@@ -109,6 +132,10 @@ val appModule = module {
     factory { GetExchangeRateUseCase(get()) }
     factory { GetFirstWhatsappNumberUseCase(get()) }
     factory { GetPopularMoviesUseCase(get()) }
+    factory { GetPostsUseCase(get()) }
+    factory { GetCommentsForOnePostUseCase(get()) }
+
+
 
 
 
@@ -123,6 +150,8 @@ val appModule = module {
     viewModel { ForgotPasswordViewModel(get(), get()) }
     viewModel { WhatsappViewModel(get ()) }
     viewModel { MoviesViewModel(get()) }
+    viewModel { PostsViewModel(get(),get()) }
+
 
 
 }
