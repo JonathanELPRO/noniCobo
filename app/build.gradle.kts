@@ -8,6 +8,8 @@ plugins {
 //    id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.ksp)
 }
 
 ktlint {
@@ -76,6 +78,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -93,6 +97,11 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    implementation(libs.bundles.local)
+    annotationProcessor(libs.room.compiler)
+    ksp(libs.room.compiler)
+    testImplementation(libs.room.testing)
 
 
 }

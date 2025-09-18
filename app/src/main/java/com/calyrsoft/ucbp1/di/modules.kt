@@ -3,31 +3,36 @@ package com.calyrsoft.ucbp1.di
 import com.calyrsoft.ucbp1.data.api.GithubService
 import com.calyrsoft.ucbp1.data.api.PostsService
 import com.calyrsoft.ucbp1.data.api.TmdbService
+import com.calyrsoft.ucbp1.data.database.AppRoomDatabase
+import com.calyrsoft.ucbp1.data.datasource.DollarLocalDataSource
 import com.calyrsoft.ucbp1.data.datasource.GithubRemoteDataSource
 import com.calyrsoft.ucbp1.data.datasource.MoviesRemoteDataSource
 import com.calyrsoft.ucbp1.data.datasource.PostsRemoteDataSource
-import com.calyrsoft.ucbp1.data.repository.ExchangeRateRepository
+import com.calyrsoft.ucbp1.data.datasource.RealTimeRemoteDataSource
+import com.calyrsoft.ucbp1.data.repository.DollarRepository
 import com.calyrsoft.ucbp1.data.repository.GithubRepository
 import com.calyrsoft.ucbp1.data.repository.LoginRepository
 import com.calyrsoft.ucbp1.data.repository.MoviesRepository
 import com.calyrsoft.ucbp1.data.repository.PostRepository
 import com.calyrsoft.ucbp1.data.repository.WhatsappRepository
-import com.calyrsoft.ucbp1.domain.repository.IExchangeRateRepository
+import com.calyrsoft.ucbp1.domain.repository.IDollarRepository
 import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
 import com.calyrsoft.ucbp1.domain.repository.ILoginRepository
 import com.calyrsoft.ucbp1.domain.repository.IMoviesRepository
 import com.calyrsoft.ucbp1.domain.repository.IPostRepository
 import com.calyrsoft.ucbp1.domain.repository.IWhatsappRepository
+import com.calyrsoft.ucbp1.domain.usecase.DeleteByTimeStampUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameAndPasswordUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNameUseCase
 import com.calyrsoft.ucbp1.domain.usecase.FindByNickNameUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetCommentsForOnePostUseCase
-import com.calyrsoft.ucbp1.domain.usecase.GetExchangeRateUseCase
+import com.calyrsoft.ucbp1.domain.usecase.GetDollarFromFireBaseInMyLocalDBUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetFirstWhatsappNumberUseCase
+import com.calyrsoft.ucbp1.domain.usecase.GetHistoryOfDollarsFromMyLocalDBUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetPopularMoviesUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetPostsUseCase
 import com.calyrsoft.ucbp1.domain.usecase.UpdateUserProfileUseCase
-import com.calyrsoft.ucbp1.presentation.ExchangeRateViewModel
+import com.calyrsoft.ucbp1.presentation.DollarViewModel
 import com.calyrsoft.ucbp1.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.presentation.LoginViewModel
@@ -107,16 +112,23 @@ val appModule = module {
     single{ GithubRemoteDataSource(get()) }
     single { MoviesRemoteDataSource(get()) }
     single { PostsRemoteDataSource(get()) }
+    single { RealTimeRemoteDataSource() }
+
 
 
     //repositorios
     single<IGithubRepository>{ GithubRepository(get()) }
     //eso de ahi crea un singleton de GithubRepository la cosa es que este singleton podra ser usado solo si los programadores ponenIGithubRepository
     single<ILoginRepository> { LoginRepository() }
-    single<IExchangeRateRepository> { ExchangeRateRepository() }
     single<IWhatsappRepository> { WhatsappRepository() }
     single<IMoviesRepository> { MoviesRepository(get()) }
     single<IPostRepository> { PostRepository(get()) }
+    single<IDollarRepository> { DollarRepository(get(), get()) }
+
+    single { AppRoomDatabase.getDatabase(get()) }
+    single { get<AppRoomDatabase>().dollarDao() }
+    single { DollarLocalDataSource(get()) }
+
 
 
 
@@ -129,11 +141,14 @@ val appModule = module {
     factory { FindByNameAndPasswordUseCase(get()) }
     factory { FindByNameUseCase(get()) }
     factory { UpdateUserProfileUseCase(get()) }
-    factory { GetExchangeRateUseCase(get()) }
+    factory { GetDollarFromFireBaseInMyLocalDBUseCase(get()) }
     factory { GetFirstWhatsappNumberUseCase(get()) }
     factory { GetPopularMoviesUseCase(get()) }
     factory { GetPostsUseCase(get()) }
     factory { GetCommentsForOnePostUseCase(get()) }
+    factory { GetHistoryOfDollarsFromMyLocalDBUseCase(get()) }
+    factory { DeleteByTimeStampUseCase(get()) }
+
 
 
 
@@ -146,11 +161,13 @@ val appModule = module {
     //este get le inyecta el caso e uso que ya sabemos como crear en la linea anterior
     viewModel { LoginViewModel(get()) }
     viewModel { ProfileViewModel(get(), get()) }
-    viewModel { ExchangeRateViewModel(get()) }
+    viewModel { DollarViewModel(get(),get(),get()) }
     viewModel { ForgotPasswordViewModel(get(), get()) }
     viewModel { WhatsappViewModel(get ()) }
     viewModel { MoviesViewModel(get()) }
     viewModel { PostsViewModel(get(),get()) }
+
+
 
 
 

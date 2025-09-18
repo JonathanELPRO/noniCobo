@@ -8,7 +8,7 @@ sealed class Screen(val route: String) {
         val route = "profile_screen/{name}"
     }
 
-    object ExchangeRateScreen : Screen("exchangeRate")
+    object Dollar: Screen("dollar")
     object ForgotPasswordScreen : Screen("forgot_password")
     object MoviesScreen : Screen("movies")
     object PostsScreen : Screen("posts")

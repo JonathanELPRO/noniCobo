@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.calyrsoft.ucbp1.presentation.ExchangeRateScreen
+import com.calyrsoft.ucbp1.presentation.DollarScreen
 import com.calyrsoft.ucbp1.presentation.ForgotPasswordScreen
 import com.calyrsoft.ucbp1.presentation.GithubScreen
 import com.calyrsoft.ucbp1.presentation.MoviesScreen
@@ -26,7 +26,7 @@ fun AppNavigation(modifier: Modifier){
 
     NavHost(
         navController = navController,
-        startDestination = Screen.PostsScreen.route,
+        startDestination = Screen.Dollar.route,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
@@ -87,12 +87,18 @@ fun AppNavigation(modifier: Modifier){
             )
         }
 
-        composable(Screen.ExchangeRateScreen.route) {
-            ExchangeRateScreen(
-                modifier = modifier,
-                vm = koinViewModel()
-            )
+//        composable(Screen.ExchangeRateScreen.route) {
+//            ExchangeRateScreen(
+//                modifier = modifier,
+//                vm = koinViewModel()
+//            )
+//        }
+
+
+        composable(Screen.Dollar.route) {
+            DollarScreen(viewModelDollar = koinViewModel())
         }
+
 
         composable(Screen.ForgotPasswordScreen.route) {
             ForgotPasswordScreen(
