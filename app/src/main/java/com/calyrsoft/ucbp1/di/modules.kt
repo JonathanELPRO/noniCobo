@@ -5,12 +5,12 @@ import com.calyrsoft.ucbp1.features.dollar.data.api.PostsService
 import com.calyrsoft.ucbp1.features.dollar.data.api.TmdbService
 import com.calyrsoft.ucbp1.features.dollar.data.database.AppRoomDatabase
 import com.calyrsoft.ucbp1.features.dollar.data.datasource.DollarLocalDataSource
-import com.calyrsoft.ucbp1.features.dollar.data.datasource.GithubRemoteDataSource
+import com.calyrsoft.ucbp1.features.github.data.datasource.GithubRemoteDataSource
 import com.calyrsoft.ucbp1.features.dollar.data.datasource.MoviesRemoteDataSource
 import com.calyrsoft.ucbp1.features.dollar.data.datasource.PostsRemoteDataSource
 import com.calyrsoft.ucbp1.features.dollar.data.datasource.RealTimeRemoteDataSource
 import com.calyrsoft.ucbp1.features.dollar.data.repository.DollarRepository
-import com.calyrsoft.ucbp1.features.dollar.data.repository.GithubRepository
+import com.calyrsoft.ucbp1.features.github.data.repository.GithubRepository
 import com.calyrsoft.ucbp1.features.dollar.data.repository.LoginRepository
 import com.calyrsoft.ucbp1.features.dollar.data.repository.MoviesRepository
 import com.calyrsoft.ucbp1.features.dollar.data.repository.PostRepository

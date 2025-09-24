@@ -1,7 +1,8 @@
-package com.calyrsoft.ucbp1.features.dollar.data.datasource
-import com.calyrsoft.ucbp1.features.github.data.api.GithubService
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.GithubDto
+package com.calyrsoft.ucbp1.features.github.data.datasource
+
 import com.calyrsoft.ucbp1.features.dollar.data.error.DataException
+import com.calyrsoft.ucbp1.features.github.data.api.GithubService
+import com.calyrsoft.ucbp1.features.github.data.api.dto.GithubDto
 
 class GithubRemoteDataSource(
     private val githubService: GithubService

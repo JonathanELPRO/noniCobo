@@ -1,13 +1,12 @@
-package com.calyrsoft.ucbp1.features.dollar.data.repository
+package com.calyrsoft.ucbp1.features.github.data.repository
 
-import com.calyrsoft.ucbp1.features.dollar.data.datasource.GithubRemoteDataSource
 import com.calyrsoft.ucbp1.features.dollar.data.error.DataException
 import com.calyrsoft.ucbp1.features.dollar.domain.error.Failure
 import com.calyrsoft.ucbp1.features.dollar.domain.model.Nickname
 import com.calyrsoft.ucbp1.features.dollar.domain.model.UrlPath
 import com.calyrsoft.ucbp1.features.dollar.domain.model.UserModel
 import com.calyrsoft.ucbp1.features.dollar.domain.repository.IGithubRepository
-
+import com.calyrsoft.ucbp1.features.github.data.datasource.GithubRemoteDataSource
 
 class GithubRepository(
     val remoteDataSource: GithubRemoteDataSource
@@ -24,10 +23,12 @@ class GithubRepository(
         response.fold(
             onSuccess = {
                     it ->
-                return Result.success(UserModel(
-                    nickname = Nickname.create(it.login),
-                    pathUrl = UrlPath.create(it.url)
-                ))
+                return Result.success(
+                    UserModel(
+                        nickname = Nickname.Companion.create(it.login),
+                        pathUrl = UrlPath.Companion.create(it.url)
+                    )
+                )
             },
 
             onFailure = { exception ->
@@ -44,5 +45,3 @@ class GithubRepository(
         )
     }
 }
-
-

@@ -1,6 +1,6 @@
 package com.calyrsoft.ucbp1.features.github.data.api
 
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.GithubDto
+import com.calyrsoft.ucbp1.features.github.data.api.dto.GithubDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
