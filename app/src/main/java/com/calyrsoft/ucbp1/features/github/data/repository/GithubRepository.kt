@@ -2,10 +2,10 @@ package com.calyrsoft.ucbp1.features.github.data.repository
 
 import com.calyrsoft.ucbp1.features.dollar.data.error.DataException
 import com.calyrsoft.ucbp1.features.dollar.domain.error.Failure
-import com.calyrsoft.ucbp1.features.dollar.domain.model.Nickname
-import com.calyrsoft.ucbp1.features.dollar.domain.model.UrlPath
-import com.calyrsoft.ucbp1.features.dollar.domain.model.UserModel
-import com.calyrsoft.ucbp1.features.dollar.domain.repository.IGithubRepository
+import com.calyrsoft.ucbp1.features.github.domain.model.Nickname
+import com.calyrsoft.ucbp1.features.github.domain.model.UrlPath
+import com.calyrsoft.ucbp1.features.github.domain.model.UserModel
+import com.calyrsoft.ucbp1.features.github.domain.repository.IGithubRepository
 import com.calyrsoft.ucbp1.features.github.data.datasource.GithubRemoteDataSource
 
 class GithubRepository(

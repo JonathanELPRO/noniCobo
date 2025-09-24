@@ -1,5 +1,6 @@
-package com.calyrsoft.ucbp1.features.dollar.data.api
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.DiscoverPageDto
+package com.calyrsoft.ucbp1.features.movie.data.api
+
+import com.calyrsoft.ucbp1.features.movie.data.api.dto.DiscoverPageDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -1,4 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.domain.model
+package com.calyrsoft.ucbp1.features.movie.domain.model
 
 data class MovieModel(
     val id: Long,

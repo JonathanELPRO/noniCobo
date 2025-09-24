@@ -1,11 +1,11 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.github.presentation
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.features.dollar.domain.error.Failure
-import com.calyrsoft.ucbp1.features.dollar.domain.model.UserModel
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.FindByNickNameUseCase
+import com.calyrsoft.ucbp1.features.github.domain.model.UserModel
+import com.calyrsoft.ucbp1.features.github.domain.usecase.FindByNickNameUseCase
 import com.calyrsoft.ucbp1.features.dollar.presentation.error.ErrorMessageProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

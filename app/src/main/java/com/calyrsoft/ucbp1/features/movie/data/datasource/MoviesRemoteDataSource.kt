@@ -1,6 +1,7 @@
-package com.calyrsoft.ucbp1.features.dollar.data.datasource
-import com.calyrsoft.ucbp1.features.dollar.data.api.TmdbService
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.DiscoverPageDto
+package com.calyrsoft.ucbp1.features.movie.data.datasource
+
+import com.calyrsoft.ucbp1.features.movie.data.api.TmdbService
+import com.calyrsoft.ucbp1.features.movie.data.api.dto.DiscoverPageDto
 
 class MoviesRemoteDataSource(
     private val service: TmdbService

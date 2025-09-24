@@ -1,7 +1,8 @@
-package com.calyrsoft.ucbp1.features.dollar.data.repository
-import com.calyrsoft.ucbp1.features.dollar.data.datasource.MoviesRemoteDataSource
-import com.calyrsoft.ucbp1.features.dollar.domain.model.MovieModel
-import com.calyrsoft.ucbp1.features.dollar.domain.repository.IMoviesRepository
+package com.calyrsoft.ucbp1.features.movie.data.repository
+
+import com.calyrsoft.ucbp1.features.movie.domain.model.MovieModel
+import com.calyrsoft.ucbp1.features.movie.domain.repository.IMoviesRepository
+import com.calyrsoft.ucbp1.features.movie.data.datasource.MoviesRemoteDataSource
 
 private const val TMDB_IMAGE_BASE_W185 = "https://image.tmdb.org/t/p/w185"
 

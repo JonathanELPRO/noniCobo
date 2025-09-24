@@ -8,8 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.ForgotPasswordScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.GithubScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.MoviesScreen
+import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
+import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.PostsScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.SigninPage
