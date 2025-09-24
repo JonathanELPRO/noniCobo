@@ -1,13 +1,22 @@
-package com.calyrsoft.ucbp1.features.dollar.data.repository
+package com.calyrsoft.ucbp1.features.profile.data.repository
 
-import com.calyrsoft.ucbp1.features.dollar.domain.model.LoginUserModel
-import com.calyrsoft.ucbp1.features.dollar.domain.repository.ILoginRepository
-
+import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
+import com.calyrsoft.ucbp1.features.profile.domain.repository.ILoginRepository
 
 class LoginRepository : ILoginRepository {
     private val users = mutableListOf(
-        LoginUserModel("calyr", "1234", "12345678", "https://avatars.githubusercontent.com/u/874321?v=4"),
-        LoginUserModel("admin", "abcd","87654321", "https://avatars.githubusercontent.com/u/874321?v=4")
+        LoginUserModel(
+            "calyr",
+            "1234",
+            "12345678",
+            "https://avatars.githubusercontent.com/u/874321?v=4"
+        ),
+        LoginUserModel(
+            "admin",
+            "abcd",
+            "87654321",
+            "https://avatars.githubusercontent.com/u/874321?v=4"
+        )
     )
 
     override fun findByNameAndPassword(name: String, password: String): Result<LoginUserModel> {

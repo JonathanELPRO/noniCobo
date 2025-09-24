@@ -1,4 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.profile.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

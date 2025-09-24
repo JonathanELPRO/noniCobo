@@ -1,4 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.profile.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.calyrsoft.ucbp1.R
+import com.calyrsoft.ucbp1.features.dollar.presentation.WhatsappButton
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

@@ -1,9 +1,9 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.calyrsoft.ucbp1.features.dollar.domain.model.LoginUserModel
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.FindByNameAndPasswordUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameAndPasswordUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

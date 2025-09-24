@@ -7,12 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.ForgotPasswordScreen
+import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordScreen
 import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.ProfileScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.SigninPage
+import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
+import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
 

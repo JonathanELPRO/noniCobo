@@ -1,4 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.domain.model
+package com.calyrsoft.ucbp1.features.profile.domain.model
 
 @JvmInline
 value class Email constructor(val value: String) {

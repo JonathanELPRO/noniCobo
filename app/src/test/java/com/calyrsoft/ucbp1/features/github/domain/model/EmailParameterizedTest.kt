@@ -1,6 +1,6 @@
 package com.calyrsoft.ucbp1.features.github.domain.model
 
-import com.calyrsoft.ucbp1.features.dollar.domain.model.Email
+import com.calyrsoft.ucbp1.features.profile.domain.model.Email
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

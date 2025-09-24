@@ -1,7 +1,7 @@
-package com.calyrsoft.ucbp1.features.dollar.domain.usecase
+package com.calyrsoft.ucbp1.features.profile.domain.usecase
 
-import com.calyrsoft.ucbp1.features.dollar.domain.model.LoginUserModel
-import com.calyrsoft.ucbp1.features.dollar.domain.repository.ILoginRepository
+import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
+import com.calyrsoft.ucbp1.features.profile.domain.repository.ILoginRepository
 
 class FindByNameAndPasswordUseCase(
     val repository: ILoginRepository,

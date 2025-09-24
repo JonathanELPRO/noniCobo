@@ -1,6 +1,6 @@
-package com.calyrsoft.ucbp1.features.dollar.domain.repository
+package com.calyrsoft.ucbp1.features.profile.domain.repository
 
-import com.calyrsoft.ucbp1.features.dollar.domain.model.LoginUserModel
+import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
 
 interface ILoginRepository {
     fun findByNameAndPassword(name: String, password: String): Result<LoginUserModel>
