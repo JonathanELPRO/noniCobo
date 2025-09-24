@@ -38,7 +38,7 @@ class PostsViewModel(
             val result = getPostsUseCase()
             result.fold(
                 onSuccess = { posts ->
-                    _state.value = UiState.Success(SuccessWithComments(posts))
+                    _state.value = UiState.Success(SuccessWithComments(posts = posts))
                 },
                 onFailure = { _state.value = UiState.Error(it.message ?: "Error desconocido") }
             )

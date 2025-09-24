@@ -34,13 +34,13 @@ class MainActivity : ComponentActivity() {
                     AppNavigation(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                        startDestination = Screen.GithubScreen.route
+                        startDestination = Screen.PostsScreen.route
                     )
 
                     // 👉 Escucha el intent actual y navega si trae "route"
                     LaunchedEffect(context.intent) {
                         val route = context.intent.getStringExtra("route")
-                        if (route != null && route != Screen.GithubScreen.route) {
+                        if (route != null && route != Screen.PostsScreen.route) {
                             navController.navigate(route) {
                                 popUpTo(0) // limpia el backstack si quieres
                             }
