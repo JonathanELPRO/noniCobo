@@ -19,9 +19,12 @@ fun MoviesScreen(
     modifier: Modifier = Modifier,
     vm: MoviesViewModel = koinViewModel()
 ) {
+
+
     val state by vm.state.collectAsState()
 
-    LaunchedEffect(Unit) { vm.load(1) }
+    //LaunchedEffect(Unit) { vm.load(1) }
+
 
     Box(modifier = modifier.fillMaxSize()) {
         when (val s = state) {

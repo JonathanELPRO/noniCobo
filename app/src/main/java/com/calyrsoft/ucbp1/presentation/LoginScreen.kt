@@ -54,7 +54,7 @@ fun SigninPage(modifier: Modifier,
 
         TextField(
             label = {
-                Text(text = "User")
+                Text("User")
             },
             singleLine = true,
             keyboardOptions =
@@ -82,7 +82,9 @@ fun SigninPage(modifier: Modifier,
             value = userSignIn, onValueChange = { userSignIn = it },
         )
 
-        TextField(value = passwordSignIn, onValueChange = { passwordSignIn = it })
+        TextField(
+            value = passwordSignIn, onValueChange = { passwordSignIn = it }
+        )
 
         Button(modifier = Modifier.fillMaxWidth(),
             onClick = { vm.fetchAlias(userSignIn, passwordSignIn) })

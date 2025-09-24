@@ -3,6 +3,8 @@ package com.calyrsoft.ucbp1.data.repository
 import com.calyrsoft.ucbp1.data.datasource.GithubRemoteDataSource
 import com.calyrsoft.ucbp1.data.error.DataException
 import com.calyrsoft.ucbp1.domain.error.Failure
+import com.calyrsoft.ucbp1.domain.model.Nickname
+import com.calyrsoft.ucbp1.domain.model.UrlPath
 import com.calyrsoft.ucbp1.domain.model.UserModel
 import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
 
@@ -23,8 +25,8 @@ class GithubRepository(
             onSuccess = {
                     it ->
                 return Result.success(UserModel(
-                    nickname = it.login,
-                    pathUrl = it.url
+                    nickname = Nickname.create(it.login),
+                    pathUrl = UrlPath.create(it.url)
                 ))
             },
 

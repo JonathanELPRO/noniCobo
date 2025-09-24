@@ -23,13 +23,16 @@ class MoviesViewModel(
     private val _state = MutableStateFlow<UiState>(UiState.Init)
     val state: StateFlow<UiState> = _state.asStateFlow()
 
+    init {
+        load(1)
+    }
     fun load(page: Int = 1) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = UiState.Loading
             val result = getPopularMovies(page)
             result.fold(
-                onSuccess = { _state.value = UiState.Success(it) },
-                onFailure = { _state.value = UiState.Error(it.message ?: "Error desconocido") }
+                onSuccess = { movies -> _state.value = UiState.Success(movies) },
+                onFailure = { exception -> _state.value = UiState.Error(exception.message ?: "Error desconocido") }
             )
         }
     }

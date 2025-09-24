@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,18 +21,15 @@ import com.calyrsoft.ucbp1.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.presentation.SigninPage
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
+import androidx.navigation.compose.NavHost
+
 
 @Composable
-fun AppNavigation(modifier: Modifier){
-    val navController = rememberNavController()
-
+fun AppNavigation(modifier: Modifier, navController: NavHostController, startDestination: String) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Dollar.route,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None }
+        startDestination = startDestination,
+        modifier = modifier
     ) {
         composable(Screen.LoginScreen.route) {
             SigninPage(
@@ -60,10 +59,11 @@ fun AppNavigation(modifier: Modifier){
         }
 
         composable(
-            route = "profile_screen/{name}",
+            Screen.ProfileScreen.route,
             arguments = listOf(
                 navArgument("name") { defaultValue = "" }
-            )
+                //,navArgument("age") { defaultValue = 0 },
+                )
         ) { backStackEntry ->
             val name = backStackEntry.arguments?.getString("name") ?: ""
 
@@ -75,17 +75,19 @@ fun AppNavigation(modifier: Modifier){
 
                 onEndSession = {
                     navController.navigate(
-                        "login"
+                        Screen.LoginScreen.route
                     )
                 },
 
                 onAskExchangeRate = {
                     navController.navigate(
-                        "exchangeRate"
+                        Screen.Dollar.route
                     )
                 }
             )
         }
+
+        //TODO HASTA ONEND SESSION Y ONASKEXCHANGE RATE YA LO ESTUDIASTE
 
 //        composable(Screen.ExchangeRateScreen.route) {
 //            ExchangeRateScreen(

@@ -4,9 +4,11 @@ sealed class Screen(val route: String) {
     object LoginScreen : Screen("login")
     object GithubScreen : Screen("github")
 
-    val ProfileScreen = object {
-        val route = "profile_screen/{name}"
-    }
+
+
+    object ProfileScreen : Screen("profile_screen/{name}")
+
+
 
     object Dollar: Screen("dollar")
     object ForgotPasswordScreen : Screen("forgot_password")

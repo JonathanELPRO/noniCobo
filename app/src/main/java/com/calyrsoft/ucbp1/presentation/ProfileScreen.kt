@@ -40,7 +40,6 @@ fun ProfileScreen(
     var editablePassword by remember { mutableStateOf("") }
     var editableImageUrl by remember { mutableStateOf("") }
 
-    // Cargar datos del perfil al iniciar la pantalla
     LaunchedEffect(name) {
         vm.loadProfile(name)
     }

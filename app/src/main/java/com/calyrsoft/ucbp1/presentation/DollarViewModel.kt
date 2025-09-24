@@ -1,11 +1,13 @@
 package com.calyrsoft.ucbp1.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.domain.model.DollarModel
 import com.calyrsoft.ucbp1.domain.usecase.DeleteByTimeStampUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetDollarFromFireBaseInMyLocalDBUseCase
 import com.calyrsoft.ucbp1.domain.usecase.GetHistoryOfDollarsFromMyLocalDBUseCase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,6 +15,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class DollarViewModel(
     val getDollarFromFireBaseInMyLocalDBUseCase: GetDollarFromFireBaseInMyLocalDBUseCase,
@@ -63,6 +68,7 @@ class DollarViewModel(
 
     fun getDollarFromFireBase() {
         viewModelScope.launch(Dispatchers.IO) {
+            getToken()
             liveDollarFlow.collect { data ->
                 _uiState.value = DollarUIState.Success(data)
             }
@@ -97,4 +103,22 @@ class DollarViewModel(
             )
         }
     }
+
+    suspend fun getToken(): String = suspendCoroutine { continuation ->
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FIREBASE", "getInstanceId failed", task.exception)
+                    continuation.resumeWithException(task.exception ?: Exception("Unknown error"))
+                    return@addOnCompleteListener
+                }
+                // Si la tarea fue exitosa, se obtiene el token
+                val token = task.result
+                Log.d("FIREBASE", "FCM Token: $token")
+
+
+                // Reanudar la ejecución con el token
+                continuation.resume(token ?: "")
+            }
+    }
+
 }

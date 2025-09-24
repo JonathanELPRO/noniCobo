@@ -25,6 +25,14 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".features.notification.data.service.FirebaseService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
 
 
         <!-- Required: set your sentry.io project identifier (DSN) -->
@@ -39,6 +47,9 @@
         <meta-data android:name="io.sentry.attach-screenshot" android:value="true" />
         <!-- enable view hierarchy for crashes -->
         <meta-data android:name="io.sentry.attach-view-hierarchy" android:value="true" />
+
+
+
 
     </application>
 
