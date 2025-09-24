@@ -1,8 +1,9 @@
-package com.calyrsoft.ucbp1.features.dollar.data.datasource
-import com.calyrsoft.ucbp1.features.dollar.data.api.PostsService
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.CommentDto
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.PostDto
+package com.calyrsoft.ucbp1.features.posts.data.datasource
+
 import com.calyrsoft.ucbp1.features.dollar.data.error.DataException
+import com.calyrsoft.ucbp1.features.posts.data.api.PostsService
+import com.calyrsoft.ucbp1.features.posts.data.api.dto.CommentDto
+import com.calyrsoft.ucbp1.features.posts.data.api.dto.PostDto
 
 class PostsRemoteDataSource(
     private val postsService: PostsService

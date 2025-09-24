@@ -1,10 +1,10 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.posts.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.calyrsoft.ucbp1.features.dollar.domain.model.CommentModel
-import com.calyrsoft.ucbp1.features.dollar.domain.model.PostModel
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.GetCommentsForOnePostUseCase
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.GetPostsUseCase
+import com.calyrsoft.ucbp1.features.posts.domain.model.CommentModel
+import com.calyrsoft.ucbp1.features.posts.domain.model.PostModel
+import com.calyrsoft.ucbp1.features.posts.domain.usecase.GetCommentsForOnePostUseCase
+import com.calyrsoft.ucbp1.features.posts.domain.usecase.GetPostsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

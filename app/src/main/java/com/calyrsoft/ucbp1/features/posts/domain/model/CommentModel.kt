@@ -1,4 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.domain.model
+package com.calyrsoft.ucbp1.features.posts.domain.model
 
 data class CommentModel(
     val postId: String,

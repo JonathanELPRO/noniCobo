@@ -1,9 +1,9 @@
-package com.calyrsoft.ucbp1.features.dollar.data.repository
+package com.calyrsoft.ucbp1.features.posts.data.repository
 
-import com.calyrsoft.ucbp1.features.dollar.data.datasource.PostsRemoteDataSource
-import com.calyrsoft.ucbp1.features.dollar.domain.model.CommentModel
-import com.calyrsoft.ucbp1.features.dollar.domain.model.PostModel
-import com.calyrsoft.ucbp1.features.dollar.domain.repository.IPostRepository
+import com.calyrsoft.ucbp1.features.posts.domain.model.CommentModel
+import com.calyrsoft.ucbp1.features.posts.domain.model.PostModel
+import com.calyrsoft.ucbp1.features.posts.domain.repository.IPostRepository
+import com.calyrsoft.ucbp1.features.posts.data.datasource.PostsRemoteDataSource
 
 class PostRepository(
     private val remote: PostsRemoteDataSource

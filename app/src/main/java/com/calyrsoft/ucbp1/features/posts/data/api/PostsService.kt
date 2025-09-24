@@ -1,7 +1,7 @@
-package com.calyrsoft.ucbp1.features.dollar.data.api
+package com.calyrsoft.ucbp1.features.posts.data.api
 
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.CommentDto
-import com.calyrsoft.ucbp1.features.dollar.data.api.dto.PostDto
+import com.calyrsoft.ucbp1.features.posts.data.api.dto.CommentDto
+import com.calyrsoft.ucbp1.features.posts.data.api.dto.PostDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

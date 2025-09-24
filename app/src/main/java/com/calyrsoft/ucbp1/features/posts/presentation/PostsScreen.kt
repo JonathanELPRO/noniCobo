@@ -1,4 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.posts.presentation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

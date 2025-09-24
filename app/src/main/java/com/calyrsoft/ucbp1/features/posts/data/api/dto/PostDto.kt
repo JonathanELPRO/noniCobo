@@ -1,6 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.data.api.dto
-
-import com.google.gson.annotations.SerializedName
+package com.calyrsoft.ucbp1.features.posts.data.api.dto
 
 data class PostDto(val userId: String,
                    val id: String,

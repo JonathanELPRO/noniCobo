@@ -10,7 +10,7 @@ import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.ForgotPasswordScreen
 import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.PostsScreen
+import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.SigninPage
 import org.koin.androidx.compose.koinViewModel
