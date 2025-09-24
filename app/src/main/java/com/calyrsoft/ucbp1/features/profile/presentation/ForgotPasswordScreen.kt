@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.calyrsoft.ucbp1.features.dollar.presentation.WhatsappButton
+import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappButton
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

@@ -1,6 +1,6 @@
-package com.calyrsoft.ucbp1.features.dollar.data.repository
+package com.calyrsoft.ucbp1.features.whatsapp.data.repository
 
-import com.calyrsoft.ucbp1.features.dollar.domain.repository.IWhatsappRepository
+import com.calyrsoft.ucbp1.features.whatsapp.domain.repository.IWhatsappRepository
 
 class WhatsappRepository : IWhatsappRepository {
 

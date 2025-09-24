@@ -1,8 +1,8 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.whatsapp.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.GetFirstWhatsappNumberUseCase
+import com.calyrsoft.ucbp1.features.whatsapp.domain.usecase.GetFirstWhatsappNumberUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

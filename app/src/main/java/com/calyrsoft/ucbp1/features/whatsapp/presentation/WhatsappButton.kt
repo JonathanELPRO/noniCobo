@@ -1,4 +1,4 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation
+package com.calyrsoft.ucbp1.features.whatsapp.presentation
 
 import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxWidth
