@@ -1,4 +1,5 @@
-package com.calyrsoft.ucbp1.features.dollar.data.error
+package com.calyrsoft.ucbp1.features.github.data.error
+
 import java.lang.Exception
 
 sealed class DataException : Exception() {

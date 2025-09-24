@@ -1,8 +1,8 @@
-package com.calyrsoft.ucbp1.features.dollar.presentation.error
+package com.calyrsoft.ucbp1.features.github.presentation.error
+
 import android.content.Context
 import com.calyrsoft.ucbp1.R
-import com.calyrsoft.ucbp1.features.dollar.domain.error.Failure
-
+import com.calyrsoft.ucbp1.features.github.domain.error.Failure
 
 class ErrorMessageProvider(private val context: Context) {
     fun getMessage(failure: Failure): String {

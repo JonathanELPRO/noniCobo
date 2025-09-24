@@ -1,6 +1,6 @@
 package com.calyrsoft.ucbp1.features.github.data.datasource
 
-import com.calyrsoft.ucbp1.features.dollar.data.error.DataException
+import com.calyrsoft.ucbp1.features.github.data.error.DataException
 import com.calyrsoft.ucbp1.features.github.data.api.GithubService
 import com.calyrsoft.ucbp1.features.github.data.api.dto.GithubDto
 
