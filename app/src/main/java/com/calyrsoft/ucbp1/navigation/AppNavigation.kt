@@ -1,27 +1,20 @@
 package com.calyrsoft.ucbp1.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.calyrsoft.ucbp1.presentation.DollarScreen
-import com.calyrsoft.ucbp1.presentation.ForgotPasswordScreen
-import com.calyrsoft.ucbp1.presentation.GithubScreen
-import com.calyrsoft.ucbp1.presentation.MoviesScreen
-import com.calyrsoft.ucbp1.presentation.PostsScreen
-import com.calyrsoft.ucbp1.presentation.ProfileScreen
-import com.calyrsoft.ucbp1.presentation.SigninPage
+import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
+import com.calyrsoft.ucbp1.features.dollar.presentation.ForgotPasswordScreen
+import com.calyrsoft.ucbp1.features.dollar.presentation.GithubScreen
+import com.calyrsoft.ucbp1.features.dollar.presentation.MoviesScreen
+import com.calyrsoft.ucbp1.features.dollar.presentation.PostsScreen
+import com.calyrsoft.ucbp1.features.dollar.presentation.ProfileScreen
+import com.calyrsoft.ucbp1.features.dollar.presentation.SigninPage
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
-import androidx.navigation.compose.NavHost
 
 
 @Composable

@@ -1,10 +1,10 @@
 package com.calyrsoft.ucbp1.features.github.domain.model.usecase
 
 import androidx.annotation.OptIn
-import com.calyrsoft.ucbp1.domain.model.Nickname
-import com.calyrsoft.ucbp1.domain.model.UserModel
-import com.calyrsoft.ucbp1.domain.repository.IGithubRepository
-import com.calyrsoft.ucbp1.domain.usecase.FindByNickNameUseCase
+import com.calyrsoft.ucbp1.features.dollar.domain.model.Nickname
+import com.calyrsoft.ucbp1.features.dollar.domain.model.UserModel
+import com.calyrsoft.ucbp1.features.dollar.domain.repository.IGithubRepository
+import com.calyrsoft.ucbp1.features.dollar.domain.usecase.FindByNickNameUseCase
 
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -12,7 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import com.calyrsoft.ucbp1.domain.model.UrlPath
+import com.calyrsoft.ucbp1.features.dollar.domain.model.UrlPath
 
 
 @OptIn(ExperimentalCoroutinesApi::class)

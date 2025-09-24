@@ -1,6 +1,6 @@
 package com.calyrsoft.ucbp1.features.github.domain.model
 
-import com.calyrsoft.ucbp1.domain.model.Nickname
+import com.calyrsoft.ucbp1.features.dollar.domain.model.Nickname
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith

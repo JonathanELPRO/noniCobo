@@ -1,6 +1,6 @@
 package com.calyrsoft.ucbp1.features.github.domain.model
 
-import com.calyrsoft.ucbp1.domain.model.UrlPath
+import com.calyrsoft.ucbp1.features.dollar.domain.model.UrlPath
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
