@@ -34,7 +34,6 @@ fun ForgotPasswordScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Campo de usuario
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
@@ -85,7 +84,6 @@ fun ForgotPasswordScreen(
         WhatsappButton()
 
 
-        // Mostrar mensajes de estado
         when (val st = state) {
             is ForgotPasswordViewModel.ForgotPasswordStateUI.Loading -> Text("Verificando usuario...")
             is ForgotPasswordViewModel.ForgotPasswordStateUI.Updating -> Text("Actualizando contraseña...")

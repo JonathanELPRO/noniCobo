@@ -2,6 +2,8 @@ package com.calyrsoft.ucbp1.features.profile.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
+import com.calyrsoft.ucbp1.features.profile.domain.model.Name
+import com.calyrsoft.ucbp1.features.profile.domain.model.Password
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameUseCase
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserProfileUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,29 +37,25 @@ class ForgotPasswordViewModel(
         _state.value = ForgotPasswordStateUI.Loading
 
         viewModelScope.launch {
-            val result = findByNameUseCase.invoke(username)
+            val result = findByNameUseCase(Name.create(username).value)
             result.fold(
                 onSuccess = { user ->
                     _state.value = ForgotPasswordStateUI.UserFound(user)
                 },
                 onFailure = {
-                    _state.value =
-                        ForgotPasswordStateUI.UserNotFound("Usuario no encontrado")
+                    _state.value = ForgotPasswordStateUI.UserNotFound("Usuario no encontrado")
                 }
             )
         }
     }
 
-    /**
-     * Actualiza la contraseña del usuario.
-     */
     fun updatePassword(username: String, newPassword: String) {
         _state.value = ForgotPasswordStateUI.Updating
 
         viewModelScope.launch {
-            val result = updateUserProfileUseCase.invoke(
+            val result = updateUserProfileUseCase(
                 name = username,
-                newPassword = newPassword
+                newPassword = Password.create(newPassword).value
             )
             result.fold(
                 onSuccess = { updatedUser ->
@@ -70,4 +68,5 @@ class ForgotPasswordViewModel(
             )
         }
     }
+
 }

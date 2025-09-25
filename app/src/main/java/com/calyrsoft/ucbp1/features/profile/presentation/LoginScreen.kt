@@ -111,7 +111,7 @@ fun SigninPage(modifier: Modifier,
             is LoginViewModel.LoginStateUI.Success -> {
                 Text("Se logueo correctamente al usuario: " + st.loginUser.name)
                 onSuccess(
-                    st.loginUser.name
+                    st.loginUser.name.value
                 )
             }
         }

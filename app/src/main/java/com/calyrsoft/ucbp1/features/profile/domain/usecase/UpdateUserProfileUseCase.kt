@@ -6,14 +6,16 @@ import com.calyrsoft.ucbp1.features.profile.domain.repository.ILoginRepository
 class UpdateUserProfileUseCase(
     private val repository: ILoginRepository,
 ) {
-    fun invoke(
+    operator fun invoke(
         name: String,
         newName: String? = null,
         newPhone: String? = null,
         newImageUrl: String? = null,
-        newPassword: String? = null
+        newPassword: String? = null,
+        newEmail: String? = null,
+        newSummary: String? = null
     ): Result<LoginUserModel> {
-        return repository.updateUserProfile(name, newName, newPhone, newImageUrl, newPassword)
+        return repository.updateUserProfile(name, newName, newPhone, newImageUrl, newPassword, newEmail, newSummary)
     }
 }
 

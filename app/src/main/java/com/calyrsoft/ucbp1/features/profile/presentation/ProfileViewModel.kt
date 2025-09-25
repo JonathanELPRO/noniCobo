@@ -1,7 +1,13 @@
 package com.calyrsoft.ucbp1.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
+import com.calyrsoft.ucbp1.features.profile.domain.model.Email
+import com.calyrsoft.ucbp1.features.profile.domain.model.ImageUrl
 import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
+import com.calyrsoft.ucbp1.features.profile.domain.model.Name
+import com.calyrsoft.ucbp1.features.profile.domain.model.Password
+import com.calyrsoft.ucbp1.features.profile.domain.model.Phone
+import com.calyrsoft.ucbp1.features.profile.domain.model.Summary
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameUseCase
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserProfileUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,55 +21,59 @@ class ProfileViewModel(
 
     sealed class ProfileStateUI {
         object Init : ProfileStateUI()
-        object Loading : ProfileStateUI() //
+        object Loading : ProfileStateUI()
         object Updating : ProfileStateUI()
         data class UpdateSuccess(val user: LoginUserModel) : ProfileStateUI()
-        class UpdateError(val message: String) : ProfileStateUI()//
+        class UpdateError(val message: String) : ProfileStateUI()
 
-        class DataLoaded(val user: LoginUserModel) : ProfileStateUI() //
+        class DataLoaded(val user: LoginUserModel) : ProfileStateUI()
     }
 
     private val _state = MutableStateFlow<ProfileStateUI>(ProfileStateUI.Init)
     val state: StateFlow<ProfileStateUI> = _state.asStateFlow()
 
     fun loadProfile(userId: String) {
-
-            _state.value = ProfileStateUI.Loading
-
-            val result = findByNameUseCase.invoke(userId)
+        _state.value = ProfileStateUI.Loading
+        try {
+            val result = findByNameUseCase(Name.create(userId).value)
             result.fold(
-                onSuccess = { user ->
-                    _state.value = ProfileStateUI.DataLoaded(user)
-                },
-
-                onFailure = { error ->
-                    _state.value = ProfileStateUI.UpdateError(error.message ?: "Error al cargar perfil")
-                }
+                onSuccess = { user -> _state.value = ProfileStateUI.DataLoaded(user) },
+                onFailure = { error -> _state.value = ProfileStateUI.UpdateError(error.message ?: "Error al cargar perfil") }
             )
-
+        } catch (e: Exception) {
+            _state.value = ProfileStateUI.UpdateError(e.message ?: "Error de validación")
+        }
     }
 
-    fun updateProfile(name: String,
-                      newName: String? = null,
-                      newPhone: String? = null,
-                      newImageUrl: String? = null,
-                      newPassword: String? = null) {
-
-            _state.value = ProfileStateUI.Updating
-
-            val result = updateUserProfileUseCase.invoke(name, newName, newPhone, newImageUrl, newPassword)
-
-            result.fold(
-                onSuccess = { updatedUser ->
-                    _state.value = ProfileStateUI.UpdateSuccess(updatedUser)
-                },
-                onFailure = { error ->
-                    _state.value =
-                        ProfileStateUI.UpdateError(error.message ?: "Error al actualizar nombre")
-                }
+    fun updateProfile(
+        name: String,
+        newName: String? = null,
+        newPhone: String? = null,
+        newImageUrl: String? = null,
+        newPassword: String? = null,
+        newEmail: String? = null,
+        newSummary: String? = null
+    ) {
+        _state.value = ProfileStateUI.Updating
+        try {
+            val result = updateUserProfileUseCase(
+                name = Name.create(name).value,
+                newName = newName?.let { Name.create(it).value },
+                newPhone = newPhone?.let { Phone.create(it).value },
+                newImageUrl = newImageUrl?.let { ImageUrl.create(it).value },
+                newPassword = newPassword?.let { Password.create(it).value },
+                newEmail = newEmail?.let { Email.create(it).value },
+                newSummary = newSummary?.let { Summary.create(it).value }
             )
 
+            result.fold(
+                onSuccess = { updatedUser -> _state.value = ProfileStateUI.UpdateSuccess(updatedUser) },
+                onFailure = { error -> _state.value = ProfileStateUI.UpdateError(error.message ?: "Error al actualizar perfil") }
+            )
+        } catch (e: Exception) {
+            _state.value = ProfileStateUI.UpdateError(e.message ?: "Error de validación")
+        }
     }
 
-    // Puedes crear funciones similares para actualizar phone, password, imageUrl, etc.
+
 }

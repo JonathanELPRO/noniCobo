@@ -6,7 +6,7 @@ import com.calyrsoft.ucbp1.features.profile.domain.repository.ILoginRepository
 class FindByNameUseCase(
     val repository: ILoginRepository,
 ) {
-    fun invoke(name: String): Result<LoginUserModel> {
+    operator fun invoke(name: String): Result<LoginUserModel> {
         return repository.findByName(name)
     }
 }

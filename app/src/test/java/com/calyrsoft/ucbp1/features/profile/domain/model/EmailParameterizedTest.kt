@@ -1,7 +1,6 @@
-package com.calyrsoft.ucbp1.features.github.domain.model
+package com.calyrsoft.ucbp1.features.profile.domain.model
 
-import com.calyrsoft.ucbp1.features.profile.domain.model.Email
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -28,6 +27,6 @@ class EmailParameterizedTest(
         val emailValueObject = Email.Companion.create(inputData)
 
         // assert
-        assertEquals(expected, emailValueObject.value)
+        Assert.assertEquals(expected, emailValueObject.value)
     }
 }

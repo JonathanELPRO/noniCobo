@@ -3,6 +3,8 @@ package com.calyrsoft.ucbp1.features.profile.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
+import com.calyrsoft.ucbp1.features.profile.domain.model.Name
+import com.calyrsoft.ucbp1.features.profile.domain.model.Password
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameAndPasswordUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,24 +28,23 @@ class LoginViewModel(
 
     fun fetchAlias(name: String, password: String) {
         viewModelScope.launch(Dispatchers.IO) {
-
-
             _state.value = LoginStateUI.Loading
 
-            val result = useCase.invoke(name, password)
+            try {
+                val result = useCase(
+                    Name.create(name).value,
+                    Password.create(password).value
+                )
 
-            result.fold(
-                onSuccess = { user ->
-                    _state.value = LoginStateUI.Success(user)
-                },
-
-                onFailure = { error ->
-                    _state.value = LoginStateUI.Error(message = error.message ?: "Error desconocido")
-                }
-            )
-
-
+                result.fold(
+                    onSuccess = { user -> _state.value = LoginStateUI.Success(user) },
+                    onFailure = { error -> _state.value = LoginStateUI.Error(error.message ?: "Error desconocido") }
+                )
+            } catch (e: Exception) {
+                _state.value = LoginStateUI.Error(e.message ?: "Error de validación")
+            }
         }
     }
+
 
 }

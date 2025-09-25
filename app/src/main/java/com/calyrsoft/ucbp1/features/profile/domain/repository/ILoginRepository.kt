@@ -11,7 +11,9 @@ interface ILoginRepository {
         newName: String? = null,
         newPhone: String? = null,
         newImageUrl: String? = null,
-        newPassword: String? = null
+        newPassword: String? = null,
+        newEmail: String? = null,
+        newSummary: String? = null
     ): Result<LoginUserModel>
 
 }

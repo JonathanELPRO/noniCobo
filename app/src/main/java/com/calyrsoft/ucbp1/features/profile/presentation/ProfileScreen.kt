@@ -39,6 +39,9 @@ fun ProfileScreen(
     var editablePhone by remember { mutableStateOf("") }
     var editablePassword by remember { mutableStateOf("") }
     var editableImageUrl by remember { mutableStateOf("") }
+    var editableEmail by remember { mutableStateOf("") }
+    var editableSummary by remember { mutableStateOf("") }
+
 
     LaunchedEffect(name) {
         vm.loadProfile(name)
@@ -58,10 +61,14 @@ fun ProfileScreen(
 
                 val user = st.user
 
-                if (editableName.isEmpty()) editableName = user.name
-                if (editablePhone.isEmpty()) editablePhone = user.phone
-                if (editablePassword.isEmpty()) editablePassword = user.password
-                if (editableImageUrl.isEmpty()) editableImageUrl = user.imageUrl
+                if (editableName.isEmpty()) editableName = user.name.value
+                if (editablePhone.isEmpty()) editablePhone = user.phone.value
+                if (editablePassword.isEmpty()) editablePassword = user.password.value
+                if (editableImageUrl.isEmpty()) editableImageUrl = user.imageUrl.value
+                if (editableEmail.isEmpty()) editableEmail = user.email.value
+                if (editableSummary.isEmpty()) editableSummary = user.summary.value
+
+
 
                 OutlinedTextField(
                     value = editableName,
@@ -87,6 +94,23 @@ fun ProfileScreen(
                 )
 
                 OutlinedTextField(
+                    value = editableEmail,
+                    onValueChange = { editableEmail = it },
+                    label = { Text("Email") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                OutlinedTextField(
+                    value = editableSummary,
+                    onValueChange = { editableSummary = it },
+                    label = { Text("Summary") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+
+                OutlinedTextField(
                     value = editableImageUrl,
                     onValueChange = { editableImageUrl = it },
                     label = { Text("URL de imagen") },
@@ -104,18 +128,22 @@ fun ProfileScreen(
 
                 Button(
                     onClick = {
-                        val newName = if (editableName != user.name) editableName else null
-                        val newPhone = if (editablePhone != user.phone) editablePhone else null
-                        val newPassword = if (editablePassword != user.password) editablePassword else null
-                        val newImageUrl = if (editableImageUrl != user.imageUrl) editableImageUrl else null
+                        val newName = if (editableName != user.name.value) editableName else null
+                        val newPhone = if (editablePhone != user.phone.value) editablePhone else null
+                        val newPassword = if (editablePassword != user.password.value) editablePassword else null
+                        val newImageUrl = if (editableImageUrl != user.imageUrl.value) editableImageUrl else null
+                        val newEmail = if (editableEmail != user.email.value) editableEmail else null
+                        val newSummary = if (editableSummary != user.summary.value) editableSummary else null
 
-                        // Solo enviamos los valores modificados
+
                         vm.updateProfile(
-                            name = user.name,
+                            name = user.name.value,
                             newName = newName,
                             newPhone = newPhone,
                             newImageUrl = newImageUrl,
-                            newPassword = newPassword
+                            newPassword = newPassword,
+                            newEmail = newEmail,
+                            newSummary = newSummary
                         )
                     },
                     modifier = Modifier.fillMaxWidth()
@@ -142,7 +170,7 @@ fun ProfileScreen(
             is ProfileViewModel.ProfileStateUI.UpdateSuccess -> {
                 Text("Actualizacion exitosa")
 
-                vm.loadProfile(st.user.name)
+                vm.loadProfile(st.user.name.value)
             }
             is ProfileViewModel.ProfileStateUI.UpdateError -> Text("Error: ${(st as ProfileViewModel.ProfileStateUI.UpdateError).message}")
         }
