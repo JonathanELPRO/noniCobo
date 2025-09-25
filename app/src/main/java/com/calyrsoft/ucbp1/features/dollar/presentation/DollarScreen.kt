@@ -35,6 +35,10 @@ fun DollarScreen(viewModelDollar: DollarViewModel = koinViewModel()) {
                 Text("📡 EN VIVO")
                 Text("Oficial: ${stateValue.data.dollarOfficial}")
                 Text("Paralelo: ${stateValue.data.dollarParallel}")
+                Text("USDC: ${stateValue.data.usdc}")
+                Text("USDT: ${stateValue.data.usdt}")
+
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -63,7 +67,10 @@ fun DollarScreen(viewModelDollar: DollarViewModel = koinViewModel()) {
                             Text(
                                 "Oficial: ${item.dollarOfficial} | " +
                                         "Paralelo: ${item.dollarParallel} | " +
-                                        "Timestamp: ${item.timestamp}"
+                                        "Timestamp: ${item.timestamp}" +
+                                        "usdc : ${item.usdc}" +
+                                        "usdt : ${item.usdt}"
+
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Button(

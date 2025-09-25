@@ -8,7 +8,7 @@ import com.calyrsoft.ucbp1.features.dollar.data.database.dao.IDollarDao
 import com.calyrsoft.ucbp1.features.dollar.data.database.entity.DollarEntity
 
 //la clase de abajo es abstracta porque tiene metodos abstractos pero tranquilamente podria no tenerlos
-@Database(entities = [DollarEntity::class], version = 1)
+@Database(entities = [DollarEntity::class], version = 2)
 abstract class AppRoomDatabase : RoomDatabase() {
     abstract fun dollarDao(): IDollarDao
     //Es una función abstracta es decir tu no te encargadas de su implementacion
@@ -35,9 +35,13 @@ abstract class AppRoomDatabase : RoomDatabase() {
 
 
         fun getDatabase(context: Context): AppRoomDatabase {
-            // if the Instance is not null, return it, otherwise create a new database instance.
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, AppRoomDatabase::class.java, "dollar_db")
+                Room.databaseBuilder(
+                    context.applicationContext,
+                    AppRoomDatabase::class.java,
+                    "dollar_db"
+                )
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }
