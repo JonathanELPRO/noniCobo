@@ -53,7 +53,7 @@ fun MoviesScreen(
                                 )
                                 Spacer(Modifier.height(8.dp))
                                 Text(
-                                    text = movie.title,
+                                    text = movie.title.toString(),
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Start
                                 )

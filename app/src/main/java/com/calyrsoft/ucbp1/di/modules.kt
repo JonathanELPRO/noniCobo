@@ -35,6 +35,8 @@ import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserProfileUseC
 import com.calyrsoft.ucbp1.features.dollar.presentation.DollarViewModel
 import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.features.github.presentation.GithubViewModel
+import com.calyrsoft.ucbp1.features.movie.data.database.AppRoomDatabaseMovies
+import com.calyrsoft.ucbp1.features.movie.data.datasource.MovieLocalDataSource
 import com.calyrsoft.ucbp1.features.profile.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesViewModel
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsViewModel
@@ -88,6 +90,7 @@ val appModule = module {
     }
 
 
+
     // Services
     single<GithubService> {
         get<Retrofit>().create(GithubService::class.java)
@@ -121,13 +124,17 @@ val appModule = module {
     //eso de ahi crea un singleton de GithubRepository la cosa es que este singleton podra ser usado solo si los programadores ponenIGithubRepository
     single<ILoginRepository> { LoginRepository() }
     single<IWhatsappRepository> { WhatsappRepository() }
-    single<IMoviesRepository> { MoviesRepository(get()) }
+    single<IMoviesRepository> { MoviesRepository(get(), get()) }
     single<IPostRepository> { PostRepository(get()) }
     single<IDollarRepository> { DollarRepository(get(), get()) }
 
     single { AppRoomDatabase.getDatabase(get()) }
     single { get<AppRoomDatabase>().dollarDao() }
     single { DollarLocalDataSource(get()) }
+
+    single { AppRoomDatabaseMovies.getDatabase(get()) }
+    single { get<AppRoomDatabaseMovies>().movieDao() }
+    single { MovieLocalDataSource(get()) }
 
 
 
