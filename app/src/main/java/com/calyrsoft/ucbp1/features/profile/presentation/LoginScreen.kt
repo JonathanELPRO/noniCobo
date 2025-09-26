@@ -33,7 +33,9 @@ import org.koin.androidx.compose.koinViewModel
 fun SigninPage(modifier: Modifier,
                vm : LoginViewModel = koinViewModel(),
                onSuccess: (name: String) -> Unit,
-               navToForgotPassword: () -> Unit) {
+               navToForgotPassword: () -> Unit,
+               onMovies: () -> Unit,
+               onDollar: () -> Unit) {
     //arriba estamos definiendo un callback
     var userSignIn by remember { mutableStateOf("") }
     var passwordSignIn by remember { mutableStateOf("") }
@@ -97,6 +99,20 @@ fun SigninPage(modifier: Modifier,
         }
 
         WhatsappButton()
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onMovies() } // callback que recibe SigninPage
+        ) {
+            Text("MOVIESSS")
+        }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onDollar() } // callback que recibe SigninPage
+        ) {
+            Text("DOLLARRR")
+        }
 
         when(val st = state){
             is LoginViewModel.LoginStateUI.Error -> {

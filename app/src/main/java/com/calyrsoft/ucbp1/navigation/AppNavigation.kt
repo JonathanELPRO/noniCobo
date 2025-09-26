@@ -37,7 +37,14 @@ fun AppNavigation(modifier: Modifier, navController: NavHostController, startDes
                 },
                 navToForgotPassword = {
                     navController.navigate(Screen.ForgotPasswordScreen.route)
+                },
+                onMovies = {
+                    navController.navigate(Screen.MoviesScreen.route)
+                },
+                onDollar = {
+                    navController.navigate(Screen.Dollar.route)
                 }
+
             )
         }
 
