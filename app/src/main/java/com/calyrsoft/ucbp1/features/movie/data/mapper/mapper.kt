@@ -9,7 +9,8 @@ fun MovieEntity.toModel() : MovieModel {
     return MovieModel(
         id = id,
         title = title,
-        imageUrl = imageUrl
+        imageUrl = imageUrl,
+        isFavorite = isFavorite
     )
 }
 
@@ -18,6 +19,7 @@ fun MovieModel.toEntity() : MovieEntity {
     return MovieEntity(
         id = id,
         title = title,
-        imageUrl = imageUrl
+        imageUrl = imageUrl,
+        isFavorite = isFavorite
     )
 }

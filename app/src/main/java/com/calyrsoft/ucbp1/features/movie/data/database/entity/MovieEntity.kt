@@ -20,4 +20,7 @@ data class MovieEntity(
     @ColumnInfo(name = "imageUrl")
     var imageUrl: String? = null,
 
+    @ColumnInfo(name = "isFavorite")
+    var isFavorite: Boolean,
+
 )

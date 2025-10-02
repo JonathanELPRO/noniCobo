@@ -9,7 +9,7 @@ import com.calyrsoft.ucbp1.features.dollar.data.database.entity.DollarEntity
 import com.calyrsoft.ucbp1.features.movie.data.database.dao.IMovieDao
 import com.calyrsoft.ucbp1.features.movie.data.database.entity.MovieEntity
 
-@Database(entities = [MovieEntity::class], version = 1)
+@Database(entities = [MovieEntity::class], version = 6)
 abstract class AppRoomDatabaseMovies : RoomDatabase() {
     abstract fun movieDao(): IMovieDao
 

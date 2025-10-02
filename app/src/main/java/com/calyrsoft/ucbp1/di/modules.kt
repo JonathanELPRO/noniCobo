@@ -37,6 +37,8 @@ import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.features.github.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.features.movie.data.database.AppRoomDatabaseMovies
 import com.calyrsoft.ucbp1.features.movie.data.datasource.MovieLocalDataSource
+import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetFavoritesUseCase
+import com.calyrsoft.ucbp1.features.movie.domain.usecase.InserteMyFavoriteMovieUseCase
 import com.calyrsoft.ucbp1.features.profile.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesViewModel
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsViewModel
@@ -53,6 +55,13 @@ import java.util.concurrent.TimeUnit
 
 val appModule = module {
 
+
+    //BASES DE DATOS
+    single { AppRoomDatabase.getDatabase(get()) }
+    single { get<AppRoomDatabase>().dollarDao() }
+
+    single { AppRoomDatabaseMovies.getDatabase(get()) }
+    single { get<AppRoomDatabaseMovies>().movieDao() }
 
     // OkHttpClient
     single {
@@ -116,10 +125,13 @@ val appModule = module {
     single { MoviesRemoteDataSource(get()) }
     single { PostsRemoteDataSource(get()) }
     single { RealTimeRemoteDataSource() }
+    single { MovieLocalDataSource(get())}
+    single { DollarLocalDataSource(get()) }
 
 
 
-    //repositorios
+
+        //repositorios
     single<IGithubRepository>{ GithubRepository(get()) }
     //eso de ahi crea un singleton de GithubRepository la cosa es que este singleton podra ser usado solo si los programadores ponenIGithubRepository
     single<ILoginRepository> { LoginRepository() }
@@ -128,13 +140,9 @@ val appModule = module {
     single<IPostRepository> { PostRepository(get()) }
     single<IDollarRepository> { DollarRepository(get(), get()) }
 
-    single { AppRoomDatabase.getDatabase(get()) }
-    single { get<AppRoomDatabase>().dollarDao() }
-    single { DollarLocalDataSource(get()) }
 
-    single { AppRoomDatabaseMovies.getDatabase(get()) }
-    single { get<AppRoomDatabaseMovies>().movieDao() }
-    single { MovieLocalDataSource(get()) }
+
+
 
 
 
@@ -155,6 +163,8 @@ val appModule = module {
     factory { GetCommentsForOnePostUseCase(get()) }
     factory { GetHistoryOfDollarsFromMyLocalDBUseCase(get()) }
     factory { DeleteByTimeStampUseCase(get()) }
+    factory { InserteMyFavoriteMovieUseCase(get()) }
+    factory { GetFavoritesUseCase(get()) }
 
 
 
@@ -171,7 +181,7 @@ val appModule = module {
     viewModel { DollarViewModel(get(),get(),get()) }
     viewModel { ForgotPasswordViewModel(get(), get()) }
     viewModel { WhatsappViewModel(get ()) }
-    viewModel { MoviesViewModel(get()) }
+    viewModel { MoviesViewModel(get(), get(), get()) }
     viewModel { PostsViewModel(get(),get()) }
 
 

@@ -9,7 +9,7 @@ private const val TMDB_IMAGE_BASE_W185 = "https://image.tmdb.org/t/p/w185"
 
 class MoviesRepository(
     private val remote: MoviesRemoteDataSource,
-    private val localRemote: MovieLocalDataSource
+    private val local: MovieLocalDataSource
 ) : IMoviesRepository {
 
     override suspend fun getPopular(page: Int): Result<List<MovieModel>> {
@@ -25,11 +25,22 @@ class MoviesRepository(
                         imageUrl = dto.backdropPath?.let { "$TMDB_IMAGE_BASE_W185$it" }
                     )
                 }
-                localRemote.insertMovies(models)
 
                 return Result.success(models)
             },
             onFailure = { exception -> return Result.failure(exception) }
         )
     }
+
+    override suspend fun insertMyFavoriteMovie(movieModel: MovieModel): Unit {
+        local.insertMovie(movieModel)
+    }
+
+    override suspend fun getFavorites(): List<MovieModel> {
+        return local.getFavorites()
+    }
+
+
+
+
 }

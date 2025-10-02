@@ -14,6 +14,12 @@ interface IMovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(lists: List<MovieEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMovie(movie: MovieEntity)
+
+    @Query("SELECT * FROM movies WHERE isFavorite = 1")
+    suspend fun getFavorites(): List<MovieEntity>
+
 
 }
 
