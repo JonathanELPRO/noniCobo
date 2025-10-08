@@ -8,13 +8,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen
+import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordScreen
 import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
+import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsScreen
+import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
+import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
+import com.calyrsoft.ucbp1.features.reservation.presentation.HistoryScreen
+import com.calyrsoft.ucbp1.features.reservation.presentation.PaymentScreen
+import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationScreen
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
 
@@ -160,6 +168,86 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                 modifier = modifier,
                 vm = koinViewModel()
             )
+        }
+
+
+        // 🔐 AUTH
+        composable(Screen.AuthLogin.route) {
+            LoginScreen(
+                vm = koinViewModel(),
+                onLoginSuccess = { navController.navigate(Screen.LodgingList.route) }
+            )
+        }
+
+        composable(Screen.AuthRegister.route) {
+            RegisterScreen(
+                vm = koinViewModel(),
+                onRegisterSuccess = { navController.navigate(Screen.AuthLogin.route) }
+            )
+        }
+
+        // 🏨 LODGING
+        composable(Screen.LodgingList.route) {
+            LodgingListScreen(
+                vm = koinViewModel(),
+                onDetails = { id ->
+                    navController.navigate("lodging_details/$id")
+                }
+            )
+        }
+
+        composable(
+            Screen.LodgingDetails.route,
+            arguments = listOf(navArgument("lodgingId") { type = androidx.navigation.NavType.LongType })
+        ) { backStack ->
+            val id = backStack.arguments!!.getLong("lodgingId")
+            LodgingDetailsScreen(
+                id = id,
+                vm = koinViewModel(),
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.LodgingEditor.route) {
+            LodgingEditorScreen(
+                currentRole = com.calyrsoft.ucbp1.features.auth.domain.model.Role.ADMIN,
+                vm = koinViewModel(),
+                onSaved = { navController.popBackStack() }
+            )
+        }
+
+        // 📅 RESERVATION
+        composable(
+            Screen.ReservationCreate.route,
+            arguments = listOf(
+                navArgument("userId") { type = androidx.navigation.NavType.LongType },
+                navArgument("lodgingId") { type = androidx.navigation.NavType.LongType }
+            )
+        ) { backStack ->
+            val userId = backStack.arguments!!.getLong("userId")
+            val lodgingId = backStack.arguments!!.getLong("lodgingId")
+            ReservationScreen(
+                vm = koinViewModel(),
+                userId = userId,
+                lodgingId = lodgingId,
+                onCreated = { navController.navigate("reservation_history/$userId") }
+            )
+        }
+
+        composable(
+            Screen.ReservationHistory.route,
+            arguments = listOf(navArgument("userId") { type = androidx.navigation.NavType.LongType })
+        ) { backStack ->
+            val userId = backStack.arguments!!.getLong("userId")
+            HistoryScreen(vm = koinViewModel(), userId = userId)
+        }
+
+        composable(
+            Screen.ReservationPayment.route,
+            arguments = listOf(navArgument("reservationId") { type = androidx.navigation.NavType.LongType })
+        ) { backStack ->
+            val reservationId = backStack.arguments!!.getLong("reservationId")
+            PaymentScreen(vm = koinViewModel(), reservationId = reservationId)
         }
 
 

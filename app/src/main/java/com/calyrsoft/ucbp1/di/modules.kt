@@ -1,5 +1,13 @@
 package com.calyrsoft.ucbp1.di
 
+import com.calyrsoft.ucbp1.features.auth.data.database.AppRoomDatabaseProject
+import com.calyrsoft.ucbp1.features.auth.data.datasource.AuthLocalDataSource
+import com.calyrsoft.ucbp1.features.auth.data.repository.AuthRepository
+import com.calyrsoft.ucbp1.features.auth.domain.repository.IAuthRepository
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.RegisterUserUseCase
+import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.github.data.api.GithubService
 import com.calyrsoft.ucbp1.features.posts.data.api.PostsService
 import com.calyrsoft.ucbp1.features.movie.data.api.TmdbService
@@ -35,6 +43,15 @@ import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserProfileUseC
 import com.calyrsoft.ucbp1.features.dollar.presentation.DollarViewModel
 import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.features.github.presentation.GithubViewModel
+import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
+import com.calyrsoft.ucbp1.features.lodging.data.repository.LodgingRepository
+import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
+import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
+import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel
+import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListViewModel
 import com.calyrsoft.ucbp1.features.movie.data.database.AppRoomDatabaseMovies
 import com.calyrsoft.ucbp1.features.movie.data.datasource.MovieLocalDataSource
 import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetFavoritesUseCase
@@ -48,6 +65,16 @@ import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetUserNameUseCase
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveTokenUseCase
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveUserNameUseCase
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileViewModel
+import com.calyrsoft.ucbp1.features.reservation.data.datasource.ReservationLocalDataSource
+import com.calyrsoft.ucbp1.features.reservation.data.repository.PaymentRepository
+import com.calyrsoft.ucbp1.features.reservation.data.repository.ReservationRepository
+import com.calyrsoft.ucbp1.features.reservation.domain.repository.IPaymentRepository
+import com.calyrsoft.ucbp1.features.reservation.domain.repository.IReservationRepository
+import com.calyrsoft.ucbp1.features.reservation.domain.usecase.CreateReservationUseCase
+import com.calyrsoft.ucbp1.features.reservation.domain.usecase.GetReservationsByUserUseCase
+import com.calyrsoft.ucbp1.features.reservation.domain.usecase.RecordAdvancePaymentUseCase
+import com.calyrsoft.ucbp1.features.reservation.domain.usecase.RecordRemainingPaymentUseCase
+import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationViewModel
 import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappViewModel
 import com.calyrsoft.ucbp1.navigation.NavigationViewModel
 import okhttp3.OkHttpClient
@@ -205,23 +232,69 @@ val appModule = module {
 
 
     //proyecto
-//    single { Room.databaseBuilder(get(), AppRoomDatabase::class.java, "app.db").build() }
-//    single { get<AppRoomDatabase>().userDao() }
-//    single { get<AppRoomDatabase>().lodgingDao() }
-//    single { get<AppRoomDatabase>().roomTypeDao() }
-//    single { get<AppRoomDatabase>().reservationDao() }
-//    single { get<AppRoomDatabase>().paymentDao() }
-//    single { AuthLocalDataSource(get()) }
-//    single { LodgingLocalDataSource(get(), get()) }
-//    single<IAuthRepository> { AuthRepository(get()) }
-//    single<ILodgingRepository> { LodgingRepository(get()) }
-//    factory { RegisterUserUseCase(get()) }
-//    factory { LoginUseCase(get()) }
-//    factory { GetCurrentUserUseCase(get()) }
-//    factory { GetAllLodgingsUseCase(get()) }
-//    factory { GetLodgingDetailsUseCase(get()) }
-//    factory { UpsertLodgingUseCase(get()) }
-//    viewModel { LodgingListViewModel(get()) }
+    // --- BASE DE DATOS ---
+
+    single<AppRoomDatabaseProject> { AppRoomDatabaseProject.getDatabase(get()) }
+    single { get<AppRoomDatabaseProject>().userDao() }
+
+    // --- DATA SOURCE ---
+    single { AuthLocalDataSource(get()) }
+
+    // --- REPOSITORIO ---
+    single<IAuthRepository> { AuthRepository(get()) }
+
+    // --- CASOS DE USO ---
+    factory { RegisterUserUseCase(get()) }
+    factory { LoginUseCase(get()) }
+    factory { GetCurrentUserUseCase(get()) }
+
+    // --- VIEWMODEL ---
+    viewModel { AuthViewModel(get(), get(), get()) }
+
+
+
+    // --- BASE DE DATOS ---
+    single { get<AppRoomDatabaseProject>().lodgingDao() }
+
+    // --- DATA SOURCE ---
+    single { LodgingLocalDataSource(get()) }
+
+    // --- REPOSITORIO ---
+    single<ILodgingRepository> { LodgingRepository(get()) }
+
+    // --- CASOS DE USO ---
+    factory { GetAllLodgingsUseCase(get()) }
+    factory { GetLodgingDetailsUseCase(get()) }
+    factory { UpsertLodgingUseCase(get()) }
+
+    // --- VIEWMODELS ---
+    viewModel { LodgingListViewModel(get()) }
+    viewModel { LodgingDetailsViewModel(get()) }
+    viewModel { LodgingEditorViewModel(get()) }
+
+
+
+
+
+    // DAOs
+    single { get<AppRoomDatabaseProject>().reservationDao() }
+    single { get<AppRoomDatabaseProject>().paymentDao() }
+
+    // DataSource
+    single { ReservationLocalDataSource(get(), get()) }
+
+    // Repositorios
+    single<IReservationRepository> { ReservationRepository(get()) }
+    single<IPaymentRepository> { PaymentRepository(get()) }
+
+    // Casos de uso
+    factory { CreateReservationUseCase(get()) }
+    factory { GetReservationsByUserUseCase(get()) }
+    factory { RecordAdvancePaymentUseCase(get()) }
+    factory { RecordRemainingPaymentUseCase(get()) }
+
+    // ViewModel
+    viewModel { ReservationViewModel(get(), get(), get(), get()) }
 
 
 

@@ -4,17 +4,16 @@ data class Lodging(
     val id: Long? = null,
     val name: String,
     val type: LodgingType,
-    val district: String?,
-    val address: String?,
-    val contactPhone: String?,
-    val open24h: Boolean,
+    val district: String? = null,
+    val address: String? = null,
+    val contactPhone: String? = null,
+    val open24h: Boolean = false,
     val ownerAdminId: Long,
-    val pricePerHour: Double?,
-    val pricePerNight: Double?,
-    val pricePerDay: Double?,
-    val hasPrivateBathroom: Boolean,
-    val hasSmartTV: Boolean,
-    val latitude: Double?,
-    val longitude: Double?,
-    val roomTypes: List<RoomType> = emptyList()
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+    val stayOptions: List<StayOption> = emptyList(),
+    val roomOptions: List<RoomOption> = emptyList(),
+    val placeImage: ByteArray? = null,
+    val licenseImage: ByteArray? = null
 )
+

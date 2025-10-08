@@ -127,11 +127,26 @@ fun MainApp( navigationViewModel: NavigationViewModel) {
     //
     //    Otros metadatos de navegación.
     val navigationDrawerItems = listOf(
+        // --- Proyecto antiguo ---
         NavigationDrawer.Profile,
         NavigationDrawer.Dollar,
         NavigationDrawer.Movie,
-        NavigationDrawer.Github
+        NavigationDrawer.Github,
+
+        // --- 🔐 AUTH ---
+        NavigationDrawer.AuthLogin,
+        NavigationDrawer.AuthRegister,
+
+        // --- 🏨 LODGING ---
+        NavigationDrawer.LodgingList,
+        NavigationDrawer.LodgingEditor,
+
+        // --- 📅 RESERVATION ---
+        NavigationDrawer.ReservationCreate,
+        NavigationDrawer.ReservationHistory,
+        NavigationDrawer.ReservationPayment
     )
+
     val drawerState =
         rememberDrawerState(initialValue =
             androidx.compose.material3.DrawerValue.Closed)
