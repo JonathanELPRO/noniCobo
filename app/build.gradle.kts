@@ -81,6 +81,7 @@ dependencies {
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.database)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.config)
     testImplementation(libs.junit)
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
@@ -106,6 +107,7 @@ dependencies {
     ksp(libs.room.compiler)
     testImplementation(libs.room.testing)
     testImplementation(kotlin("test"))
+    implementation(libs.datastore)
 
 
 }

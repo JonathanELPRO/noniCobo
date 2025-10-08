@@ -23,6 +23,9 @@ firebaseDatabase = "20.3.0"
 ksp = "2.0.20-1.0.24"
 room = "2.8.0"
 firebaseMessaging = "25.0.1"
+datastore = "1.0.0"
+firebaseConfig = "23.0.1"
+
 
 
 
@@ -60,6 +63,9 @@ room-guava = { group="androidx.room", name="room-guava", version.ref="room"}
 room-testing = { group="androidx.room", name="room-testing", version.ref="room"}
 room-paging = { group="androidx.room", name="room-paging", version.ref="room"}
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
+
 
 [bundles]
 local = ["room-runtime", "room-ktx", "room-rxjava2", "room-rxjava3", "room-guava", "room-paging" ]

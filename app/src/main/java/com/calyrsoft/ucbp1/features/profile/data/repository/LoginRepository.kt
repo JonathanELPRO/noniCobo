@@ -1,9 +1,11 @@
 package com.calyrsoft.ucbp1.features.profile.data.repository
 
+import com.calyrsoft.ucbp1.features.profile.data.datasource.LoginDataStore
 import com.calyrsoft.ucbp1.features.profile.domain.model.*
 import com.calyrsoft.ucbp1.features.profile.domain.repository.ILoginRepository
 
-class LoginRepository : ILoginRepository {
+class LoginRepository(    private val dataStore: LoginDataStore
+) : ILoginRepository {
 
     private val users = mutableListOf(
         LoginUserModel.create(
@@ -71,5 +73,31 @@ class LoginRepository : ILoginRepository {
 
         users[index] = updatedUser
         return Result.success(updatedUser)
+    }
+
+    override suspend fun saveUserName(userName: String): Result<Unit> {
+        return try {
+            dataStore.saveUserName(userName)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getUserName(): Result<String> {
+        return dataStore.getUserName()
+    }
+
+    override suspend fun saveToken(token: String): Result<Unit> {
+        return try {
+            dataStore.saveToken(token)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getToken(): Result<String> {
+        return dataStore.getToken()
     }
 }

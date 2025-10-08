@@ -1,6 +1,7 @@
 package com.calyrsoft.ucbp1.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.features.profile.domain.model.Email
 import com.calyrsoft.ucbp1.features.profile.domain.model.ImageUrl
 import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
@@ -9,14 +10,17 @@ import com.calyrsoft.ucbp1.features.profile.domain.model.Password
 import com.calyrsoft.ucbp1.features.profile.domain.model.Phone
 import com.calyrsoft.ucbp1.features.profile.domain.model.Summary
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetUserNameUseCase
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserProfileUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val findByNameUseCase: FindByNameUseCase,
-    private val updateUserProfileUseCase: UpdateUserProfileUseCase
+    private val updateUserProfileUseCase: UpdateUserProfileUseCase,
+    private val getUserNameUseCase: GetUserNameUseCase
 ) : ViewModel() {
 
     sealed class ProfileStateUI {
@@ -32,16 +36,21 @@ class ProfileViewModel(
     private val _state = MutableStateFlow<ProfileStateUI>(ProfileStateUI.Init)
     val state: StateFlow<ProfileStateUI> = _state.asStateFlow()
 
-    fun loadProfile(userId: String) {
+    fun loadProfile(userId: String? = null) {
         _state.value = ProfileStateUI.Loading
-        try {
-            val result = findByNameUseCase(Name.create(userId).value)
+
+        viewModelScope.launch {
+            val name = userId ?: getUserNameUseCase().getOrNull()
+            if (name == null) {
+                _state.value = ProfileStateUI.UpdateError("Usuario no encontrado")
+                return@launch
+            }
+
+            val result = findByNameUseCase(Name.create(name).value)
             result.fold(
                 onSuccess = { user -> _state.value = ProfileStateUI.DataLoaded(user) },
                 onFailure = { error -> _state.value = ProfileStateUI.UpdateError(error.message ?: "Error al cargar perfil") }
             )
-        } catch (e: Exception) {
-            _state.value = ProfileStateUI.UpdateError(e.message ?: "Error de validación")
         }
     }
 

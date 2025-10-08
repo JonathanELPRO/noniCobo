@@ -6,6 +6,8 @@ import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
 import com.calyrsoft.ucbp1.features.profile.domain.model.Name
 import com.calyrsoft.ucbp1.features.profile.domain.model.Password
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameAndPasswordUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveTokenUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveUserNameUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +15,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    val useCase: FindByNameAndPasswordUseCase): ViewModel()  {
+    val useCase: FindByNameAndPasswordUseCase,
+    val saveUserNameUseCase: SaveUserNameUseCase,
+    val saveTokenUseCase: SaveTokenUseCase): ViewModel()  {
     sealed class LoginStateUI {
         object Init: LoginStateUI()
         object Loading: LoginStateUI()
@@ -37,7 +41,10 @@ class LoginViewModel(
                 )
 
                 result.fold(
-                    onSuccess = { user -> _state.value = LoginStateUI.Success(user) },
+                    onSuccess = { user ->
+                        saveUserNameUseCase(user.name.value)
+                        saveTokenUseCase("fake-token-${user.name.value}")
+                        _state.value = LoginStateUI.Success(user) },
                     onFailure = { error -> _state.value = LoginStateUI.Error(error.message ?: "Error desconocido") }
                 )
             } catch (e: Exception) {

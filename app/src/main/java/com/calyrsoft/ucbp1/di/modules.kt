@@ -42,8 +42,14 @@ import com.calyrsoft.ucbp1.features.movie.domain.usecase.InserteMyFavoriteMovieU
 import com.calyrsoft.ucbp1.features.profile.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesViewModel
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsViewModel
+import com.calyrsoft.ucbp1.features.profile.data.datasource.LoginDataStore
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetTokenUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetUserNameUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveTokenUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveUserNameUseCase
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileViewModel
 import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappViewModel
+import com.calyrsoft.ucbp1.navigation.NavigationViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -127,14 +133,17 @@ val appModule = module {
     single { RealTimeRemoteDataSource() }
     single { MovieLocalDataSource(get())}
     single { DollarLocalDataSource(get()) }
+    single { LoginDataStore(get()) }
 
 
 
 
-        //repositorios
+
+
+    //repositorios
     single<IGithubRepository>{ GithubRepository(get()) }
     //eso de ahi crea un singleton de GithubRepository la cosa es que este singleton podra ser usado solo si los programadores ponenIGithubRepository
-    single<ILoginRepository> { LoginRepository() }
+    single<ILoginRepository> { LoginRepository(get()) }
     single<IWhatsappRepository> { WhatsappRepository() }
     single<IMoviesRepository> { MoviesRepository(get(), get()) }
     single<IPostRepository> { PostRepository(get()) }
@@ -165,6 +174,13 @@ val appModule = module {
     factory { DeleteByTimeStampUseCase(get()) }
     factory { InserteMyFavoriteMovieUseCase(get()) }
     factory { GetFavoritesUseCase(get()) }
+    factory { GetTokenUseCase(get()) }
+    factory { GetUserNameUseCase(get()) }
+    factory { SaveTokenUseCase(get()) }
+    factory { SaveUserNameUseCase(get()) }
+
+
+
 
 
 
@@ -176,13 +192,37 @@ val appModule = module {
     //view models
     viewModel { GithubViewModel(get(), androidContext()) }
     //este get le inyecta el caso e uso que ya sabemos como crear en la linea anterior
-    viewModel { LoginViewModel(get()) }
-    viewModel { ProfileViewModel(get(), get()) }
+    viewModel { LoginViewModel(get(),get(),get()) }
+    viewModel { ProfileViewModel(get(), get(), get()) }
     viewModel { DollarViewModel(get(),get(),get()) }
     viewModel { ForgotPasswordViewModel(get(), get()) }
     viewModel { WhatsappViewModel(get ()) }
     viewModel { MoviesViewModel(get(), get(), get()) }
     viewModel { PostsViewModel(get(),get()) }
+    viewModel { NavigationViewModel() }
+
+
+
+
+    //proyecto
+//    single { Room.databaseBuilder(get(), AppRoomDatabase::class.java, "app.db").build() }
+//    single { get<AppRoomDatabase>().userDao() }
+//    single { get<AppRoomDatabase>().lodgingDao() }
+//    single { get<AppRoomDatabase>().roomTypeDao() }
+//    single { get<AppRoomDatabase>().reservationDao() }
+//    single { get<AppRoomDatabase>().paymentDao() }
+//    single { AuthLocalDataSource(get()) }
+//    single { LodgingLocalDataSource(get(), get()) }
+//    single<IAuthRepository> { AuthRepository(get()) }
+//    single<ILodgingRepository> { LodgingRepository(get()) }
+//    factory { RegisterUserUseCase(get()) }
+//    factory { LoginUseCase(get()) }
+//    factory { GetCurrentUserUseCase(get()) }
+//    factory { GetAllLodgingsUseCase(get()) }
+//    factory { GetLodgingDetailsUseCase(get()) }
+//    factory { UpsertLodgingUseCase(get()) }
+//    viewModel { LodgingListViewModel(get()) }
+
 
 
 

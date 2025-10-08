@@ -1,6 +1,8 @@
 package com.calyrsoft.ucbp1.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,10 +20,42 @@ import java.net.URLEncoder
 
 
 @Composable
-fun AppNavigation(modifier: Modifier, navController: NavHostController, startDestination: String) {
+fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, navController: NavHostController) {
+
+    LaunchedEffect(navigationViewModel) {   // clave asociada al VM
+        navigationViewModel.navigationCommands.collect { command ->
+            when (command) {
+                is NavigationViewModel.NavigationCommand.NavigateTo -> {
+                    Log.d("NavHost", "🧭 route=${command.route} opt=${command.options}")
+                    navController.navigate(command.route) {
+                        when (command.options) {
+                            NavigationOptions.CLEAR_BACK_STACK -> {
+                                popUpTo(0)
+                            }
+                            //lo de arriba borra absolutamente toda la pila de visitas
+                            NavigationOptions.REPLACE_HOME -> {
+                                popUpTo(Screen.LoginScreen.route) { inclusive = true }
+
+                            }
+                            //lo de arriba solo borra la pila de visitas hasta llegar al loginscreen mas reciene lo borra igual ese pero
+                            else -> { /* normal */ }
+                        }
+                    }
+                }
+                NavigationViewModel.NavigationCommand.PopBackStack -> {
+                    Log.d("NavHost", "⬅️ PopBackStack")
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
+
+
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = Screen.LoginScreen.route,
+        //no impirta que valor pongas arriba no empezaremos ahi por culpa del else de handleDeepLink
+        //que se llama en el primer launched effect de main activity
         modifier = modifier
     ) {
         composable(Screen.LoginScreen.route) {
