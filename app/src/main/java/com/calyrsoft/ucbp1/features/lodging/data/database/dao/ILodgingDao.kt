@@ -20,4 +20,8 @@ interface ILodgingDao {
     //se llama upsert porque inserta y actualiza, eso lo hace con .REPLACE
     //que dice en cuanto trates de insertar algo si ves que ya existia otro algo con ese mismo id
     //solo reemplazalo(aqui en realidad estarias actualizando)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(entities: List<LodgingEntity>)
+    // Inserta o reemplaza varios registros sin borrar la tabla
 }

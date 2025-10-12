@@ -13,3 +13,5 @@ data class UserEntity(
     val passwordHash: String,
     val role: String
 )
+
+

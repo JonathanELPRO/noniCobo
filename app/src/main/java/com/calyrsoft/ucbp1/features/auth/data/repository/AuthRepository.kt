@@ -1,41 +1,56 @@
 package com.calyrsoft.ucbp1.features.auth.data.repository
 
-import com.calyrsoft.ucbp1.features.auth.data.database.entity.UserEntity
 import com.calyrsoft.ucbp1.features.auth.data.datasource.AuthLocalDataSource
-import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 import com.calyrsoft.ucbp1.features.auth.domain.model.User
 import com.calyrsoft.ucbp1.features.auth.domain.repository.IAuthRepository
+import java.security.MessageDigest
 
+class AuthRepository(
+    private val ds: AuthLocalDataSource
+) : IAuthRepository {
 
-class AuthRepository(private val ds: AuthLocalDataSource) : IAuthRepository {
-    private fun hash(p: String) = p.reversed()
+    private fun hash(password: String): String {
+        val bytes = MessageDigest
+            .getInstance("SHA-256")
+            .digest(password.toByteArray(Charsets.UTF_8))
 
-
-    override suspend fun register(user: User, passwordPlain: String): Long {
-        val entity = UserEntity(
-            username = user.username,
-            email = user.email,
-            phone = user.phone,
-            passwordHash = hash(passwordPlain),
-            role = user.role.name
-        )
-        return ds.register(entity)
+        // convertir bytes → string hexadecimal
+        return bytes.joinToString("") { "%02x".format(it) }
     }
 
-
-    override suspend fun login(userOrEmail: String, passwordPlain: String): User? =
-        ds.login(userOrEmail, hash(passwordPlain))?.let {
-            User(
-                id = it.id,
-                username = it.username,
-                email = it.email,
-                phone = it.phone,
-                role = Role.valueOf(it.role)
-            )
+    override suspend fun register(user: User, passwordPlain: String): Result<Long> {
+        return try {
+            val id = ds.register(user, hash(passwordPlain))
+            Result.success(id)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
 
+    override suspend fun login(userOrEmail: String, passwordPlain: String): Result<User> {
+        return try {
+            val hashed = hash(passwordPlain)
+            val user = ds.login(userOrEmail, hashed)
+            if (user != null) {
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Usuario o contraseña incorrectos"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
-    override suspend fun getById(id: Long): User? = ds.findById(id)?.let {
-        User(it.id, it.username, it.email, it.phone, Role.valueOf(it.role))
+    override suspend fun getById(id: Long): Result<User> {
+        return try {
+            val user = ds.findById(id)
+            if (user != null) {
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Usuario no encontrado"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }

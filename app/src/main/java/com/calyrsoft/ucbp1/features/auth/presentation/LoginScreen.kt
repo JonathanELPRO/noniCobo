@@ -1,69 +1,129 @@
 package com.calyrsoft.ucbp1.features.auth.presentation
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import kotlinx.coroutines.flow.collectLatest
+import com.calyrsoft.ucbp1.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     vm: AuthViewModel = viewModel(),
-    onLoginSuccess: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {},
+    onRegisterClick: () -> Unit = {}
 ) {
-    val state by vm.uiState.collectAsState()
+    val state by vm.state.collectAsState()
 
     var userOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    LaunchedEffect(state.currentUser) {
-        if (state.currentUser != null) onLoginSuccess()
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Iniciar Sesión", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = userOrEmail,
-            onValueChange = { userOrEmail = it },
-            label = { Text("Usuario o correo") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = { vm.login(userOrEmail, password) },
-            enabled = !state.isLoading,
-            modifier = Modifier.fillMaxWidth()
+    Scaffold(containerColor = Color(0xFFF4F4F4)) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(if (state.isLoading) "Cargando..." else "Ingresar")
-        }
+            // 🔹 Cabecera visual
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(bottomStart = 80.dp, bottomEnd = 80.dp))
+                    .background(Color(0xFFB00020)),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                    contentDescription = "Imagen de cabecera",
+                    modifier = Modifier
+                        .size(180.dp)
+                        .clip(RoundedCornerShape(90.dp))
+                )
+            }
 
-        state.errorMessage?.let {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text("Login", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.Black)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = userOrEmail,
+                onValueChange = { userOrEmail = it },
+                label = { Text("Usuario o correo") },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
-            Text(it, color = MaterialTheme.colorScheme.error)
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña") },
+                visualTransformation = PasswordVisualTransformation(),
+                shape = RoundedCornerShape(50),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            when (val st = state) {
+                is AuthViewModel.AuthStateUI.Loading -> {
+                    CircularProgressIndicator(color = Color(0xFFB00020))
+                }
+                is AuthViewModel.AuthStateUI.Error -> {
+                    Text(st.message, color = MaterialTheme.colorScheme.error)
+                }
+                is  AuthViewModel.AuthStateUI.Success -> {
+                    onLoginSuccess()
+                }
+                else -> Unit
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { vm.login(userOrEmail, password) },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .height(50.dp),
+                shape = RoundedCornerShape(25.dp)
+            ) {
+                Text("Iniciar sesión", color = Color.White, fontWeight = FontWeight.SemiBold)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
+                onClick = onRegisterClick,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFBDB304)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .height(50.dp),
+                shape = RoundedCornerShape(25.dp)
+            ) {
+                Text("Crear cuenta", color = Color.White, fontWeight = FontWeight.SemiBold)
+            }
         }
     }
 }

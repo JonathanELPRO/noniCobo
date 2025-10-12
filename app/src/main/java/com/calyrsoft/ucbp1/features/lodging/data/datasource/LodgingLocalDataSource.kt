@@ -32,4 +32,9 @@ class LodgingLocalDataSource(
         //esto retorna un long ya que retornamos el id de lo que acabamos de actualizar
     }
 
+    suspend fun upsertAllLodgings(lodgings: List<Lodging>) {
+        val entities = lodgings.map { it.toEntity() }
+        lodgingDao.upsertAll(entities)
+    }
+
 }

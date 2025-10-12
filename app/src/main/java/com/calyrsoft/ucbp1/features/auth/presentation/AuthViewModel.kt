@@ -11,50 +11,60 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-data class AuthUiState(
-    val currentUser: User? = null,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
-)
-
 class AuthViewModel(
     private val loginUseCase: LoginUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AuthUiState())
-    val uiState: StateFlow<AuthUiState> get() = _uiState
+    sealed class AuthStateUI {
+        object Init : AuthStateUI()
+        object Loading : AuthStateUI()
+        data class Success(val user: User) : AuthStateUI()
+        data class Error(val message: String) : AuthStateUI()
+    }
+
+    private val _state = MutableStateFlow<AuthStateUI>(AuthStateUI.Init)
+    val state: StateFlow<AuthStateUI> = _state
 
     fun login(userOrEmail: String, password: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            try {
-                val user = loginUseCase(userOrEmail, password)
-                _uiState.value = _uiState.value.copy(currentUser = user, isLoading = false)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(errorMessage = e.message, isLoading = false)
-            }
+            _state.value = AuthStateUI.Loading
+            val result = loginUseCase(userOrEmail, password)
+            result
+                .onSuccess { user -> _state.value = AuthStateUI.Success(user) }
+                .onFailure { e -> _state.value = AuthStateUI.Error(e.message ?: "Error al iniciar sesión") }
         }
     }
 
-    fun register(username: String, email: String, phone: String?, password: String, role: Role = Role.CLIENT) {
+    fun register(
+        username: String,
+        email: String,
+        phone: String?,
+        password: String,
+        role: Role
+    ) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
-            try {
-                val id = registerUserUseCase(
-                    User(username = username, email = email, phone = phone, role = role),
-                    password
-                )
-                val newUser = getCurrentUserUseCase(id)
-                _uiState.value = _uiState.value.copy(currentUser = newUser, isLoading = false)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(errorMessage = e.message, isLoading = false)
-            }
+            _state.value = AuthStateUI.Loading
+            val registerResult = registerUserUseCase(
+                User(username = username, email = email, phone = phone, role = role),
+                password
+            )
+
+            registerResult
+                .onSuccess { id ->
+                    val userResult = getCurrentUserUseCase(id)
+                    userResult
+                        .onSuccess { user -> _state.value = AuthStateUI.Success(user) }
+                        .onFailure { e -> _state.value = AuthStateUI.Error(e.message ?: "Error al obtener usuario") }
+                }
+                .onFailure { e ->
+                    _state.value = AuthStateUI.Error(e.message ?: "Error al registrar usuario")
+                }
         }
     }
 
     fun logout() {
-        _uiState.value = AuthUiState()
+        _state.value = AuthStateUI.Init
     }
 }
