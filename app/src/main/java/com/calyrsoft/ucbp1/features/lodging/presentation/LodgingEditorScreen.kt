@@ -48,7 +48,7 @@ fun LodgingEditorScreen(
     var district by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var contact by rememberSaveable { mutableStateOf("") }
-    var roomsCount by rememberSaveable { mutableStateOf("") }
+    //var roomsCount by rememberSaveable { mutableStateOf("") }
     var open24h by rememberSaveable { mutableStateOf(false) }
     var latitude by rememberSaveable { mutableStateOf("") }
     var longitude by rememberSaveable { mutableStateOf("") }
@@ -127,7 +127,7 @@ fun LodgingEditorScreen(
                         district = district, onDistrictChange = { district = it },
                         address = address, onAddressChange = { address = it },
                         contact = contact, onContactChange = { contact = it },
-                        roomsCount = roomsCount, onRoomsCountChange = { roomsCount = it },
+                        //roomsCount = roomsCount, onRoomsCountChange = { roomsCount = it },
                         latitude = latitude, onLatitudeChange = { latitude = it },
                         longitude = longitude, onLongitudeChange = { longitude = it },
                         open24h = open24h, onOpen24hChange = { open24h = it },
@@ -200,7 +200,7 @@ private fun FormContent(
     district: String, onDistrictChange: (String) -> Unit,
     address: String, onAddressChange: (String) -> Unit,
     contact: String, onContactChange: (String) -> Unit,
-    roomsCount: String, onRoomsCountChange: (String) -> Unit,
+    //roomsCount: String, onRoomsCountChange: (String) -> Unit,
     latitude: String, onLatitudeChange: (String) -> Unit,
     longitude: String, onLongitudeChange: (String) -> Unit,
     open24h: Boolean, onOpen24hChange: (Boolean) -> Unit,
@@ -220,7 +220,7 @@ private fun FormContent(
         }
 
         OutlinedTextField(value = name, onValueChange = onNameChange, label = { Text("Nombre del Alojamiento") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
-        OutlinedTextField(value = roomsCount, onValueChange = onRoomsCountChange, label = { Text("Número de Habitaciones") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
+        //OutlinedTextField(value = roomsCount, onValueChange = onRoomsCountChange, label = { Text("Número de Habitaciones") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
         OutlinedTextField(value = contact, onValueChange = onContactChange, label = { Text("Número de Contacto") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
         OutlinedTextField(value = district, onValueChange = onDistrictChange, label = { Text("Zona o Barrio") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
         OutlinedTextField(value = address, onValueChange = onAddressChange, label = { Text("Dirección") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
