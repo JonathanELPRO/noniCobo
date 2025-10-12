@@ -135,6 +135,7 @@ class NavigationViewModel : ViewModel() {
             "MOVIES" -> navigateTo(Screen.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
             "DOLLAR" -> navigateTo(Screen.Dollar.route, NavigationOptions.REPLACE_HOME)
             "GITHUB" -> navigateTo(Screen.GithubScreen.route, NavigationOptions.REPLACE_HOME)
+            "REGISTER" -> navigateTo(Screen.AuthRegister.route, NavigationOptions.REPLACE_HOME)
             else -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
         }
     }

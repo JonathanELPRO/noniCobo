@@ -26,6 +26,10 @@ fun LoginScreen2(
     onLoginSuccessGoToRegisterLodging: (Long?) -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
+    LaunchedEffect(Unit) {
+        vm.getToken()
+    }
+
     val state by vm.state.collectAsState()
     var userOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }

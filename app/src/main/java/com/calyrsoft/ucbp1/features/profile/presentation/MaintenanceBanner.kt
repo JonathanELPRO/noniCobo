@@ -2,18 +2,18 @@ package com.calyrsoft.ucbp1.features.profile.presentation
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.calyrsoft.ucbp1.features.remoteconfig.data.manager.RemoteConfigManager
 
 @Composable
@@ -22,15 +22,12 @@ fun MaintenanceBanner() {
     val message = remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        // 🔹 Sincroniza con Firebase y activa los valores nuevos
         val success = RemoteConfigManager.fetchAndActivate()
         Log.d("BannerDebug", "fetch success: $success")
 
-        // 🔹 Lee los valores actualizados inmediatamente después
         isMaintenance.value = RemoteConfigManager.isMaintenance()
         message.value = RemoteConfigManager.getMessage()
 
-        // 🔹 Luego empieza a escuchar cambios en vivo
         RemoteConfigManager.listenRealtime {
             isMaintenance.value = RemoteConfigManager.isMaintenance()
             message.value = RemoteConfigManager.getMessage()
@@ -38,14 +35,45 @@ fun MaintenanceBanner() {
     }
 
     if (isMaintenance.value) {
+        // 🔒 Cubre toda la pantalla y BLOQUEA cualquier interacción
         Box(
-            Modifier
-                .fillMaxWidth()
-                .background(Color.Yellow)
-                .padding(16.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xCC000000))
+                // 👇 intercepta todos los toques (bloquea clicks, scrolls, etc.)
+                .pointerInput(Unit) { detectTapGestures { /* no-op */ } }
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Text(text = message.value, color = Color.Black)
+            Surface(
+                color = Color(0xFFFFF176), // Amarillo suave
+                shape = MaterialTheme.shapes.medium,
+                shadowElevation = 8.dp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "🛠️ Modo Mantenimiento",
+                        color = Color.Black,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = message.value.ifBlank { "El sistema está temporalmente en mantenimiento. Intente más tarde." },
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
     }
 }
-

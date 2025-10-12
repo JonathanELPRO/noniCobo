@@ -1,12 +1,17 @@
 package com.calyrsoft.ucbp1.features.auth.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.features.auth.domain.model.User
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginUseCase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class LoginViewModel2(
     private val loginUseCase: LoginUseCase
@@ -34,5 +39,22 @@ class LoginViewModel2(
 
     fun resetState() {
         _state.value = LoginUIState.Init
+    }
+
+    suspend fun getToken(): String = suspendCoroutine { continuation ->
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FIREBASE", "getInstanceId failed", task.exception)
+                continuation.resumeWithException(task.exception ?: Exception("Unknown error"))
+                return@addOnCompleteListener
+            }
+            // Si la tarea fue exitosa, se obtiene el token
+            val token = task.result
+            Log.d("FIREBASE de login", "FCM Token: $token")
+
+
+            // Reanudar la ejecución con el token
+            continuation.resume(token ?: "")
+        }
     }
 }
