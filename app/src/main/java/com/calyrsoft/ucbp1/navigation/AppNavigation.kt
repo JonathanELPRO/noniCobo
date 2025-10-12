@@ -177,12 +177,19 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
         composable(Screen.AuthLogin.route) {
             LoginScreen2(
                 vm = koinViewModel(),
-                onLoginSuccess = {
+                onLoginSuccessGoToLodgings = {
                     navigationViewModel.navigateTo(
                         Screen.LodgingList.route,
                         NavigationOptions.CLEAR_BACK_STACK
                     )
                 },
+                onLoginSuccessGoToRegisterLodging = { userId ->
+                    navigationViewModel.navigateTo(
+                        "lodging_editor/$userId",
+                        NavigationOptions.CLEAR_BACK_STACK
+                    )
+                },
+
                 onRegisterClick = {
                     navigationViewModel.navigateTo(
                         Screen.AuthRegister.route,
@@ -214,8 +221,13 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
         composable(Screen.LodgingList.route) {
             LodgingListScreen(
                 vm = koinViewModel(),
+
+
                 onDetails = { id ->
-                    navController.navigate("lodging_details/$id")
+                    navigationViewModel.navigateTo(
+                        "lodging_details/$id",
+                        NavigationOptions.DEFAULT
+                    )
                 }
             )
         }
@@ -232,10 +244,18 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
             )
         }
 
-        composable(Screen.LodgingEditor.route) {
+
+        composable(
+            Screen.LodgingEditor.route,
+            arguments = listOf(
+                navArgument("userId") { type = androidx.navigation.NavType.LongType }
+            )
+        ) { backStack ->
+            val userId = backStack.arguments!!.getLong("userId")
             LodgingEditorScreen(
                 currentRole = com.calyrsoft.ucbp1.features.auth.domain.model.Role.ADMIN,
                 vm = koinViewModel(),
+                userId = userId,
                 onSaved = { navController.popBackStack() }
             )
         }

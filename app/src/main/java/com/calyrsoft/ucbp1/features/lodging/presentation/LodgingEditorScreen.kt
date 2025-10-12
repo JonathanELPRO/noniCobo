@@ -32,6 +32,7 @@ import org.koin.androidx.compose.koinViewModel
 fun LodgingEditorScreen(
     currentRole: Role,
     vm: LodgingEditorViewModel = koinViewModel(),
+    userId: Long,
     onSaved: () -> Unit = {}
 ) {
     val state by vm.state.collectAsState()
@@ -150,7 +151,7 @@ fun LodgingEditorScreen(
                                 address = address,
                                 contactPhone = contact,
                                 open24h = open24h,
-                                ownerAdminId = 1,
+                                ownerAdminId = userId,
                                 latitude = latitude.toDoubleOrNull(),
                                 longitude = longitude.toDoubleOrNull(),
                                 roomOptions = rooms,

@@ -38,7 +38,7 @@ sealed class Screen(val route: String) {
     object LodgingDetails : Screen("lodging_details/{lodgingId}")
 
     /** Editor o creación de alojamiento */
-    object LodgingEditor : Screen("lodging_editor")
+    object LodgingEditor : Screen("lodging_editor/{userId}")
 
     // =======================================================
     // 📅 MÓDULO RESERVATION (Reservas y pagos)

@@ -16,12 +16,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.calyrsoft.ucbp1.R
+import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen2(
     vm: LoginViewModel2,
-    onLoginSuccess: () -> Unit = {},
+    onLoginSuccessGoToLodgings: () -> Unit = {},
+    onLoginSuccessGoToRegisterLodging: (Long?) -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
     val state by vm.state.collectAsState()
@@ -79,7 +81,12 @@ fun LoginScreen2(
                 is LoginViewModel2.LoginUIState.Loading -> CircularProgressIndicator(color = Color(0xFFB00020))
                 is LoginViewModel2.LoginUIState.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
                 is LoginViewModel2.LoginUIState.Success -> {
-                    onLoginSuccess()
+                    if (st.user.role == Role.CLIENT){
+                        onLoginSuccessGoToLodgings()
+                    }
+                    if (st.user.role == Role.ADMIN){
+                        onLoginSuccessGoToRegisterLodging(st.user.id)
+                    }
                     vm.resetState()
                 }
                 else -> Unit
