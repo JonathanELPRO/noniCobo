@@ -32,6 +32,33 @@ fun RegisterScreen(
 
     val scrollState = rememberScrollState()
 
+    // Control del popup
+    var showDialog by remember { mutableStateOf(false) }
+
+    // Mostrar popup cuando el registro sea exitoso
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDialog = false
+                        onRegisterSuccess()
+                        vm.resetState()
+                    }
+                ) {
+                    Text("Aceptar", color = Color(0xFFB00020))
+                }
+            },
+            title = { Text("Registro exitoso") },
+            text = {
+                Text("Usuario registrado correctamente, revisa tu correo para activar tu cuenta.")
+            },
+            shape = RoundedCornerShape(16.dp),
+            containerColor = Color.White
+        )
+    }
+
     Scaffold(containerColor = Color(0xFFF4F4F4)) { padding ->
         Column(
             modifier = Modifier
@@ -124,8 +151,7 @@ fun RegisterScreen(
                 is RegisterViewModel.RegisterUIState.Loading -> CircularProgressIndicator(color = Color(0xFFB00020))
                 is RegisterViewModel.RegisterUIState.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
                 is RegisterViewModel.RegisterUIState.Success -> {
-                    onRegisterSuccess()
-                    vm.resetState() // Descomentar si necesitas limpiar el estado tras navegar
+                    showDialog = true
                 }
                 else -> Unit
             }

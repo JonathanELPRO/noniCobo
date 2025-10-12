@@ -3,8 +3,10 @@ package com.calyrsoft.ucbp1.features.auth.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.calyrsoft.ucbp1.dataStore.AuthDataStore
 import com.calyrsoft.ucbp1.features.auth.domain.model.User
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginWithSupabaseUseCase
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +16,9 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class LoginViewModel2(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val loginWithSupabaseUseCase: LoginWithSupabaseUseCase,
+    private val authDataStore: AuthDataStore
 ) : ViewModel() {
 
     sealed class LoginUIState {
@@ -30,9 +34,10 @@ class LoginViewModel2(
     fun login(userOrEmail: String, password: String) {
         viewModelScope.launch {
             _state.value = LoginUIState.Loading
-            val result = loginUseCase(userOrEmail, password)
+            val result= loginWithSupabaseUseCase(userOrEmail,password)
             result
-                .onSuccess { user -> _state.value = LoginUIState.Success(user) }
+                .onSuccess { user -> _state.value = LoginUIState.Success(user)
+                }
                 .onFailure { e -> _state.value = LoginUIState.Error(e.message ?: "Error al iniciar sesión") }
         }
     }

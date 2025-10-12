@@ -35,7 +35,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -48,6 +50,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.calyrsoft.ucbp1.dataStore.AuthDataStore
+import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.profile.presentation.MaintenanceBanner
 import com.calyrsoft.ucbp1.features.remoteconfig.data.manager.RemoteConfigManager
 import com.calyrsoft.ucbp1.navigation.AppNavigation
@@ -59,6 +63,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -111,7 +116,7 @@ fun NavigationDrawerHost(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainApp( navigationViewModel: NavigationViewModel) {
+fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userRole: String = "CLIENT") {
     val navController: NavHostController = rememberNavController()
     //creamos a quien realmente navegara entre pantallas
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -126,26 +131,47 @@ fun MainApp( navigationViewModel: NavigationViewModel) {
     //    Los argumentos (si la ruta los usa)
     //
     //    Otros metadatos de navegación.
-    val navigationDrawerItems = listOf(
-        // --- Proyecto antiguo ---
-        NavigationDrawer.Profile,
-        NavigationDrawer.Dollar,
-        NavigationDrawer.Movie,
-        NavigationDrawer.Github,
 
-        // --- 🔐 AUTH ---
-        NavigationDrawer.AuthLogin,
+    val navigationItemsAdmin= listOf(
         NavigationDrawer.AuthRegister,
-
-        // --- 🏨 LODGING ---
         NavigationDrawer.LodgingList,
         NavigationDrawer.LodgingEditor,
-
-        // --- 📅 RESERVATION ---
         NavigationDrawer.ReservationCreate,
         NavigationDrawer.ReservationHistory,
-        NavigationDrawer.ReservationPayment
+        NavigationDrawer.ReservationPayment,
+        NavigationDrawer.Logout,
     )
+    val navigationItemsClient= listOf(
+        NavigationDrawer.AuthRegister,
+        NavigationDrawer.LodgingList,
+        NavigationDrawer.ReservationCreate,
+        NavigationDrawer.ReservationHistory,
+        NavigationDrawer.ReservationPayment,
+        NavigationDrawer.Logout,
+    )
+    val navigationDrawerItems = if(userRole == "ADMIN") navigationItemsAdmin else navigationItemsClient
+//    val navigationDrawerItems = listOf(
+//        // --- Proyecto antiguo ---
+////        NavigationDrawer.Profile,
+////        NavigationDrawer.Dollar,
+////        NavigationDrawer.Movie,
+////        NavigationDrawer.Github,
+//
+//        // --- 🔐 AUTH ---
+//        NavigationDrawer.AuthLogin,
+//        NavigationDrawer.AuthRegister,
+//
+//        // --- 🏨 LODGING ---
+//        NavigationDrawer.LodgingList,
+//        NavigationDrawer.LodgingEditor,
+//
+//        // --- 📅 RESERVATION ---
+//        NavigationDrawer.ReservationCreate,
+//        NavigationDrawer.ReservationHistory,
+//        NavigationDrawer.ReservationPayment,
+//        NavigationDrawer.Logout
+//    )
+
 
     val drawerState =
         rememberDrawerState(initialValue =
@@ -155,78 +181,90 @@ fun MainApp( navigationViewModel: NavigationViewModel) {
     val coroutineScope = rememberCoroutineScope()
     //lanzamos una corutina
 
+    if(isLoggedIn) {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            //ModalNavigationDrawer es un composable de cajon que ya viene por defecto en kotlin
+            //pero le debemos indicar como obtener el estado de su cajon, es decir aqui sabemos otra vez si esta abierto o cerrado
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        //ModalNavigationDrawer es un composable de cajon que ya viene por defecto en kotlin
-        //pero le debemos indicar como obtener el estado de su cajon, es decir aqui sabemos otra vez si esta abierto o cerrado
-
-        drawerContent = {
-            //con lo de arriba definiremos todo el contenido de este cajon, osea la hamburguesa como tal
-            ModalDrawerSheet(
-                modifier = Modifier.width(256.dp)
-            ) {
-                Box(
-                    modifier = Modifier.width(256.dp),
-                    contentAlignment = Alignment.Center
+            drawerContent = {
+                //con lo de arriba definiremos todo el contenido de este cajon, osea la hamburguesa como tal
+                ModalDrawerSheet(
+                    modifier = Modifier.width(256.dp)
                 ) {
-                    Image(
-                        modifier = Modifier.width(120.dp),
-                        painter = painterResource(id =
-                            R.drawable.ic_launcher_background),
-                        contentDescription = "Logo",
-                    )
-                    Image(
-                        painter = painterResource(id =
-                            R.drawable.ic_launcher_foreground),
-                        contentDescription = "Logo",
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+                    Box(
+                        modifier = Modifier.width(256.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            modifier = Modifier.width(120.dp),
+                            painter = painterResource(
+                                id =
+                                    R.drawable.ic_launcher_background
+                            ),
+                            contentDescription = "Logo",
+                        )
+                        Image(
+                            painter = painterResource(
+                                id =
+                                    R.drawable.ic_launcher_foreground
+                            ),
+                            contentDescription = "Logo",
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
 
-                navigationDrawerItems.forEach { item ->
-                    val isSelected = currentDestination?.route == item.route
-                    NavigationDrawerItem(
-                        icon = {
-                            Icon(
-                                imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-                                contentDescription = item.label
-                            )
-                        },
-                        label = { Text(item.label) },
-                        selected = isSelected,
-                        onClick = {
-                            navController.navigate(item.route) {
-                                launchSingleTop = true
-                                //si ya estoy en esta pantalla, no vuelvas a crear otra igual encima.
-                                restoreState = true
-                                //“Si ya visité esta pantalla antes y la tengo guardada, restaura su estado (osea si viistaste una pantalla antes y la scrolleaste reapareceras en el mismo lugar)
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
+                    navigationDrawerItems.forEach { item ->
+                        val isSelected = currentDestination?.route == item.route
+                        NavigationDrawerItem(
+                            icon = {
+                                Icon(
+                                    imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                                    contentDescription = item.label
+                                )
+                            },
+                            label = { Text(item.label) },
+                            selected = isSelected,
+                            onClick = {
+                                navController.navigate(item.route) {
+                                    launchSingleTop = true
+                                    //si ya estoy en esta pantalla, no vuelvas a crear otra igual encima.
+                                    restoreState = true
+                                    //“Si ya visité esta pantalla antes y la tengo guardada, restaura su estado (osea si viistaste una pantalla antes y la scrolleaste reapareceras en el mismo lugar)
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    //“Cuando cambies de pantalla
+                                    //limpia todo el historial hasta la pantalla principal,
+                                    //pero guarda el estado de las pantallas que borraste para restaurarlas después, es decir  solo guarda la parte visual, sus view model mueren y eso esta bien
                                 }
-                                //“Cuando cambies de pantalla
-                                //limpia todo el historial hasta la pantalla principal,
-                                //pero guarda el estado de las pantallas que borraste para restaurarlas después, es decir  solo guarda la parte visual, sus view model mueren y eso esta bien
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
+                                //Después de navegar osea navegas y se cierra el menu de hamburguesa, lanza una corrutina para cerrar ese menu de hamburguesa
                             }
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            //Después de navegar osea navegas y se cierra el menu de hamburguesa, lanza una corrutina para cerrar ese menu de hamburguesa
-                        }
 
 
-                    )
+                        )
+                    }
                 }
             }
+        ) {
+
+            NavigationDrawerHost(coroutineScope, drawerState, navigationViewModel, navController)
+            //notemos que:
+            //ModalNavigationDrawer(AQUI DEFINIMOS TODO LO DE LA HAMBURGUESA){AHORA ESTAMOS AQUI(ESTA LINEA DIBUJAR UN TITULO Y TODO LO DE LAS PANTALLAS DE DOLAR, LOGIN Y ASI...)}
+            //Le mandas el coroutineScope porque el menú lateral (drawer) se abre y se cierra usando corrutinas.
+            //LE MANDAMOS Igual el estado de si la hamburguesa esta abierta o cerrada, el viewmodel y el controller tabien para que muestren el resto de pantallas
+
         }
-    ) {
-
-        NavigationDrawerHost(coroutineScope, drawerState, navigationViewModel, navController)
-        //notemos que:
-        //ModalNavigationDrawer(AQUI DEFINIMOS TODO LO DE LA HAMBURGUESA){AHORA ESTAMOS AQUI(ESTA LINEA DIBUJAR UN TITULO Y TODO LO DE LAS PANTALLAS DE DOLAR, LOGIN Y ASI...)}
-        //Le mandas el coroutineScope porque el menú lateral (drawer) se abre y se cierra usando corrutinas.
-        //LE MANDAMOS Igual el estado de si la hamburguesa esta abierta o cerrada, el viewmodel y el controller tabien para que muestren el resto de pantallas
-
+    }
+    else{
+        AppNavigation(
+            navController = navController,
+            navigationViewModel = navigationViewModel,
+            modifier = Modifier
+        )
     }
 }
 
@@ -292,7 +330,11 @@ class MainActivity : ComponentActivity() {
                 Modifier
                     .fillMaxSize()
             ) {
-                MainApp(navigationViewModel)
+                val authViewModel: AuthViewModel = getViewModel()
+
+                val isLoggedIn by authViewModel.isLoggedIn.collectAsState(initial = false)
+
+                MainApp(navigationViewModel,isLoggedIn)
                 Column {
                     MaintenanceBanner()
 

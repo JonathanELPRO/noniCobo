@@ -1,5 +1,6 @@
 package com.calyrsoft.ucbp1.features.auth.presentation
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -16,7 +17,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.calyrsoft.ucbp1.R
+import com.calyrsoft.ucbp1.dataStore.AuthDataStore
 import com.calyrsoft.ucbp1.features.auth.domain.model.Role
+import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,7 +28,7 @@ fun LoginScreen2(
     vm: LoginViewModel2,
     onLoginSuccessGoToLodgings: () -> Unit = {},
     onLoginSuccessGoToRegisterLodging: (Long?) -> Unit = {},
-    onRegisterClick: () -> Unit = {}
+    onRegisterClick: () -> Unit = {},
 ) {
     LaunchedEffect(Unit) {
         vm.getToken()
@@ -32,7 +36,26 @@ fun LoginScreen2(
 
     val state by vm.state.collectAsState()
     var userOrEmail by remember { mutableStateOf("") }
+    var idUsuario by remember { mutableStateOf(0L) }
     var password by remember { mutableStateOf("") }
+    val authViewModel: AuthViewModel = getViewModel()
+
+    val userRole by authViewModel.userRole.collectAsState(initial = null)
+
+
+
+    Log.d("LoginScreen2", "userRole: $userRole")
+
+    // Si ya hay un rol guardado (usuario logeado previamente)
+    LaunchedEffect(userRole) {
+        if (!userRole.isNullOrEmpty()) { // evita null
+            when (userRole) {
+                "CLIENT" -> onLoginSuccessGoToLodgings()
+                "ADMIN" -> onLoginSuccessGoToRegisterLodging(idUsuario)
+            }
+            vm.resetState() // limpiar state inmediatamente
+        }
+    }
 
     Scaffold(containerColor = Color(0xFFF4F4F4)) { padding ->
         Column(
@@ -85,13 +108,14 @@ fun LoginScreen2(
                 is LoginViewModel2.LoginUIState.Loading -> CircularProgressIndicator(color = Color(0xFFB00020))
                 is LoginViewModel2.LoginUIState.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
                 is LoginViewModel2.LoginUIState.Success -> {
-                    if (st.user.role == Role.CLIENT){
-                        onLoginSuccessGoToLodgings()
+                    if (!userRole.isNullOrEmpty()) { // evita null
+                        when (userRole) {
+                            "CLIENT" -> onLoginSuccessGoToLodgings()
+                            "ADMIN" -> onLoginSuccessGoToRegisterLodging(st.user.id)
+                        }
+                        idUsuario=st.user.id?:0L
+                        vm.resetState() // limpiar state inmediatamente
                     }
-                    if (st.user.role == Role.ADMIN){
-                        onLoginSuccessGoToRegisterLodging(st.user.id)
-                    }
-                    vm.resetState()
                 }
                 else -> Unit
             }

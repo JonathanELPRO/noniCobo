@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.calyrsoft.ucbp1.dataStore.AuthDataStore
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.model.RoomCategory
 import org.koin.androidx.compose.koinViewModel
@@ -31,11 +32,22 @@ import org.koin.androidx.compose.koinViewModel
 fun LodgingListScreen(
     vm: LodgingListViewModel = koinViewModel(),
     onDetails: (Long) -> Unit = {},
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    authDataStore: AuthDataStore
 ) {
     val state by vm.state.collectAsState()
 
     LaunchedEffect(Unit) { vm.load() }
+
+    var role by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        val result = authDataStore.getRole()
+        if (result.isSuccess) {
+            role = result.getOrNull() ?: ""
+        }
+    }
+
 
     Scaffold(
         containerColor = Color(0xFFF4F4F4),
@@ -94,7 +106,9 @@ fun LodgingListScreen(
                             .padding(padding),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No hay alojamientos registrados.", color = Color.Gray)
+                        Text("No hay alojamientos registrados..", color = Color.Gray)
+
+                        Text(text = role,color = Color.Gray)
                     }
                 } else {
                     LazyColumn(

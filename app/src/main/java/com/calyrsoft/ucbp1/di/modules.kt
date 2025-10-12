@@ -1,12 +1,23 @@
 package com.calyrsoft.ucbp1.di
 
+import com.calyrsoft.ucbp1.BuildConfig
+import com.calyrsoft.ucbp1.dataStore.AuthDataStore
+import com.calyrsoft.ucbp1.features.auth.data.api.LoginService
 import com.calyrsoft.ucbp1.features.auth.data.database.AppRoomDatabaseProject
 import com.calyrsoft.ucbp1.features.auth.data.datasource.AuthLocalDataSource
+import com.calyrsoft.ucbp1.features.auth.data.datasource.RegisterRemoteDataSource
+import com.calyrsoft.ucbp1.features.auth.data.repository.AuthDataStoreRepository
 import com.calyrsoft.ucbp1.features.auth.data.repository.AuthRepository
+import com.calyrsoft.ucbp1.features.auth.domain.repository.IAuthDataStoreRepository
 import com.calyrsoft.ucbp1.features.auth.domain.repository.IAuthRepository
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetUserRole
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginWithSupabaseUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.RegisterToSupabaseUserCase
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.RegisterUserUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.SaveUserDataStore
+import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.auth.presentation.LoginViewModel2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterViewModel
 import com.calyrsoft.ucbp1.features.github.data.api.GithubService
@@ -53,6 +64,7 @@ import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListViewModel
+import com.calyrsoft.ucbp1.features.logout.Logout
 import com.calyrsoft.ucbp1.features.movie.data.database.AppRoomDatabaseMovies
 import com.calyrsoft.ucbp1.features.movie.data.datasource.MovieLocalDataSource
 import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetFavoritesUseCase
@@ -78,6 +90,8 @@ import com.calyrsoft.ucbp1.features.reservation.domain.usecase.RecordRemainingPa
 import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationViewModel
 import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappViewModel
 import com.calyrsoft.ucbp1.navigation.NavigationViewModel
+import com.example.imperium_reality.features.register.data.api.RegisterService
+import com.example.ucbp1.interceptors.supabase.SupabaseAuthInterceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -100,12 +114,21 @@ val appModule = module {
     // OkHttpClient
     single {
         OkHttpClient.Builder()
+            .addInterceptor(SupabaseAuthInterceptor(BuildConfig.SUPABASE_KEY))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 
+    //SUPABASE
+    single(named("SUPABASE")) {
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.SUPABASE_URL) // e.g., "https://your-project.supabase.co/rest/v1/"
+            .client(get())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
 
     // Retrofits
     single {
@@ -153,6 +176,12 @@ val appModule = module {
     single<PostsService> {
         get<Retrofit>(named("PPS")).create(PostsService::class.java)
     }
+
+    //DATA STORE
+    single { AuthDataStore(androidContext()) }
+    single<IAuthDataStoreRepository>{ AuthDataStoreRepository(get()) }
+
+    viewModel { AuthViewModel(get()) }
 
     // DataSource
     single{ GithubRemoteDataSource(get()) }
@@ -206,6 +235,8 @@ val appModule = module {
     factory { GetUserNameUseCase(get()) }
     factory { SaveTokenUseCase(get()) }
     factory { SaveUserNameUseCase(get()) }
+    factory{ GetUserRole(get()) }
+    factory { SaveUserDataStore(get()) }
 
 
 
@@ -235,23 +266,33 @@ val appModule = module {
     //proyecto
     // --- BASE DE DATOS ---
 
+
     single<AppRoomDatabaseProject> { AppRoomDatabaseProject.getDatabase(get()) }
     single { get<AppRoomDatabaseProject>().userDao() }
 
     // --- DATA SOURCE ---
     single { AuthLocalDataSource(get()) }
 
+    single<RegisterService> {
+        get<Retrofit>(named("SUPABASE")).create(RegisterService::class.java)
+    }
+    single<LoginService> {
+        get<Retrofit>(named("SUPABASE")).create(LoginService::class.java)
+    }
+    single{ RegisterRemoteDataSource(get(),get()) }
     // --- REPOSITORIO ---
-    single<IAuthRepository> { AuthRepository(get()) }
+    single<IAuthRepository> { AuthRepository(get(),get(),get()) }
 
     // --- CASOS DE USO ---
     factory { RegisterUserUseCase(get()) }
+    factory { RegisterToSupabaseUserCase(get()) }
     factory { LoginUseCase(get()) }
+    factory { LoginWithSupabaseUseCase(get()) }
     factory { GetCurrentUserUseCase(get()) }
 
     // --- VIEWMODEL ---
-    viewModel { LoginViewModel2(get()) }
-    viewModel { RegisterViewModel(get(), get()) }
+    viewModel { LoginViewModel2(get(),get(),get()) }
+    viewModel { RegisterViewModel(get(), get(),get(),androidContext()) }
 
 
 
