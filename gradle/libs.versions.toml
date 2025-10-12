@@ -25,6 +25,7 @@ room = "2.8.0"
 firebaseMessaging = "25.0.1"
 datastore = "1.0.0"
 firebaseConfig = "23.0.1"
+foundation = "1.9.3"
 
 
 
@@ -65,6 +66,7 @@ room-paging = { group="androidx.room", name="room-paging", version.ref="room"}
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
+androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 
 [bundles]

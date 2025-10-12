@@ -22,7 +22,7 @@ import com.calyrsoft.ucbp1.features.reservation.data.database.entity.Reservation
         ReservationEntity::class,
         PaymentEntity::class
     ],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

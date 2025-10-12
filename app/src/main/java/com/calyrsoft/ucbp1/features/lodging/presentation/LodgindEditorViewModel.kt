@@ -7,30 +7,36 @@ import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-data class LodgingEditorUiState(
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    val success: Boolean = false
-)
-
 class LodgingEditorViewModel(
-    private val upsertLodging: UpsertLodgingUseCase
+    private val upsertLodgingUseCase: UpsertLodgingUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(LodgingEditorUiState())
-    val uiState: StateFlow<LodgingEditorUiState> = _uiState
+    sealed class LodgingEditorStateUI {
+        object Init : LodgingEditorStateUI()
+        object Updating : LodgingEditorStateUI()
+        object UpdateSuccess : LodgingEditorStateUI()
+        class UpdateError(val message: String) : LodgingEditorStateUI()
+    }
+
+    private val _state = MutableStateFlow<LodgingEditorStateUI>(LodgingEditorStateUI.Init)
+    val state: StateFlow<LodgingEditorStateUI> = _state.asStateFlow()
 
     fun save(role: Role, lodging: Lodging) {
+        _state.value = LodgingEditorStateUI.Updating
+
         viewModelScope.launch {
-            _uiState.value = LodgingEditorUiState(isLoading = true)
-            try {
-                upsertLodging(role, lodging)
-                _uiState.value = LodgingEditorUiState(success = true)
-            } catch (e: Exception) {
-                _uiState.value = LodgingEditorUiState(errorMessage = e.message)
-            }
+            val result = upsertLodgingUseCase(role, lodging)
+            result.fold(
+                onSuccess = { _state.value = LodgingEditorStateUI.UpdateSuccess },
+                onFailure = { error ->
+                    _state.value = LodgingEditorStateUI.UpdateError(
+                        error.message ?: "Error al guardar alojamiento"
+                    )
+                }
+            )
         }
     }
 }

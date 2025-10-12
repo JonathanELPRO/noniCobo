@@ -6,7 +6,6 @@ package com.calyrsoft.ucbp1.features.lodging.domain.model
  */
 data class StayOption(
     val type: StayType,
-    val price: Double
 )
 
 enum class StayType {

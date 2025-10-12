@@ -6,7 +6,22 @@ import androidx.room.TypeConverters
 import com.calyrsoft.ucbp1.features.lodging.domain.model.RoomOption
 import com.calyrsoft.ucbp1.features.lodging.domain.model.StayOption
 
-@Entity(tableName = "lodgings")
+import androidx.room.*
+import com.calyrsoft.ucbp1.features.auth.data.database.entity.UserEntity
+
+@Entity(
+    tableName = "lodgings",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["ownerAdminId"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.NO_ACTION
+        )
+    ],
+    indices = [Index("ownerAdminId")]
+)
 @TypeConverters(Converters::class)
 data class LodgingEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -21,8 +36,7 @@ data class LodgingEntity(
     val longitude: Double? = null,
     val stayOptions: List<StayOption> = emptyList(),
     val roomOptions: List<RoomOption> = emptyList(),
-
-    // 🔹 aquí se guarda el contenido binario, no texto
-    val placeImage: ByteArray? = null,
-    val licenseImage: ByteArray? = null
+    val placeImageUri: String? = null,
+    val licenseImageUri: String? = null
 )
+

@@ -13,7 +13,8 @@ data class Lodging(
     val longitude: Double? = null,
     val stayOptions: List<StayOption> = emptyList(),
     val roomOptions: List<RoomOption> = emptyList(),
-    val placeImage: ByteArray? = null,
-    val licenseImage: ByteArray? = null
+    val placeImageUri: String? = null,
+    val licenseImageUri: String? = null
+
 )
 

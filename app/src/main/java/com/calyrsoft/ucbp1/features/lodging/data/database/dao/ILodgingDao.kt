@@ -17,4 +17,7 @@ interface ILodgingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: LodgingEntity): Long
+    //se llama upsert porque inserta y actualiza, eso lo hace con .REPLACE
+    //que dice en cuanto trates de insertar algo si ves que ya existia otro algo con ese mismo id
+    //solo reemplazalo(aqui en realidad estarias actualizando)
 }

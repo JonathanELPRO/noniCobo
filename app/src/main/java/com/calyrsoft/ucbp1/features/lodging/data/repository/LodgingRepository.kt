@@ -1,55 +1,35 @@
 package com.calyrsoft.ucbp1.features.lodging.data.repository
 
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
-import com.calyrsoft.ucbp1.features.lodging.data.database.entity.LodgingEntity
-import com.calyrsoft.ucbp1.features.lodging.domain.model.*
+import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
-class LodgingRepository(private val ds: LodgingLocalDataSource) : ILodgingRepository {
+class LodgingRepository(
+    private val ds: LodgingLocalDataSource
+) : ILodgingRepository {
 
-    override fun observeAll(): Flow<List<Lodging>> =
-        ds.observeAll().map { list -> list.map { it.toDomain() } }
+    override fun observeAll(): Flow<List<Lodging>> {
+        return ds.observeAll()
+    }
 
-    override suspend fun getDetails(id: Long): Lodging? =
-        ds.findById(id)?.toDomain()
+    override suspend fun getDetails(id: Long): Result<Lodging> {
+        val lodging = ds.findById(id)
+        return if (lodging != null) {
+            Result.success(lodging)
+        } else {
+            Result.failure(Exception("No se encontró el alojamiento con id=$id"))
+        }
+    }
 
-    override suspend fun upsert(lodging: Lodging): Long =
-        ds.upsertLodging(lodging.toEntity())
 
-    // 🔁 Mappers
-    private fun LodgingEntity.toDomain() = Lodging(
-        id = id,
-        name = name,
-        type = LodgingType.valueOf(type),
-        district = district,
-        address = address,
-        contactPhone = contactPhone,
-        open24h = open24h,
-        ownerAdminId = ownerAdminId,
-        latitude = latitude,
-        longitude = longitude,
-        stayOptions = stayOptions,
-        roomOptions = roomOptions,
-        placeImage = placeImage,
-        licenseImage = licenseImage
-    )
+    override suspend fun upsert(lodging: Lodging): Result<Unit> {
+        return try {
+            ds.upsertLodging(lodging)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
-    private fun Lodging.toEntity() = LodgingEntity(
-        id = id ?: 0,
-        name = name,
-        type = type.name,
-        district = district,
-        address = address,
-        contactPhone = contactPhone,
-        open24h = open24h,
-        ownerAdminId = ownerAdminId,
-        latitude = latitude,
-        longitude = longitude,
-        stayOptions = stayOptions,
-        roomOptions = roomOptions,
-        placeImage = placeImage,
-        licenseImage = licenseImage
-    )
 }

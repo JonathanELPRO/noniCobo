@@ -6,5 +6,7 @@ import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
 
 
 class GetAllLodgingsUseCase(private val repo: ILodgingRepository) {
-    operator fun invoke(): Flow<List<Lodging>> = repo.observeAll()
+    operator fun invoke(): Flow<List<Lodging>> {
+        return repo.observeAll()
+    }
 }

@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.config)
+    implementation(libs.androidx.foundation)
     testImplementation(libs.junit)
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
@@ -108,7 +109,8 @@ dependencies {
     testImplementation(libs.room.testing)
     testImplementation(kotlin("test"))
     implementation(libs.datastore)
-
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("androidx.compose.material:material-icons-extended")
 
 }
 
