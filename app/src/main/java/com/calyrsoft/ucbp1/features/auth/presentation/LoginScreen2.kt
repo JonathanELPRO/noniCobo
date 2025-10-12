@@ -15,21 +15,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.calyrsoft.ucbp1.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
-    vm: AuthViewModel = viewModel(),
+fun LoginScreen2(
+    vm: LoginViewModel2,
     onLoginSuccess: () -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
     val state by vm.state.collectAsState()
-
     var userOrEmail by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
 
     Scaffold(containerColor = Color(0xFFF4F4F4)) { padding ->
         Column(
@@ -39,7 +36,6 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 🔹 Cabecera visual
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -51,9 +47,7 @@ fun LoginScreen(
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = "Imagen de cabecera",
-                    modifier = Modifier
-                        .size(180.dp)
-                        .clip(RoundedCornerShape(90.dp))
+                    modifier = Modifier.size(180.dp).clip(RoundedCornerShape(90.dp))
                 )
             }
 
@@ -66,9 +60,7 @@ fun LoginScreen(
                 onValueChange = { userOrEmail = it },
                 label = { Text("Usuario o correo") },
                 shape = RoundedCornerShape(50),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -78,35 +70,26 @@ fun LoginScreen(
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(50),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             when (val st = state) {
-                is AuthViewModel.AuthStateUI.Loading -> {
-                    CircularProgressIndicator(color = Color(0xFFB00020))
-                }
-                is AuthViewModel.AuthStateUI.Error -> {
-                    Text(st.message, color = MaterialTheme.colorScheme.error)
-                }
-                is  AuthViewModel.AuthStateUI.Success -> {
+                is LoginViewModel2.LoginUIState.Loading -> CircularProgressIndicator(color = Color(0xFFB00020))
+                is LoginViewModel2.LoginUIState.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
+                is LoginViewModel2.LoginUIState.Success -> {
                     onLoginSuccess()
+                    vm.resetState()
                 }
                 else -> Unit
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 onClick = { vm.login(userOrEmail, password) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .height(50.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp).height(50.dp),
                 shape = RoundedCornerShape(25.dp)
             ) {
                 Text("Iniciar sesión", color = Color.White, fontWeight = FontWeight.SemiBold)
@@ -116,10 +99,7 @@ fun LoginScreen(
             Button(
                 onClick = onRegisterClick,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFBDB304)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .height(50.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp).height(50.dp),
                 shape = RoundedCornerShape(25.dp)
             ) {
                 Text("Crear cuenta", color = Color.White, fontWeight = FontWeight.SemiBold)

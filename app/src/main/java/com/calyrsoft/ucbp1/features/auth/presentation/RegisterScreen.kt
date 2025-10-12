@@ -1,12 +1,8 @@
 package com.calyrsoft.ucbp1.features.auth.presentation
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,34 +14,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.calyrsoft.ucbp1.R
 import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 
 @Composable
 fun RegisterScreen(
-    vm: AuthViewModel = viewModel(),
+    vm: RegisterViewModel,
     onRegisterSuccess: () -> Unit = {},
     onBackToLogin: () -> Unit = {}
 ) {
     val state by vm.state.collectAsState()
-
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var selectedRole by remember { mutableStateOf(Role.CLIENT) } // 👈 Rol seleccionado
+    var selectedRole by remember { mutableStateOf(Role.CLIENT) }
 
+    val scrollState = rememberScrollState()
 
     Scaffold(containerColor = Color(0xFFF4F4F4)) { padding ->
-        val scrollState = rememberScrollState()
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState) // 👈 hace toda la pantalla desplazable
+                .verticalScroll(scrollState)
                 .padding(padding),
-            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 🔹 Cabecera visual
@@ -68,29 +60,17 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
             Text("Crear cuenta", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.Black)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // 🧩 Selección de rol
+            // 🔹 Selección de rol
             Text("Selecciona tu tipo de usuario:", color = Color.DarkGray, fontSize = 15.sp)
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            ) {
-                RoleOptionCard(
-                    title = "Cliente",
-                    isSelected = selectedRole == Role.CLIENT,
-                    onClick = { selectedRole = Role.CLIENT }
-                )
-                RoleOptionCard(
-                    title = "Administrador",
-                    isSelected = selectedRole == Role.ADMIN,
-                    onClick = { selectedRole = Role.ADMIN }
-                )
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                RoleOptionCard("Cliente", selectedRole == Role.CLIENT) { selectedRole = Role.CLIENT }
+                RoleOptionCard("Administrador", selectedRole == Role.ADMIN) { selectedRole = Role.ADMIN }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // 🔹 Campos de registro
             OutlinedTextField(
@@ -137,14 +117,15 @@ fun RegisterScreen(
                     .padding(horizontal = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // 🔹 Estado UI
+            // 🔹 Estado de la UI
             when (val st = state) {
-                is AuthViewModel.AuthStateUI.Loading -> CircularProgressIndicator(color = Color(0xFFB00020))
-                is AuthViewModel.AuthStateUI.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
-                is AuthViewModel.AuthStateUI.Success -> {
+                is RegisterViewModel.RegisterUIState.Loading -> CircularProgressIndicator(color = Color(0xFFB00020))
+                is RegisterViewModel.RegisterUIState.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
+                is RegisterViewModel.RegisterUIState.Success -> {
                     onRegisterSuccess()
+                    vm.resetState() // Descomentar si necesitas limpiar el estado tras navegar
                 }
                 else -> Unit
             }
@@ -153,11 +134,11 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     vm.register(
-                        username = username,
-                        email = email,
-                        phone = phone.ifBlank { null },
-                        password = password,
-                        role = selectedRole
+                        username,
+                        email,
+                        phone.ifBlank { null },
+                        password,
+                        selectedRole
                     )
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020)),
@@ -178,13 +159,8 @@ fun RegisterScreen(
     }
 }
 
-// 🔹 Pequeño componente para elegir rol
 @Composable
-private fun RoleOptionCard(
-    title: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
+private fun RoleOptionCard(title: String, isSelected: Boolean, onClick: () -> Unit) {
     val background = if (isSelected) Color(0xFFB00020) else Color(0xFFE0E0E0)
     val textColor = if (isSelected) Color.White else Color.Black
 

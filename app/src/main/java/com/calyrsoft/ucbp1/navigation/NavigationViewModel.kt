@@ -81,7 +81,7 @@ class NavigationViewModel : ViewModel() {
                     else -> {
                         Log.d("NavigationViewModel", "Navegación por defecto a Login")
 
-                        navigateTo(Screen.LoginScreen.route, NavigationOptions.CLEAR_BACK_STACK)
+                        navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
                     }
                 }
             } catch (e: Exception) {

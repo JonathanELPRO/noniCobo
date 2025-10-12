@@ -20,12 +20,26 @@ class AuthRepository(
 
     override suspend fun register(user: User, passwordPlain: String): Result<Long> {
         return try {
+
+            if (ds.existsByEmail(user.email) and ds.existsByUsername(user.username))
+                return Result.failure(Exception("El correo electrónico y el nombre de usuario ya estan registrados"))
+
+            if (ds.existsByUsername(user.username))
+                return Result.failure(Exception("El nombre de usuario ya está en uso"))
+
+            if (ds.existsByEmail(user.email))
+                return Result.failure(Exception("El correo electrónico ya está registrado"))
+
+
             val id = ds.register(user, hash(passwordPlain))
             Result.success(id)
+
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
+
 
     override suspend fun login(userOrEmail: String, passwordPlain: String): Result<User> {
         return try {

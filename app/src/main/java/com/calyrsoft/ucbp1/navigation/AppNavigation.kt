@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen
+import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
 //import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen
 //import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
@@ -63,7 +63,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 
     NavHost(
         navController = navController,
-        startDestination = Screen.LoginScreen.route,
+        startDestination = Screen.AuthLogin.route,
         //no impirta que valor pongas arriba no empezaremos ahi por culpa del else de handleDeepLink
         //que se llama en el primer launched effect de main activity
         modifier = modifier
@@ -175,7 +175,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 
         // 🔐 AUTH
         composable(Screen.AuthLogin.route) {
-            LoginScreen(
+            LoginScreen2(
                 vm = koinViewModel(),
                 onLoginSuccess = { navController.navigate(Screen.LodgingList.route) }
             )

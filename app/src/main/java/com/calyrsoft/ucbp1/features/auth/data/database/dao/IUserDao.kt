@@ -25,4 +25,10 @@ interface IUserDao {
 
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun findById(id: Long): UserEntity?
+
+    @Query("SELECT COUNT(*) FROM users WHERE username = :username")
+    suspend fun countByUsername(username: String): Int
+
+    @Query("SELECT COUNT(*) FROM users WHERE email = :email")
+    suspend fun countByEmail(email: String): Int
 }

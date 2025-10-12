@@ -7,7 +7,8 @@ import com.calyrsoft.ucbp1.features.auth.domain.repository.IAuthRepository
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserUseCase
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginUseCase
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.RegisterUserUseCase
-import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
+import com.calyrsoft.ucbp1.features.auth.presentation.LoginViewModel2
+import com.calyrsoft.ucbp1.features.auth.presentation.RegisterViewModel
 import com.calyrsoft.ucbp1.features.github.data.api.GithubService
 import com.calyrsoft.ucbp1.features.posts.data.api.PostsService
 import com.calyrsoft.ucbp1.features.movie.data.api.TmdbService
@@ -249,7 +250,8 @@ val appModule = module {
     factory { GetCurrentUserUseCase(get()) }
 
     // --- VIEWMODEL ---
-    viewModel { AuthViewModel(get(), get(), get()) }
+    viewModel { LoginViewModel2(get()) }
+    viewModel { RegisterViewModel(get(), get()) }
 
 
 

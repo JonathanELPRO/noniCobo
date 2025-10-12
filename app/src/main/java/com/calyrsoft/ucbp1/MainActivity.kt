@@ -45,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -195,23 +196,30 @@ fun MainApp( navigationViewModel: NavigationViewModel) {
                         },
                         label = { Text(item.label) },
                         selected = isSelected,
-                        onClick = {
-                            navController.navigate(item.route) {
-                                launchSingleTop = true
-                                //si ya estoy en esta pantalla, no vuelvas a crear otra igual encima.
-                                restoreState = true
-                                //“Si ya visité esta pantalla antes y la tengo guardada, restaura su estado (osea si viistaste una pantalla antes y la scrolleaste reapareceras en el mismo lugar)
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
+
+
+                                onClick = {
+                            if (item.route == Screen.AuthLogin.route) {
+                                // 🔒 Cerrar sesión / Volver a login limpiando todo
+                                navController.navigate(Screen.AuthLogin.route) {
+                                    launchSingleTop = true
+                                    restoreState = false
+                                    popUpTo(0){
+                                        saveState = true
+                                    }
                                 }
-                                //“Cuando cambies de pantalla
-                                //limpia todo el historial hasta la pantalla principal,
-                                //pero guarda el estado de las pantallas para restaurarlas después
+                            } else {
+                                // 📚 Navegación normal entre secciones con “memoria”
+                                navController.navigate(item.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                        // NO uses inclusive aquí (conservarás la raíz para restaurar estados)
+                                    }
+                                }
                             }
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                            //Después de navegar osea navegas y se cierra el menu de hamburguesa, lanza una corrutina para cerrar ese menu de hamburguesa
+                            coroutineScope.launch { drawerState.close() }
                         }
                     )
                 }
