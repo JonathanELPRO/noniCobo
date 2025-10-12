@@ -93,11 +93,11 @@ class NavigationViewModel : ViewModel() {
 
     private fun handleClickAction(clickAction: String?) {
         when (clickAction) {
-            "OPEN_LOGIN" -> navigateTo(Screen.LoginScreen.route, NavigationOptions.CLEAR_BACK_STACK)
+            "OPEN_LOGIN" -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
             "OPEN_MOVIES" -> navigateTo(Screen.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
             "OPEN_DOLLAR" -> navigateTo(Screen.Dollar.route, NavigationOptions.REPLACE_HOME)
             "OPEN_GITHUB" -> navigateTo(Screen.GithubScreen.route, NavigationOptions.REPLACE_HOME)
-            else -> navigateTo(Screen.LoginScreen.route, NavigationOptions.CLEAR_BACK_STACK)
+            else -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
         }
     }
 
@@ -106,7 +106,7 @@ class NavigationViewModel : ViewModel() {
         when (uri?.host) {
 
             "login" -> {
-                navigateTo(Screen.LoginScreen.route, NavigationOptions.CLEAR_BACK_STACK)
+                navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
             }
             "movies" -> {
                 navigateTo(Screen.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
@@ -117,8 +117,11 @@ class NavigationViewModel : ViewModel() {
             "github" -> {
                 navigateTo(Screen.GithubScreen.route, NavigationOptions.REPLACE_HOME)
             }
+            "register" -> {
+                navigateTo(Screen.AuthRegister.route, NavigationOptions.REPLACE_HOME)
+            }
             else -> {
-                navigateTo(Screen.LoginScreen.route, NavigationOptions.CLEAR_BACK_STACK)
+                navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
             }
         }
     }
@@ -128,11 +131,11 @@ class NavigationViewModel : ViewModel() {
 
         when (destination?.uppercase()) {
 
-            "LOGIN" -> navigateTo(Screen.LoginScreen.route, NavigationOptions.CLEAR_BACK_STACK)
+            "LOGIN" -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
             "MOVIES" -> navigateTo(Screen.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
             "DOLLAR" -> navigateTo(Screen.Dollar.route, NavigationOptions.REPLACE_HOME)
             "GITHUB" -> navigateTo(Screen.GithubScreen.route, NavigationOptions.REPLACE_HOME)
-            else -> navigateTo(Screen.LoginScreen.route, NavigationOptions.CLEAR_BACK_STACK)
+            else -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
         }
     }
 }

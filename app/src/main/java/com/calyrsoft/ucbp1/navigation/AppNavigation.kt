@@ -44,7 +44,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                             }
                             //lo de arriba borra absolutamente toda la pila de visitas
                             NavigationOptions.REPLACE_HOME -> {
-                                popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                                popUpTo(Screen.AuthLogin.route) { inclusive = true }
 
                             }
                             //lo de arriba solo borra la pila de visitas hasta llegar al loginscreen mas reciene lo borra igual ese pero
@@ -177,14 +177,36 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
         composable(Screen.AuthLogin.route) {
             LoginScreen2(
                 vm = koinViewModel(),
-                onLoginSuccess = { navController.navigate(Screen.LodgingList.route) }
+                onLoginSuccess = {
+                    navigationViewModel.navigateTo(
+                        Screen.LodgingList.route,
+                        NavigationOptions.CLEAR_BACK_STACK
+                    )
+                },
+                onRegisterClick = {
+                    navigationViewModel.navigateTo(
+                        Screen.AuthRegister.route,
+                        NavigationOptions.DEFAULT
+                    )
+                }
             )
         }
 
         composable(Screen.AuthRegister.route) {
             RegisterScreen(
                 vm = koinViewModel(),
-                onRegisterSuccess = { navController.navigate(Screen.AuthLogin.route) }
+                onRegisterSuccess = {
+                    navigationViewModel.navigateTo(
+                        Screen.AuthLogin.route,
+                        NavigationOptions.REPLACE_HOME
+                    )
+                },
+                onBackToLogin = {
+                    navigationViewModel.navigateTo(
+                        Screen.AuthLogin.route,
+                        NavigationOptions.REPLACE_HOME
+                    )
+                }
             )
         }
 
