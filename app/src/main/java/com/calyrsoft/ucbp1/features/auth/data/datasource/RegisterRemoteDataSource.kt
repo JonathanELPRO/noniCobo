@@ -3,18 +3,14 @@ package com.calyrsoft.ucbp1.features.auth.data.datasource
 import android.util.Log
 import com.calyrsoft.ucbp1.features.auth.data.api.LoginService
 import com.calyrsoft.ucbp1.features.auth.domain.model.Role
-import com.example.imperium_reality.features.login.data.api.dto.LoginRequestDto
-import com.example.imperium_reality.features.login.data.api.dto.LoginResponseDto
-import com.example.imperium_reality.features.register.data.api.RegisterService
-import com.example.imperium_reality.features.register.data.api.dto.RegisterRequestDto
-import com.example.imperium_reality.features.register.data.api.dto.RegisterResponseDto
+import com.example.imperium_reality.features.register.data.api.LodgingService
 import com.example.imperium_reality.features.register.data.api.dto.RegisterUserDto
 import com.example.imperium_reality.features.register.data.error.DataException
 import kotlin.toString
 
 
 class RegisterRemoteDataSource(
-    val registerService: RegisterService,
+    val registerService: LodgingService,
     val loginService: LoginService
 ) {
     suspend fun login(email: String, password: String): Result<LoginResponseDto> {

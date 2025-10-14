@@ -2,7 +2,6 @@ package com.calyrsoft.ucbp1.features.auth.data.datasource
 
 import android.util.Log
 import com.calyrsoft.ucbp1.features.auth.data.api.GetUserService
-import com.example.imperium_reality.features.login.data.api.dto.LoginRequestDto
 import com.example.imperium_reality.features.login.data.api.dto.UserDto
 import com.example.imperium_reality.features.login.data.api.dto.UserMetadataDto
 import com.example.imperium_reality.features.register.data.error.DataException

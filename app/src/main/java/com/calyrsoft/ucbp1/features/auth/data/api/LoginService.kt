@@ -1,7 +1,5 @@
 package com.calyrsoft.ucbp1.features.auth.data.api
 
-import com.example.imperium_reality.features.login.data.api.dto.LoginRequestDto
-import com.example.imperium_reality.features.login.data.api.dto.LoginResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

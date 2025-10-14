@@ -67,7 +67,6 @@ import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListViewModel
-import com.calyrsoft.ucbp1.features.logout.Logout
 import com.calyrsoft.ucbp1.features.movie.data.database.AppRoomDatabaseMovies
 import com.calyrsoft.ucbp1.features.movie.data.datasource.MovieLocalDataSource
 import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetFavoritesUseCase
@@ -93,7 +92,7 @@ import com.calyrsoft.ucbp1.features.reservation.domain.usecase.RecordRemainingPa
 import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationViewModel
 import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappViewModel
 import com.calyrsoft.ucbp1.navigation.NavigationViewModel
-import com.example.imperium_reality.features.register.data.api.RegisterService
+import com.example.imperium_reality.features.register.data.api.LodgingService
 import com.example.ucbp1.interceptors.supabase.SupabaseAuthInterceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -276,8 +275,8 @@ val appModule = module {
     // --- DATA SOURCE ---
     single { AuthLocalDataSource(get()) }
 
-    single<RegisterService> {
-        get<Retrofit>(named("SUPABASE")).create(RegisterService::class.java)
+    single<LodgingService> {
+        get<Retrofit>(named("SUPABASE")).create(LodgingService::class.java)
     }
     single<LoginService> {
         get<Retrofit>(named("SUPABASE")).create(LoginService::class.java)
