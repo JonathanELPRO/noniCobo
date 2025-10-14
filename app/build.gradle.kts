@@ -10,6 +10,8 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinSerialization)
+
 }
 
 ktlint {
@@ -111,6 +113,7 @@ dependencies {
     implementation(libs.datastore)
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.kotlinx.serialization.json)
 
 }
 

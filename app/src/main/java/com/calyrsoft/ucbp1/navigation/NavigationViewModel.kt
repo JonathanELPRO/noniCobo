@@ -94,7 +94,7 @@ class NavigationViewModel : ViewModel() {
     private fun handleClickAction(clickAction: String?) {
         when (clickAction) {
             "OPEN_LOGIN" -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
-            "OPEN_MOVIES" -> navigateTo(Screen.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
+            "OPEN_MOVIES" -> navigateTo(Screen.Screens.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
             "OPEN_DOLLAR" -> navigateTo(Screen.Dollar.route, NavigationOptions.REPLACE_HOME)
             "OPEN_GITHUB" -> navigateTo(Screen.GithubScreen.route, NavigationOptions.REPLACE_HOME)
             else -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
@@ -109,7 +109,7 @@ class NavigationViewModel : ViewModel() {
                 navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
             }
             "movies" -> {
-                navigateTo(Screen.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
+                navigateTo(Screen.Screens.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
             }
             "dollar" -> {
                 navigateTo(Screen.Dollar.route, NavigationOptions.REPLACE_HOME)
@@ -132,7 +132,7 @@ class NavigationViewModel : ViewModel() {
         when (destination?.uppercase()) {
 
             "LOGIN" -> navigateTo(Screen.AuthLogin.route, NavigationOptions.CLEAR_BACK_STACK)
-            "MOVIES" -> navigateTo(Screen.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
+            "MOVIES" -> navigateTo(Screen.Screens.MoviesScreen.route, NavigationOptions.REPLACE_HOME)
             "DOLLAR" -> navigateTo(Screen.Dollar.route, NavigationOptions.REPLACE_HOME)
             "GITHUB" -> navigateTo(Screen.GithubScreen.route, NavigationOptions.REPLACE_HOME)
             "REGISTER" -> navigateTo(Screen.AuthRegister.route, NavigationOptions.REPLACE_HOME)

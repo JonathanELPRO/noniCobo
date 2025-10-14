@@ -31,7 +31,7 @@ sealed class NavigationDrawer(
         Screen.GithubScreen.route)
     data object Movie : NavigationDrawer("Movie",
         Icons.Filled.DateRange, Icons.Outlined.DateRange,
-        Screen.MoviesScreen.route)
+        Screen.Screens.MoviesScreen.route)
 
     // ======================================================
     // 🔐 AUTH

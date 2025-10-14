@@ -12,8 +12,13 @@ sealed class Screen(val route: String) {
 
     object Dollar: Screen("dollar")
     object ForgotPasswordScreen : Screen("forgot_password")
-    object MoviesScreen : Screen("movies")
     object PostsScreen : Screen("posts")
+
+    sealed class Screens(val route: String) {
+        object MoviesScreen : Screens("movies")
+        object MovieDetailScreen: Screens("moviedetail")
+    }
+
 
 
 

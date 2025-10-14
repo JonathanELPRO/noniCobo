@@ -6,4 +6,6 @@ interface IMoviesRepository {
     suspend fun getPopular(page: Int): Result<List<MovieModel>>
     suspend fun insertMyFavoriteMovie(movieModel: MovieModel): Unit
     suspend fun getFavorites(): List<MovieModel>
+    suspend fun getMovieById(id: Long): MovieModel?
+
 }

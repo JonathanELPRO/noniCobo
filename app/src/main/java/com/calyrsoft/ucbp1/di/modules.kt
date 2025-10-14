@@ -56,7 +56,9 @@ import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListViewModel
 import com.calyrsoft.ucbp1.features.movie.data.database.AppRoomDatabaseMovies
 import com.calyrsoft.ucbp1.features.movie.data.datasource.MovieLocalDataSource
 import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetFavoritesUseCase
+import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetMovieByIdUseCase
 import com.calyrsoft.ucbp1.features.movie.domain.usecase.InserteMyFavoriteMovieUseCase
+import com.calyrsoft.ucbp1.features.movie.presentation.MovieDetailsViewModel
 import com.calyrsoft.ucbp1.features.profile.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesViewModel
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsViewModel
@@ -206,6 +208,8 @@ val appModule = module {
     factory { GetUserNameUseCase(get()) }
     factory { SaveTokenUseCase(get()) }
     factory { SaveUserNameUseCase(get()) }
+    factory { GetMovieByIdUseCase(get()) }
+
 
 
 
@@ -228,6 +232,8 @@ val appModule = module {
     viewModel { MoviesViewModel(get(), get(), get()) }
     viewModel { PostsViewModel(get(),get()) }
     viewModel { NavigationViewModel() }
+    viewModel { MovieDetailsViewModel(get()) }
+
 
 
 

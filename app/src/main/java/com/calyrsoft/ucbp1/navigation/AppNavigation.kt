@@ -1,10 +1,12 @@
 package com.calyrsoft.ucbp1.navigation
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -18,7 +20,9 @@ import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
+import com.calyrsoft.ucbp1.features.movie.domain.model.MovieModel
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
+import com.calyrsoft.ucbp1.features.movie.presentation.details.MovieDetailsScreen
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
@@ -27,6 +31,11 @@ import com.calyrsoft.ucbp1.features.reservation.presentation.PaymentScreen
 import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationScreen
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -83,7 +92,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                     navController.navigate(Screen.ForgotPasswordScreen.route)
                 },
                 onMovies = {
-                    navController.navigate(Screen.MoviesScreen.route)
+                    navController.navigate(Screen.Screens.MoviesScreen.route)
                 },
                 onDollar = {
                     navController.navigate(Screen.Dollar.route)
@@ -158,12 +167,47 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
             )
         }
 
-        composable(Screen.MoviesScreen.route) {
+        composable(Screen.Screens.MoviesScreen.route) {
             MoviesScreen(
                 modifier = modifier,
-                vm = koinViewModel()
+                vm = koinViewModel(),
+                onClick = { movie ->
+                    val movieJson = Json.encodeToString(movie) //vuelve el model a un string de JSON
+                    val encodeMovieJson = URLEncoder.encode(movieJson, "UTF-8") //Toma ese JSON y lo escapa (codifica) usando el formato URL-safe (seguro para ser parte de una URL o ruta). sin
+                    //esto no funciona enviarlo a traves de una ruta algo asi lo vuelve: %7B%22id%22%3A1086910%2C%22title%22%3A%22Expediente+Warren%22%2C%22imageUrl%22%3A%22https%3A%2F%2F...jpg%22%7D
+                    navController.navigate(
+                        "${Screen.Screens.MovieDetailScreen.route}/${encodeMovieJson}")
+
+                }
+
             )
         }
+
+
+
+        composable(
+            route = "${Screen.Screens.MovieDetailScreen.route}/{movie}",
+            arguments = listOf(
+                navArgument("movie") { type = NavType.StringType }
+            )
+        ) {
+            val movieJson = it.arguments?.getString("movie") ?: ""
+            val movieDecoded = URLDecoder.decode(movieJson, "UTF-8") //Hace el proceso inverso:
+            //convierte el texto codificado (%7B%22id%22%3A...%7D) de vuelta al JSON original:
+            val movie = Json.decodeFromString<MovieModel>(movieDecoded)
+            //convierte un string en formato json a un model osea a su formato original
+
+            MovieDetailsScreen(
+                onBackPressed = {
+                    navController.popBackStack()
+                },
+                movie = movie)
+
+        }
+
+
+
+
 
         composable(Screen.PostsScreen.route) {
             PostsScreen(

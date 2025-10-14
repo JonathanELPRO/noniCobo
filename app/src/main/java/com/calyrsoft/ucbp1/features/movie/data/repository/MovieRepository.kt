@@ -40,6 +40,10 @@ class MoviesRepository(
         return local.getFavorites()
     }
 
+    override suspend fun getMovieById(id: Long): MovieModel? {
+        return local.getFavorites().find { it.id == id }
+    }
+
 
 
 

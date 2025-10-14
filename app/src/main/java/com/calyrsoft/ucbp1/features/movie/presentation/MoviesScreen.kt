@@ -1,5 +1,6 @@
 package com.calyrsoft.ucbp1.features.movie.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,11 +16,13 @@ import org.koin.androidx.compose.koinViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import com.calyrsoft.ucbp1.features.movie.domain.model.MovieModel
 
 @Composable
 fun MoviesScreen(
     modifier: Modifier = Modifier,
-    vm: MoviesViewModel = koinViewModel()
+    vm: MoviesViewModel = koinViewModel(),
+    onClick: (MovieModel) -> Unit
 ) {
     val state by vm.state.collectAsState()
 
@@ -46,7 +49,9 @@ fun MoviesScreen(
                     items(s.movies) { movie ->
                         Card(
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onClick(movie) }
                         ) {
                             Column(
                                 Modifier
