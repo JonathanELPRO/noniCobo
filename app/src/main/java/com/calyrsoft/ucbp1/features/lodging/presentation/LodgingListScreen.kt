@@ -1,6 +1,7 @@
 package com.calyrsoft.ucbp1.features.lodging.presentation
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,8 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.calyrsoft.ucbp1.dataStore.AuthDataStore
+import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.model.RoomCategory
+import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,11 +35,26 @@ import org.koin.androidx.compose.koinViewModel
 fun LodgingListScreen(
     vm: LodgingListViewModel = koinViewModel(),
     onDetails: (Long) -> Unit = {},
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
 ) {
-    val state by vm.state.collectAsState()
+    val authViewModel: AuthViewModel = getViewModel()
+    val userId by authViewModel.userId.collectAsState()
+    val userRole by authViewModel.userRole.collectAsState()
 
-    LaunchedEffect(Unit) { vm.load() }
+    val state by vm.state.collectAsState()
+    LaunchedEffect(userId) {
+        Log.d("LodgingListScreen", "Loading lodgings for userId: $userId")
+        if(userId!=null) {
+            if ( userRole == "ADMIN") {
+                vm.load(userId!!)
+            } else{
+                vm.loadAll()
+            }
+        }
+    }
+
+
+
 
     Scaffold(
         containerColor = Color(0xFFF4F4F4),
@@ -94,7 +113,8 @@ fun LodgingListScreen(
                             .padding(padding),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("No hay alojamientos registrados.", color = Color.Gray)
+                        Text("No hay alojamientos registrados..", color = Color.Gray)
+
                     }
                 } else {
                     LazyColumn(
@@ -123,7 +143,7 @@ fun LodgingListScreen(
                         Text(message, color = Color.DarkGray)
                         Spacer(Modifier.height(16.dp))
                         Button(
-                            onClick = { vm.load() },
+                            onClick = { vm.load(id = userId?:0L) },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020))
                         ) {
                             Text("Reintentar", color = Color.White)
@@ -138,6 +158,7 @@ fun LodgingListScreen(
 @Composable
 private fun LodgingCard(lodging: Lodging, onDetails: (Long) -> Unit) {
     // 🔍 Precio dinámico: habitación simple o primer precio
+    Log.d("LodgingCard", "Calculating price for lodging: ${lodging}")
     val simplePrice = lodging.roomOptions.find { it.category == RoomCategory.SIMPLE }?.price
         ?: lodging.roomOptions.firstOrNull()?.price
         ?: 0.0

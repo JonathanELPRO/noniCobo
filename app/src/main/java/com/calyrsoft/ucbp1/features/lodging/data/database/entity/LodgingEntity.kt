@@ -10,21 +10,11 @@ import androidx.room.*
 import com.calyrsoft.ucbp1.features.auth.data.database.entity.UserEntity
 
 @Entity(
-    tableName = "lodgings",
-    foreignKeys = [
-        ForeignKey(
-            entity = UserEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["ownerAdminId"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.NO_ACTION
-        )
-    ],
-    indices = [Index("ownerAdminId")]
+    tableName = "lodgings"
 )
 @TypeConverters(Converters::class)
 data class LodgingEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey() val id: Long,
     val name: String,
     val type: String,
     val district: String?,

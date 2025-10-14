@@ -3,11 +3,14 @@ package com.calyrsoft.ucbp1.navigation
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.calyrsoft.ucbp1.dataStore.AuthDataStore
 import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
 //import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen
@@ -18,6 +21,7 @@ import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
+import com.calyrsoft.ucbp1.features.logout.Logout
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
@@ -183,13 +187,12 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                         NavigationOptions.CLEAR_BACK_STACK
                     )
                 },
-                onLoginSuccessGoToRegisterLodging = { userId ->
+                onLoginSuccessGoToRegisterLodging = {
                     navigationViewModel.navigateTo(
-                        "lodging_editor/$userId",
+                        Screen.LodgingEditor.route,
                         NavigationOptions.CLEAR_BACK_STACK
                     )
                 },
-
                 onRegisterClick = {
                     navigationViewModel.navigateTo(
                         Screen.AuthRegister.route,
@@ -228,7 +231,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                         "lodging_details/$id",
                         NavigationOptions.DEFAULT
                     )
-                }
+                },
             )
         }
 
@@ -246,16 +249,11 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 
 
         composable(
-            Screen.LodgingEditor.route,
-            arguments = listOf(
-                navArgument("userId") { type = androidx.navigation.NavType.LongType }
-            )
-        ) { backStack ->
-            val userId = backStack.arguments!!.getLong("userId")
+            Screen.LodgingEditor.route
+        ) {
             LodgingEditorScreen(
                 currentRole = com.calyrsoft.ucbp1.features.auth.domain.model.Role.ADMIN,
                 vm = koinViewModel(),
-                userId = userId,
                 onSaved = { navController.popBackStack() }
             )
         }
@@ -293,6 +291,19 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
             val reservationId = backStack.arguments!!.getLong("reservationId")
             PaymentScreen(vm = koinViewModel(), reservationId = reservationId)
         }
+
+        composable(Screen.Logout.route) {
+            Logout(
+                authViewModel = koinViewModel(),
+                onLogoutComplete = {
+                    navigationViewModel.navigateTo(
+                        Screen.AuthLogin.route,
+                        NavigationOptions.CLEAR_BACK_STACK
+                    )
+                }
+            )
+        }
+
 
 
 

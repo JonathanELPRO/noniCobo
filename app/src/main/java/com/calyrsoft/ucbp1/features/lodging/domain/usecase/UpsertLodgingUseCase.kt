@@ -5,11 +5,7 @@ import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
 
 class UpsertLodgingUseCase(private val repo: ILodgingRepository) {
-    suspend operator fun invoke(currentRole: Role, lodging: Lodging): Result<Unit> {
-        require(currentRole == Role.ADMIN)
-        //require(condición)	Verifica una condición antes de ejecutar algo.
-        //Si la condición es verdadera	El código sigue ejecutándose normalmente.
-        //Si la condición es falsa	Lanza IllegalArgumentException y corta la ejecución.
+    suspend operator fun invoke(lodging: Lodging): Result<Unit> {
         return repo.upsert(lodging)
     }
 }

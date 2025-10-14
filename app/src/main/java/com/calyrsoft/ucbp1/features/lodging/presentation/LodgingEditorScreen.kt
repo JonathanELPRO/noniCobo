@@ -1,6 +1,7 @@
 package com.calyrsoft.ucbp1.features.lodging.presentation
 
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -24,23 +25,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.calyrsoft.ucbp1.features.auth.domain.model.Role
+import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.lodging.domain.model.*
+import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LodgingEditorScreen(
     currentRole: Role,
     vm: LodgingEditorViewModel = koinViewModel(),
-    userId: Long,
     onSaved: () -> Unit = {}
 ) {
+    val authViewModel: AuthViewModel = getViewModel()
+    val userId by authViewModel.userId.collectAsState()
     val state by vm.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     //Guarda un valor en memoria mientras el Composable está en composición.
     //Pero si la pantalla se destruye o gira el dispositivo, el valor se pierde.
     //con remember Saveable podemos guardar este valor incluso si el usuario gira su pantalla
     //y eso esta bien para nuestro formulario
+
+    LaunchedEffect(userId) {
+        Log.d("UserID", "Nuevo ID detectado en LodgingEditorScreen: $userId")
+    }
 
     // Variables de formulario
     var name by rememberSaveable { mutableStateOf("") }
@@ -151,7 +160,7 @@ fun LodgingEditorScreen(
                                 address = address,
                                 contactPhone = contact,
                                 open24h = open24h,
-                                ownerAdminId = userId,
+                                ownerAdminId = userId?:0,
                                 latitude = latitude.toDoubleOrNull(),
                                 longitude = longitude.toDoubleOrNull(),
                                 roomOptions = rooms,

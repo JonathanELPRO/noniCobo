@@ -1,12 +1,23 @@
 package com.calyrsoft.ucbp1.features.lodging.data.repository
 
+import com.calyrsoft.ucbp1.features.auth.domain.model.Role
+import com.calyrsoft.ucbp1.features.auth.domain.model.User
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
+import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingRemoteDataSource
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
+import com.calyrsoft.ucbp1.features.lodging.domain.model.LodgingType
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
+import com.example.imperium_reality.features.register.data.api.dto.LodgingDto
+import com.example.imperium_reality.features.register.data.error.DataException
+import com.example.imperium_reality.features.register.domain.error.Failure
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+
 
 class LodgingRepository(
-    private val ds: LodgingLocalDataSource
+    private val ds: LodgingLocalDataSource,
+    private val remoteDataSource: LodgingRemoteDataSource
 ) : ILodgingRepository {
 
     override fun observeAll(): Flow<List<Lodging>> {
@@ -22,6 +33,40 @@ class LodgingRepository(
         }
     }
 
+    override suspend fun getLodgingDetails(id: Long): Result<Lodging> {
+        val response = remoteDataSource.getLodgingDetail(id)
+        response.fold(
+            onSuccess = {
+                    it ->
+
+                return Result.success(Lodging(
+                    id = it.id,
+                    name = it.name,
+                    type = LodgingType.valueOf(it.type),
+                    address = it.address,
+                    contactPhone = it.contactPhone,
+                    open24h = it.open24h,
+                    ownerAdminId = it.ownerAdminId,
+                    latitude = it.latitude,
+                    longitude = it.longitude,
+                    stayOptions = it.stayOptions,
+                    roomOptions = it.roomOptions,
+                    placeImageUri = it.placeImageUri,
+                    licenseImageUri = it.licenseImageUri
+                ))
+            },
+            onFailure = { exception ->
+                val failure = when (exception) {
+                    is DataException.Network -> Failure.NetworkConnection
+                    is DataException.HttpNotFound -> Failure.NotFound
+                    is DataException.NoContent -> Failure.EmptyBody
+                    is DataException.Unknown -> Failure.Unknown(exception)
+                    else -> Failure.Unknown(exception)
+                }
+                return Result.failure(failure)
+            })
+    }
+
 
     override suspend fun upsert(lodging: Lodging): Result<Unit> {
         return try {
@@ -31,5 +76,78 @@ class LodgingRepository(
             Result.failure(e)
         }
     }
+
+    override suspend fun addLodging (lodging: Lodging): Result<Unit> {
+        return try {
+
+            remoteDataSource.addLodging(
+                LodgingDto(
+                    id=null,
+                lodging.name,
+                lodging.type.name,
+                lodging.address,
+                lodging.address,
+                lodging.contactPhone,
+                lodging.open24h,
+                lodging.ownerAdminId,
+                    lodging.latitude,
+                    lodging.longitude,
+                lodging.stayOptions,
+                lodging.roomOptions,
+                    lodging.placeImageUri,
+                    lodging.licenseImageUri
+                )
+
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getLodgingsByAdmin(id: Long): Flow<List<Lodging>> {
+        return remoteDataSource.getLodgingsByAdmin(id).map { dtoList ->
+            dtoList.map { dto ->
+                Lodging(
+                    id = dto.id ?: 0L,
+                    name = dto.name,
+                    type = LodgingType.valueOf(dto.type),
+                    address = dto.address,
+                    contactPhone = dto.contactPhone,
+                    open24h = dto.open24h,
+                    ownerAdminId = dto.ownerAdminId,
+                    latitude = dto.latitude,
+                    longitude = dto.longitude,
+                    stayOptions = dto.stayOptions,
+                    roomOptions = dto.roomOptions,
+                    placeImageUri = dto.placeImageUri,
+                    licenseImageUri = dto.licenseImageUri
+                )
+            }
+        }
+    }
+
+    override suspend fun getAllLodgings(): Flow<List<Lodging>> {
+        return remoteDataSource.getAllLodgings().map { dtoList ->
+            dtoList.map { dto ->
+                Lodging(
+                    id = dto.id ?: 0L,
+                    name = dto.name,
+                    type = LodgingType.valueOf(dto.type),
+                    address = dto.address,
+                    contactPhone = dto.contactPhone,
+                    open24h = dto.open24h,
+                    ownerAdminId = dto.ownerAdminId,
+                    latitude = dto.latitude,
+                    longitude = dto.longitude,
+                    stayOptions = dto.stayOptions,
+                    roomOptions = dto.roomOptions,
+                    placeImageUri = dto.placeImageUri,
+                    licenseImageUri = dto.licenseImageUri
+                )
+            }
+        }
+    }
+
 
 }

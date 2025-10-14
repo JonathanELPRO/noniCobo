@@ -52,6 +52,8 @@ sealed class Screen(val route: String) {
     /** Registrar pago (anticipo o saldo) */
     object ReservationPayment : Screen("reservation_payment/{reservationId}")
 
+    object Logout : Screen("logout")
+
 
 
 }
