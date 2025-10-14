@@ -69,6 +69,27 @@ class LodgingRemoteDataSource(
         }
     }
 
+
+    fun getAllLodgings(): Flow<List<LodgingResponseDto>> = flow {
+        val response = lodgingService.getAllLodging()
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) {
+                emit(body)
+            } else {
+                throw DataException.NoContent
+            }
+        } else if (response.code() == 404) {
+            throw DataException.HttpNotFound
+        } else {
+            throw DataException.Unknown(response.message())
+        }
+    }.catch { e ->
+        // opcional: puedes loggear el error aquí
+        throw e
+    }
+
+
     fun getLodgingsByAdmin(id: Long): Flow<List<LodgingResponseDto>> = flow {
         val response = lodgingService.getLodgingDetailByAdminId(ownerAdminId = "eq.$id")
         if (response.isSuccessful) {

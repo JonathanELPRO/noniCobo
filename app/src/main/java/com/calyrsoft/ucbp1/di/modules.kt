@@ -64,7 +64,7 @@ import com.calyrsoft.ucbp1.features.lodging.data.repository.LodgingRepository
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.AddLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdminUseCase
-import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsFromSupaBaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsFromSupbaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
@@ -324,15 +324,15 @@ val appModule = module {
     single<ILodgingRepository> { LodgingRepository(get(),get()) }
 
     // --- CASOS DE USO ---
-    factory { GetAllLodgingsUseCase(get()) }
     factory { GetLodgingDetailsUseCase(get()) }
     factory { UpsertLodgingUseCase(get()) }
     factory { AddLodgingUseCase(get()) }
     factory { GetAllLodgingsByAdminUseCase(get()) }
     factory{ GetLodgingDetailsFromSupbaseUseCase(get()) }
+    factory{ GetAllLodgingsFromSupaBaseUseCase(get())}
 
     // --- VIEWMODELS ---
-    viewModel { LodgingListViewModel(get(),get()) }
+    viewModel { LodgingListViewModel(get(),get(),get()) }
     viewModel { LodgingDetailsViewModel(get(),get()) }
     viewModel { LodgingEditorViewModel(get(),get()) }
 

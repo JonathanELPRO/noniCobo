@@ -118,8 +118,30 @@ class LodgingRepository(
                     ownerAdminId = dto.ownerAdminId,
                     latitude = dto.latitude,
                     longitude = dto.longitude,
-                    stayOptions = emptyList(),
-                    roomOptions = emptyList(),
+                    stayOptions = dto.stayOptions,
+                    roomOptions = dto.roomOptions,
+                    placeImageUri = dto.placeImageUri,
+                    licenseImageUri = dto.licenseImageUri
+                )
+            }
+        }
+    }
+
+    override suspend fun getAllLodgings(): Flow<List<Lodging>> {
+        return remoteDataSource.getAllLodgings().map { dtoList ->
+            dtoList.map { dto ->
+                Lodging(
+                    id = dto.id ?: 0L,
+                    name = dto.name,
+                    type = LodgingType.valueOf(dto.type),
+                    address = dto.address,
+                    contactPhone = dto.contactPhone,
+                    open24h = dto.open24h,
+                    ownerAdminId = dto.ownerAdminId,
+                    latitude = dto.latitude,
+                    longitude = dto.longitude,
+                    stayOptions = dto.stayOptions,
+                    roomOptions = dto.roomOptions,
                     placeImageUri = dto.placeImageUri,
                     licenseImageUri = dto.licenseImageUri
                 )

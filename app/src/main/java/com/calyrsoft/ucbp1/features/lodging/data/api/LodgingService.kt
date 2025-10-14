@@ -20,4 +20,7 @@ interface LodgingService {
     @GET("/rest/v1/lodgings")
     suspend fun getLodgingDetailByAdminId(@Query("select") select: String = "*",
                                  @Query("ownerAdminId") ownerAdminId: String): Response<List<LodgingResponseDto>>
+
+    @GET("/rest/v1/lodgings")
+    suspend fun getAllLodging(@Query("select") select: String = "*"): Response<List<LodgingResponseDto>>
 }

@@ -39,11 +39,17 @@ fun LodgingListScreen(
 ) {
     val authViewModel: AuthViewModel = getViewModel()
     val userId by authViewModel.userId.collectAsState()
+    val userRole by authViewModel.userRole.collectAsState()
+
     val state by vm.state.collectAsState()
     LaunchedEffect(userId) {
         Log.d("LodgingListScreen", "Loading lodgings for userId: $userId")
-        if (userId!=null) {
-            vm.load(userId!!)
+        if(userId!=null) {
+            if ( userRole == "ADMIN") {
+                vm.load(userId!!)
+            } else{
+                vm.loadAll()
+            }
         }
     }
 
@@ -152,6 +158,7 @@ fun LodgingListScreen(
 @Composable
 private fun LodgingCard(lodging: Lodging, onDetails: (Long) -> Unit) {
     // 🔍 Precio dinámico: habitación simple o primer precio
+    Log.d("LodgingCard", "Calculating price for lodging: ${lodging}")
     val simplePrice = lodging.roomOptions.find { it.category == RoomCategory.SIMPLE }?.price
         ?: lodging.roomOptions.firstOrNull()?.price
         ?: 0.0
