@@ -51,25 +51,6 @@ class RegisterViewModel(
                 }
             )
 
-//            _state.value = RegisterUIState.Loading
-//
-//            val registerResult = registerUserUseCase(
-//                User(username = username, email = email, phone = phone, role = role),
-//                password
-//            )
-//
-//            registerResult
-//                .onSuccess { id ->
-//                    val userResult = getCurrentUserUseCase(id)
-//                    userResult
-//                        .onSuccess { user -> _state.value = RegisterUIState.Success(user) }
-//                        .onFailure { e -> _state.value = RegisterUIState.Error(e.message ?: "Error al obtener usuario") }
-//                }
-//                .onFailure { e ->
-//                    _state.value = RegisterUIState.Error(e.message ?: "Error al registrar usuario")
-//                }
-
-
 
         }
     }
