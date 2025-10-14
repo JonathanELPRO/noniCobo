@@ -59,9 +59,13 @@ import com.calyrsoft.ucbp1.features.dollar.presentation.DollarViewModel
 import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.features.github.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
+import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingRemoteDataSource
 import com.calyrsoft.ucbp1.features.lodging.data.repository.LodgingRepository
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.AddLodgingUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdminUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsFromSupbaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
@@ -93,6 +97,7 @@ import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationViewMode
 import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappViewModel
 import com.calyrsoft.ucbp1.navigation.NavigationViewModel
 import com.example.imperium_reality.features.register.data.api.LodgingService
+import com.example.ucbp1.features.register.data.api.RegisterService
 import com.example.ucbp1.interceptors.supabase.SupabaseAuthInterceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -275,6 +280,9 @@ val appModule = module {
     // --- DATA SOURCE ---
     single { AuthLocalDataSource(get()) }
 
+    single<RegisterService> {
+        get<Retrofit>(named("SUPABASE")).create(RegisterService::class.java)
+    }
     single<LodgingService> {
         get<Retrofit>(named("SUPABASE")).create(LodgingService::class.java)
     }
@@ -310,19 +318,23 @@ val appModule = module {
 
     // --- DATA SOURCE ---
     single { LodgingLocalDataSource(get()) }
-
+    // REMOTE DATA ROURCE
+    single { LodgingRemoteDataSource(get()) }
     // --- REPOSITORIO ---
-    single<ILodgingRepository> { LodgingRepository(get()) }
+    single<ILodgingRepository> { LodgingRepository(get(),get()) }
 
     // --- CASOS DE USO ---
     factory { GetAllLodgingsUseCase(get()) }
     factory { GetLodgingDetailsUseCase(get()) }
     factory { UpsertLodgingUseCase(get()) }
+    factory { AddLodgingUseCase(get()) }
+    factory { GetAllLodgingsByAdminUseCase(get()) }
+    factory{ GetLodgingDetailsFromSupbaseUseCase(get()) }
 
     // --- VIEWMODELS ---
-    viewModel { LodgingListViewModel(get()) }
-    viewModel { LodgingDetailsViewModel(get()) }
-    viewModel { LodgingEditorViewModel(get()) }
+    viewModel { LodgingListViewModel(get(),get()) }
+    viewModel { LodgingDetailsViewModel(get(),get()) }
+    viewModel { LodgingEditorViewModel(get(),get()) }
 
 
 

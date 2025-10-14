@@ -232,7 +232,6 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                         NavigationOptions.DEFAULT
                     )
                 },
-                authDataStore = AuthDataStore(LocalContext.current)
             )
         }
 

@@ -3,18 +3,22 @@ package com.calyrsoft.ucbp1.features.auth.data.datasource
 import android.util.Log
 import com.calyrsoft.ucbp1.features.auth.data.api.LoginService
 import com.calyrsoft.ucbp1.features.auth.domain.model.Role
-import com.example.imperium_reality.features.register.data.api.LodgingService
-import com.example.imperium_reality.features.register.data.api.dto.RegisterUserDto
 import com.example.imperium_reality.features.register.data.error.DataException
+import com.example.ucbp1.features.login.data.api.dto.LoginRequestDto
+import com.example.ucbp1.features.login.data.api.dto.LoginResponseDto
+import com.example.ucbp1.features.register.data.api.RegisterService
+import com.example.ucbp1.features.register.data.api.dto.RegisterRequestDto
+import com.example.ucbp1.features.register.data.api.dto.RegisterResponseDto
+import com.example.ucbp1.features.register.data.api.dto.RegisterUserDto
 import kotlin.toString
 
 
 class RegisterRemoteDataSource(
-    val registerService: LodgingService,
+    val registerService: RegisterService,
     val loginService: LoginService
 ) {
     suspend fun login(email: String, password: String): Result<LoginResponseDto> {
-        val response = loginService.login(LoginRequestDto(email,password))
+        val response = loginService.login(LoginRequestDto(email, password))
         Log.d("LoginRemoteDataSource","Response: $response")
         if (response.isSuccessful) {
             val body = response.body()
@@ -47,9 +51,9 @@ class RegisterRemoteDataSource(
                 email = email,
                 password = password,
                 data = RegisterUserDto(
-                    phone = phone?:"",
+                    phone = phone ?: "",
                     username = username,
-                    email=email,
+                    email = email,
                     role = role.toString()
                 )
             )

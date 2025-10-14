@@ -1,4 +1,4 @@
-package com.example.imperium_reality.features.login.data.api.dto
+package com.example.ucbp1.features.login.data.api.dto
 
 import com.google.gson.annotations.SerializedName
 
