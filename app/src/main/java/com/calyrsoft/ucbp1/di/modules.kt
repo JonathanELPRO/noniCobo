@@ -2,14 +2,17 @@ package com.calyrsoft.ucbp1.di
 
 import com.calyrsoft.ucbp1.BuildConfig
 import com.calyrsoft.ucbp1.dataStore.AuthDataStore
+import com.calyrsoft.ucbp1.features.auth.data.api.GetUserService
 import com.calyrsoft.ucbp1.features.auth.data.api.LoginService
 import com.calyrsoft.ucbp1.features.auth.data.database.AppRoomDatabaseProject
 import com.calyrsoft.ucbp1.features.auth.data.datasource.AuthLocalDataSource
+import com.calyrsoft.ucbp1.features.auth.data.datasource.GetUserRemoteDataSource
 import com.calyrsoft.ucbp1.features.auth.data.datasource.RegisterRemoteDataSource
 import com.calyrsoft.ucbp1.features.auth.data.repository.AuthDataStoreRepository
 import com.calyrsoft.ucbp1.features.auth.data.repository.AuthRepository
 import com.calyrsoft.ucbp1.features.auth.domain.repository.IAuthDataStoreRepository
 import com.calyrsoft.ucbp1.features.auth.domain.repository.IAuthRepository
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserByEmailUseCase
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserUseCase
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetUserRole
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginUseCase
@@ -279,9 +282,14 @@ val appModule = module {
     single<LoginService> {
         get<Retrofit>(named("SUPABASE")).create(LoginService::class.java)
     }
+    single<GetUserService> {
+        get<Retrofit>(named("SUPABASE")).create(GetUserService::class.java)
+    }
     single{ RegisterRemoteDataSource(get(),get()) }
+    single{ GetUserRemoteDataSource(get()) }
+
     // --- REPOSITORIO ---
-    single<IAuthRepository> { AuthRepository(get(),get(),get()) }
+    single<IAuthRepository> { AuthRepository(get(),get(),get(),get()) }
 
     // --- CASOS DE USO ---
     factory { RegisterUserUseCase(get()) }
@@ -289,9 +297,11 @@ val appModule = module {
     factory { LoginUseCase(get()) }
     factory { LoginWithSupabaseUseCase(get()) }
     factory { GetCurrentUserUseCase(get()) }
+    factory { GetCurrentUserByEmailUseCase(get()) }
+
 
     // --- VIEWMODEL ---
-    viewModel { LoginViewModel2(get(),get(),get()) }
+    viewModel { LoginViewModel2(get(),get(),get(),get()) }
     viewModel { RegisterViewModel(get(), get(),get(),androidContext()) }
 
 

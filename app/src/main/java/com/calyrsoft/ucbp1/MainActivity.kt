@@ -333,8 +333,8 @@ class MainActivity : ComponentActivity() {
                 val authViewModel: AuthViewModel = getViewModel()
 
                 val isLoggedIn by authViewModel.isLoggedIn.collectAsState(initial = false)
-
-                MainApp(navigationViewModel,isLoggedIn)
+                val userRole by authViewModel.userRole.collectAsState(initial = "CLIENT")
+                MainApp(navigationViewModel,isLoggedIn,userRole?:"CLIENT")
                 Column {
                     MaintenanceBanner()
 

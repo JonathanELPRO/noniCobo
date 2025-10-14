@@ -7,7 +7,9 @@ data class UserMetadataDto(
     @SerializedName("phone") val phone: String,
     @SerializedName("role") val role: String,
     @SerializedName("username") val username: String,
-    @SerializedName("customer_id") val customerId: Int? // nuestro campo entero
+    @SerializedName("customer_id") val customerId: Int?,// nuestro campo ,
+    @SerializedName("id") val id: Long? // nuestro campo entero
+
 )
 
 // Datos del usuario principal

@@ -3,6 +3,7 @@ package com.calyrsoft.ucbp1.dataStore
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
@@ -22,8 +23,15 @@ class AuthDataStore(
         prefs[ROLE]
     }
 
+    val userIdFlow = context.dataStore.data.map { prefs ->
+        prefs[ID]
+    }
+
     companion object {
         val USER_EMAIL = stringPreferencesKey("email")
+
+        val ID = longPreferencesKey("id")
+
         val TOKEN = stringPreferencesKey("token")
 
         val ROLE = stringPreferencesKey("role")
@@ -43,6 +51,15 @@ class AuthDataStore(
             preferences[TOKEN] = token
         }
     }
+
+
+    // Guardar id
+    suspend fun saveId(id: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[ID] = id
+        }
+    }
+
 
     // Guardar ambos a la vez
     suspend fun saveUser(email: String, token: String,role:String) {
@@ -73,6 +90,14 @@ class AuthDataStore(
     suspend fun getRole(): Result<String> {
         val preferences = context.dataStore.data.first()
         return preferences[ROLE]?.let {
+            Result.success(it)
+        } ?: Result.failure(Exception("Role not found"))
+    }
+
+    // Obtener id
+    suspend fun getId(): Result<Long> {
+        val preferences = context.dataStore.data.first()
+        return preferences[ID]?.let {
             Result.success(it)
         } ?: Result.failure(Exception("Role not found"))
     }

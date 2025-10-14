@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.dataStore.AuthDataStore
 import com.calyrsoft.ucbp1.features.auth.domain.model.User
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserByEmailUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserUseCase
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginUseCase
 import com.calyrsoft.ucbp1.features.auth.domain.usecase.LoginWithSupabaseUseCase
 import com.google.firebase.messaging.FirebaseMessaging
@@ -18,7 +20,8 @@ import kotlin.coroutines.suspendCoroutine
 class LoginViewModel2(
     private val loginUseCase: LoginUseCase,
     private val loginWithSupabaseUseCase: LoginWithSupabaseUseCase,
-    private val authDataStore: AuthDataStore
+    private val authDataStore: AuthDataStore,
+    private val getCurrentUserByEmailUseCase: GetCurrentUserByEmailUseCase
 ) : ViewModel() {
 
     sealed class LoginUIState {
@@ -34,13 +37,28 @@ class LoginViewModel2(
     fun login(userOrEmail: String, password: String) {
         viewModelScope.launch {
             _state.value = LoginUIState.Loading
-            val result= loginWithSupabaseUseCase(userOrEmail,password)
-            result
-                .onSuccess { user -> _state.value = LoginUIState.Success(user)
+
+            val loginResult = loginWithSupabaseUseCase(userOrEmail, password)
+
+            loginResult
+                .onFailure { e ->
+                    _state.value = LoginUIState.Error(e.message ?: "Error al iniciar sesión")
+                    return@launch // 👈 Detenemos aquí si el login falla
                 }
-                .onFailure { e -> _state.value = LoginUIState.Error(e.message ?: "Error al iniciar sesión") }
+
+            val userResult = getCurrentUserByEmailUseCase(userOrEmail)
+
+            userResult
+                .onSuccess { user ->
+                    _state.value = LoginUIState.Success(user)
+                    Log.d("LoginViewModel2", "Usuario obtenido: $user")
+                }
+                .onFailure { e ->
+                    _state.value = LoginUIState.Error(e.message ?: "Error al obtener información del usuario")
+                }
         }
     }
+
 
     fun resetState() {
         _state.value = LoginUIState.Init

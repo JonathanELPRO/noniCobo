@@ -3,6 +3,7 @@ package com.calyrsoft.ucbp1.features.auth.data.repository
 import android.util.Log
 import com.calyrsoft.ucbp1.dataStore.AuthDataStore
 import com.calyrsoft.ucbp1.features.auth.data.datasource.AuthLocalDataSource
+import com.calyrsoft.ucbp1.features.auth.data.datasource.GetUserRemoteDataSource
 import com.calyrsoft.ucbp1.features.auth.data.datasource.RegisterRemoteDataSource
 import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 import com.calyrsoft.ucbp1.features.auth.domain.model.User
@@ -15,6 +16,7 @@ import java.security.MessageDigest
 class AuthRepository(
     private val ds: AuthLocalDataSource,
     private val remoteDataSource: RegisterRemoteDataSource,
+    private val getUserRemoteDataSource: GetUserRemoteDataSource,
     private val authViewModel: AuthViewModel
 
 ) : IAuthRepository {
@@ -124,6 +126,35 @@ class AuthRepository(
                     username = it.user.userMetadata.username,
                     phone = it.user.userMetadata.phone,
                     role = Role.valueOf(it.user.userMetadata.role.uppercase()),
+                ))
+            },
+            onFailure = { exception ->
+                val failure = when (exception) {
+                    is DataException.Network -> Failure.NetworkConnection
+                    is DataException.HttpNotFound -> Failure.NotFound
+                    is DataException.NoContent -> Failure.EmptyBody
+                    is DataException.Unknown -> Failure.Unknown(exception)
+                    else -> Failure.Unknown(exception)
+                }
+                return Result.failure(failure)
+            })
+    }
+    override suspend fun getByEmail(email: String): Result<User> {
+
+        if(email.isEmpty()) {
+            return Result.failure(Exception("El email no puede ser vacio."))
+        }
+        val response = getUserRemoteDataSource.getByEmail(email)
+        response.fold(
+            onSuccess = {
+                    it ->
+
+                return Result.success(User(
+                    email = it.email,
+                    username = it.username,
+                    phone = it.phone,
+                    role = Role.valueOf(it.role.uppercase()),
+                    id = it.id
                 ))
             },
             onFailure = { exception ->
