@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdminUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsFromSupaBaseUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.ObserveAllLocalLodgingsUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,9 @@ import kotlinx.coroutines.launch
 class LodgingListViewModel(
     private val getAllLodgingsByAdminUseCase: GetAllLodgingsByAdminUseCase,
     private val getAllLodgingsUseCase: GetAllLodgingsFromSupaBaseUseCase,
-    private val upsertLodgingUseCase: UpsertLodgingUseCase
+    private val upsertLodgingUseCase: UpsertLodgingUseCase,
+    private val observeAllLocalLodgingsUseCase: ObserveAllLocalLodgingsUseCase
+
 ) : ViewModel() {
 
     sealed class LodgingListStateUI {
@@ -59,6 +62,7 @@ class LodgingListViewModel(
         viewModelScope.launch {
             getAllLodgingsUseCase()
                 .catch { e ->
+                    observeLocalFallback()
                     _state.value = LodgingListStateUI.Error(
                         e.message ?: "Error al obtener los alojamientos"
                     )
@@ -70,5 +74,24 @@ class LodgingListViewModel(
                     _state.value = LodgingListStateUI.Success(list)
                 }
         }
+
+
+    }
+
+    private suspend fun observeLocalFallback() {
+        observeAllLocalLodgingsUseCase()
+            .catch { e ->
+                _state.value = LodgingListStateUI.Error(
+                    e.message ?: "Error al cargar los datos locales"
+                )
+            }
+            .collect { localList ->
+                if (localList.isNotEmpty()) {
+                    Log.d("LodgingListViewModel", "Datos locales recuperados (${localList.size})")
+                    _state.value = LodgingListStateUI.Success(localList)
+                } else {
+                    _state.value = LodgingListStateUI.Error("Sin conexión y sin datos locales disponibles")
+                }
+            }
     }
 }

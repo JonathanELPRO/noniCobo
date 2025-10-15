@@ -9,6 +9,7 @@ import okhttp3.Response
 class GetUserRemoteDataSource(val getUserService: GetUserService) {
     suspend fun getByEmail(email:String): Result<UserMetadataDto>{
         val response = getUserService.getByEmail(email="eq.$email")
+        //lo de arriba es lo mismo que hacer: https://<tu-proyecto>.supabase.co/rest/v1/users?select=*&email=eq.usuario@correo.com
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {

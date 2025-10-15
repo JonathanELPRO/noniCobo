@@ -109,6 +109,6 @@ sealed class NavigationDrawer(
         "Cerrar Sesion",
         Icons.Filled.Logout,
         Icons.Outlined.Logout,
-        Screen.AuthLogin.route
+        Screen.Logout.route
     )
 }

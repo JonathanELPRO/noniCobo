@@ -67,6 +67,7 @@ import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdmin
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsFromSupaBaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsFromSupbaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.ObserveAllLocalLodgingsUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel
@@ -330,9 +331,11 @@ val appModule = module {
     factory { GetAllLodgingsByAdminUseCase(get()) }
     factory{ GetLodgingDetailsFromSupbaseUseCase(get()) }
     factory{ GetAllLodgingsFromSupaBaseUseCase(get())}
+    factory{ ObserveAllLocalLodgingsUseCase(get())}
+
 
     // --- VIEWMODELS ---
-    viewModel { LodgingListViewModel(get(),get(),get()) }
+    viewModel { LodgingListViewModel(get(),get(),get(), get()) }
     viewModel { LodgingDetailsViewModel(get(),get()) }
     viewModel { LodgingEditorViewModel(get(),get()) }
 

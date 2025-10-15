@@ -30,6 +30,7 @@ fun LoginScreen2(
     LaunchedEffect(Unit) {
         vm.getToken()
     }
+    //Launched effect se ejecuta una vez al crearse y luego cada vez que alguien cambia lo que se le manda en key1
 
     val state by vm.state.collectAsState()
     var userOrEmail by remember { mutableStateOf("") }
@@ -107,10 +108,12 @@ fun LoginScreen2(
                 is LoginViewModel2.LoginUIState.Loading -> CircularProgressIndicator(color = Color(0xFFB00020))
                 is LoginViewModel2.LoginUIState.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
                 is LoginViewModel2.LoginUIState.Success -> {
+                    //si yo hago login se guarda: email, token y rol
                     Log.d("USERROLE", "userRole: $userRole")
                     if (!userRole.isNullOrEmpty()) { // evita null
                         authViewModel.saveId(st.user.id)
                     }
+                    //si tu haces login ya puedes monitorizar el rol y el id
                 }
                 else -> Unit
             }

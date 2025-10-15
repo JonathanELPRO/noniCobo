@@ -9,5 +9,8 @@ import retrofit2.http.Path
 
 interface LoginService {
     @POST("/auth/v1/token?grant_type=password")
+//    /auth/v1/token → ruta del servicio de autenticación de Supabase.
+//
+//    ?grant_type=password → indica el tipo de autenticación que estás usando (en este caso, usuario + contraseña).
     suspend fun login(@Body loginRequest: LoginRequestDto): Response<LoginResponseDto>
 }
