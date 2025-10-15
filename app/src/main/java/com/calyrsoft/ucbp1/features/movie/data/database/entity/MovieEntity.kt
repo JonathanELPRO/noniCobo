@@ -23,4 +23,6 @@ data class MovieEntity(
     @ColumnInfo(name = "isFavorite")
     var isFavorite: Boolean,
 
+    @ColumnInfo(name = "timestamp")
+    var timestamp: Long = System.currentTimeMillis(),
 )
