@@ -4,23 +4,21 @@ import com.calyrsoft.ucbp1.features.auth.data.database.entity.UserEntity
 import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 import com.calyrsoft.ucbp1.features.auth.domain.model.User
 
-fun UserEntity.toDomain(): User {
-    return User(
-        id = id,
-        username = username,
-        email = email,
-        phone = phone,
-        role = Role.valueOf(role)
+fun UserEntity.toDomain(): User =
+    User.create(
+        id = this.id,
+        username = this.username,
+        email = this.email,
+        phone = this.phone,
+        role = this.role
     )
-}
 
-fun User.toEntity(hash: String): UserEntity {
-    return UserEntity(
-        id = id ?: 0,
-        username = username,
-        email = email,
-        phone = phone,
-        role = role.name,
+fun User.toEntity(hash: String): UserEntity =
+    UserEntity(
+        id = this.id, // Room autogenera si viene null
+        username = this.username.toString(),
+        email = this.email.toString(),
+        phone = this.phone?.toString(),
+        role = this.role.name,
         passwordHash = hash
     )
-}

@@ -44,7 +44,7 @@ abstract class AppRoomDatabaseProject : RoomDatabase() {
                     AppRoomDatabaseProject::class.java,
                     "mr_db"
                 )
-                    .fallbackToDestructiveMigration()
+
                     .build()
                     .also { Instance = it }
             }

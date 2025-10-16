@@ -235,19 +235,19 @@ private fun FormContent(
         OutlinedTextField(value = district, onValueChange = onDistrictChange, label = { Text("Zona o Barrio") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
         OutlinedTextField(value = address, onValueChange = onAddressChange, label = { Text("Dirección") }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp))
 
-        Divider(color = Color.LightGray, thickness = 1.dp)
+        HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
 
         Text("Coordenadas:", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
         OutlinedTextField(value = latitude, onValueChange = onLatitudeChange, label = { Text("Latitud") }, modifier = Modifier.fillMaxWidth())
         OutlinedTextField(value = longitude, onValueChange = onLongitudeChange, label = { Text("Longitud") }, modifier = Modifier.fillMaxWidth())
 
-        Divider(color = Color.LightGray, thickness = 1.dp)
+        HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
 
         Text("Imágenes:", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
         UploadImageButton(uri = placeImageUri, text = "Imagen del lugar", onClick = onPickPlaceImage)
         UploadImageButton(uri = licenseImageUri, text = "Licencia de Funcionamiento", onClick = onPickLicenseImage)
 
-        Divider(color = Color.LightGray, thickness = 1.dp)
+        HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
 
         Text("Tipo de Habitación:", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
         PriceField("Simple", priceSimple, onPriceSimpleChange)

@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
 class RegisterViewModel(
     private val registerUserUseCase: RegisterUserUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val registerToSupabaseUserCase: RegisterToSupabaseUserCase, val context: Context
+    private val registerToSupabaseUserCase: RegisterToSupabaseUserCase,
+    val context: Context
 ) : ViewModel() {
 
     sealed class RegisterUIState {
@@ -34,24 +35,30 @@ class RegisterViewModel(
         val errorMessageProvider = ErrorMessageProvider(context)
         viewModelScope.launch {
             _state.value = RegisterUIState.Loading
+            val domainUser = try {
+                User.create(
+                    id = null,
+                    username = username,
+                    email = email,
+                    phone = phone,
+                    role = role.name  // create(...) acepta String: "CLIENT", "ADMIN", etc.
+                )
+            } catch (e: IllegalArgumentException) {
+                _state.value = RegisterUIState.Error(e.message ?: "Datos inválidos")
+                return@launch
+            }
 
-            val result = registerToSupabaseUserCase(
-                User(username = username, email = email, phone = phone, role = role),
-                password
-            )
+            val result = registerToSupabaseUserCase(domainUser, password)
+
             result.fold(
                 onSuccess = { user ->
-                    _state.value =
-                        RegisterUIState.Success(user)
+                    _state.value = RegisterUIState.Success(user)
                 },
                 onFailure = {
                     val message = errorMessageProvider.getMessage(it as Failure)
-                    _state.value =
-                        RegisterUIState.Error(message = message)
+                    _state.value = RegisterUIState.Error(message = message)
                 }
             )
-
-
         }
     }
 
