@@ -60,9 +60,11 @@ import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordViewModel
 import com.calyrsoft.ucbp1.features.github.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingRemoteDataSource
+import com.calyrsoft.ucbp1.features.lodging.data.datasource.RealTimeRemoteDataSource2
 import com.calyrsoft.ucbp1.features.lodging.data.repository.LodgingRepository
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.AddLodgingUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAddinRealTime
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdminUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsFromSupaBaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsFromSupbaseUseCase
@@ -296,6 +298,8 @@ val appModule = module {
     single{ RegisterRemoteDataSource(get(),get()) }
     single{ GetUserRemoteDataSource(get()) }
 
+    single{ RealTimeRemoteDataSource2() }
+
     // --- REPOSITORIO ---
     single<IAuthRepository> { AuthRepository(get(),get(),get(),get()) }
 
@@ -322,7 +326,7 @@ val appModule = module {
     // REMOTE DATA ROURCE
     single { LodgingRemoteDataSource(get()) }
     // --- REPOSITORIO ---
-    single<ILodgingRepository> { LodgingRepository(get(),get()) }
+    single<ILodgingRepository> { LodgingRepository(get(),get(),get()) }
 
     // --- CASOS DE USO ---
     factory { GetLodgingDetailsUseCase(get()) }
@@ -332,10 +336,11 @@ val appModule = module {
     factory{ GetLodgingDetailsFromSupbaseUseCase(get()) }
     factory{ GetAllLodgingsFromSupaBaseUseCase(get())}
     factory{ ObserveAllLocalLodgingsUseCase(get())}
+    factory{ GetAddinRealTime(get()) }
 
 
     // --- VIEWMODELS ---
-    viewModel { LodgingListViewModel(get(),get(),get(), get()) }
+    viewModel { LodgingListViewModel(get(),get(),get(), get(),get()) }
     viewModel { LodgingDetailsViewModel(get(),get()) }
     viewModel { LodgingEditorViewModel(get(),get()) }
 

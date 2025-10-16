@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAddinRealTime
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdminUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsFromSupaBaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.ObserveAllLocalLodgingsUseCase
@@ -20,7 +21,8 @@ class LodgingListViewModel(
     private val getAllLodgingsByAdminUseCase: GetAllLodgingsByAdminUseCase,
     private val getAllLodgingsUseCase: GetAllLodgingsFromSupaBaseUseCase,
     private val upsertLodgingUseCase: UpsertLodgingUseCase,
-    private val observeAllLocalLodgingsUseCase: ObserveAllLocalLodgingsUseCase
+    private val observeAllLocalLodgingsUseCase: ObserveAllLocalLodgingsUseCase,
+    private val getAddinRealTime: GetAddinRealTime
 
 ) : ViewModel() {
 
@@ -33,6 +35,31 @@ class LodgingListViewModel(
 
     private val _state = MutableStateFlow<LodgingListStateUI>(LodgingListStateUI.Init)
     val state: StateFlow<LodgingListStateUI> = _state.asStateFlow()
+
+    private val _adUrl = MutableStateFlow<String?>(null)
+    val adUrl: StateFlow<String?> = _adUrl.asStateFlow()
+
+    private val _showAd = MutableStateFlow(true)
+    val showAd: StateFlow<Boolean> = _showAd.asStateFlow()
+
+    private var adStarted = false
+
+    fun startAdListener() {
+        if (adStarted) return
+        adStarted = true
+        viewModelScope.launch {
+            getAddinRealTime()
+                .catch { /* log/ignore */ }
+                .collect { ad ->
+                    _adUrl.value = ad.UrlImagen
+                    // Si cambió la URL, fuerza que se muestre (opcional):
+                    _showAd.value = true
+                }
+        }
+    }
+
+    fun dismissAd() { _showAd.value = false }
+    fun resetAdVisibility() { _showAd.value = true }
 
     fun load(id:Long) {
         _state.value = LodgingListStateUI.Loading

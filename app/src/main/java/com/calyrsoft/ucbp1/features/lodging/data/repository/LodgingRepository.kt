@@ -1,9 +1,9 @@
 package com.calyrsoft.ucbp1.features.lodging.data.repository
 
-import com.calyrsoft.ucbp1.features.auth.domain.model.Role
-import com.calyrsoft.ucbp1.features.auth.domain.model.User
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingRemoteDataSource
+import com.calyrsoft.ucbp1.features.lodging.data.datasource.RealTimeRemoteDataSource2
+import com.calyrsoft.ucbp1.features.lodging.domain.model.AddModel
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.model.LodgingType
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
@@ -11,14 +11,18 @@ import com.example.imperium_reality.features.register.data.api.dto.LodgingDto
 import com.example.imperium_reality.features.register.data.error.DataException
 import com.example.imperium_reality.features.register.domain.error.Failure
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 
 class LodgingRepository(
     private val ds: LodgingLocalDataSource,
-    private val remoteDataSource: LodgingRemoteDataSource
+    private val remoteDataSource: LodgingRemoteDataSource,
+    private val realTimeRemoteDataSource: RealTimeRemoteDataSource2
 ) : ILodgingRepository {
+
+    override fun getAddfromFirebase(): Flow<AddModel>{
+        return realTimeRemoteDataSource.getAddsUpdate()
+    }
 
     override fun observeAll(): Flow<List<Lodging>> {
         return ds.observeAll()
