@@ -216,6 +216,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                         Screen.AuthLogin.route,
                         NavigationOptions.REPLACE_HOME
                     )
+
                 }
 
             )
