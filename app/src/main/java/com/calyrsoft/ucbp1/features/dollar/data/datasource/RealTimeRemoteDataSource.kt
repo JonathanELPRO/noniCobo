@@ -20,7 +20,7 @@ class RealTimeRemoteDataSource {
                 close(p0.toException())
             }
             override fun onDataChange(p0: DataSnapshot) {
-//                val value = p0.getValue(String::class.java)
+//                val value = p0.getValue(String::class.java)eastern.eel.wegs@hidesmail.net
                 val value = p0.getValue(DollarModel::class.java)
                 if (value != null) {
                     val withTimestamp = value.copy(

@@ -22,7 +22,7 @@ import com.calyrsoft.ucbp1.features.reservation.data.database.entity.Reservation
         ReservationEntity::class,
         PaymentEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -44,7 +44,7 @@ abstract class AppRoomDatabaseProject : RoomDatabase() {
                     AppRoomDatabaseProject::class.java,
                     "mr_db"
                 )
-
+                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }

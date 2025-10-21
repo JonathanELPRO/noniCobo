@@ -90,9 +90,7 @@ class LodgingListViewModel(
             getAllLodgingsUseCase()
                 .catch { e ->
                     observeLocalFallback()
-                    _state.value = LodgingListStateUI.Error(
-                        e.message ?: "Error al obtener los alojamientos"
-                    )
+
                 }
                 .collect { list ->
                     list.forEach { lodging ->
