@@ -6,5 +6,4 @@ class GetUserRole  (val loginDataStoreRepository: IAuthDataStoreRepository){
     suspend fun invoke(): Result<String>{
         return loginDataStoreRepository.getUserRole()
     }
-
 }
