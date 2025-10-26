@@ -1,5 +1,6 @@
 package com.calyrsoft.ucbp1.features.lodging.presentation
 
+import LodgingSearchBar
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -54,6 +55,7 @@ fun LodgingListScreen(
         vm.resetAdVisibility()
     }
 
+
     LaunchedEffect(userId) {
         Log.d("LodgingListScreen", "Loading lodgings for userId: $userId")
         if (userId != null) {
@@ -77,24 +79,14 @@ fun LodgingListScreen(
                         shape = RoundedCornerShape(bottomStart = 80.dp, bottomEnd = 80.dp)
                     )
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 30.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver", tint = Color.White)
-                    }
                     Text(
                         "ALOJAMIENTOS",
                         color = Color.White,
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.Center)
                     )
                     Spacer(modifier = Modifier.width(48.dp))
-                }
             }
         }
     ) { padding ->
@@ -113,6 +105,9 @@ fun LodgingListScreen(
                 )
                 Spacer(Modifier.height(8.dp))
             }
+
+            LodgingSearchBar(vm = vm)
+            Spacer(Modifier.height(8.dp))
 
             when (val st = state) {
                 is LodgingListViewModel.LodgingListStateUI.Init,

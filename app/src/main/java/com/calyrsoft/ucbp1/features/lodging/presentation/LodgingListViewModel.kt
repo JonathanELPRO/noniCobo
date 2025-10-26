@@ -8,6 +8,8 @@ import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAddinRealTime
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdminUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsFromSupaBaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.ObserveAllLocalLodgingsUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.SearchByNameAndAdminIdUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.SearchLodgingByNameUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,9 @@ class LodgingListViewModel(
     private val getAllLodgingsUseCase: GetAllLodgingsFromSupaBaseUseCase,
     private val upsertLodgingUseCase: UpsertLodgingUseCase,
     private val observeAllLocalLodgingsUseCase: ObserveAllLocalLodgingsUseCase,
-    private val getAddinRealTime: GetAddinRealTime
+    private val getAddinRealTime: GetAddinRealTime,
+    private val searchLodgingByName: SearchLodgingByNameUseCase,
+    private val searchByNameAndAdminIdUseCase: SearchByNameAndAdminIdUseCase
 
 ) : ViewModel() {
 
@@ -118,5 +122,45 @@ class LodgingListViewModel(
                     _state.value = LodgingListStateUI.Error("Sin conexión y sin datos locales disponibles")
                 }
             }
+    }
+
+    fun searchByName(name:String) {
+        _state.value = LodgingListStateUI.Loading
+
+        viewModelScope.launch {
+            searchLodgingByName(name)
+                .catch { e ->
+                    observeLocalFallback()
+
+                }
+                .collect { list ->
+                    list.forEach { lodging ->
+                        upsertLodgingUseCase(lodging)
+                    }
+                    _state.value = LodgingListStateUI.Success(list)
+                }
+        }
+
+
+    }
+
+    fun searchByNameAndAdminId(name:String,adminId: Long) {
+        _state.value = LodgingListStateUI.Loading
+
+        viewModelScope.launch {
+            searchByNameAndAdminIdUseCase(name,adminId)
+                .catch { e ->
+                    observeLocalFallback()
+
+                }
+                .collect { list ->
+                    list.forEach { lodging ->
+                        upsertLodgingUseCase(lodging)
+                    }
+                    _state.value = LodgingListStateUI.Success(list)
+                }
+        }
+
+
     }
 }

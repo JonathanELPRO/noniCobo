@@ -109,5 +109,44 @@ class LodgingRemoteDataSource(
         throw e
     }
 
+    fun searchLodgingsByName(name: String): Flow<List<LodgingResponseDto>> = flow {
+        val response = lodgingService.searchLodgingsByName(name = "ilike.%$name%")
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) {
+                emit(body) // emitimos directamente la lista
+            } else {
+                throw DataException.NoContent
+            }
+        } else if (response.code() == 404) {
+            throw DataException.HttpNotFound
+        } else {
+            throw DataException.Unknown(response.message())
+        }
+    }.catch { e ->
+        // opcional: puedes loggear el error aquí
+        throw e
+    }
+
+    fun searchLodgingsByNameAndAdminId(name: String,id:Long): Flow<List<LodgingResponseDto>> = flow {
+        val response = lodgingService.searchLodgingsByNameAndAdminId(name = "ilike.%$name%",ownerAdminId = "eq.$id")
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body != null) {
+                emit(body) // emitimos directamente la lista
+            } else {
+                throw DataException.NoContent
+            }
+        } else if (response.code() == 404) {
+            throw DataException.HttpNotFound
+        } else {
+            throw DataException.Unknown(response.message())
+        }
+    }.catch { e ->
+        // opcional: puedes loggear el error aquí
+        throw e
+    }
+
+
 
 }
