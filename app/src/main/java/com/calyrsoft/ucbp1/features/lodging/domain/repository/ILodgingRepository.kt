@@ -9,10 +9,14 @@ interface ILodgingRepository {
 
     suspend fun getLodgingsByAdmin(id: Long): Flow<List<Lodging>>
     suspend fun getAllLodgings(): Flow<List<Lodging>>
+    suspend fun searchLodgingByName(name: String): Flow<List<Lodging>>
+    suspend fun searchLodgingByNameAndAdminId(name: String,id:Long): Flow<List<Lodging>>
+
     suspend fun getDetails(id: Long): Result<Lodging>
     suspend fun upsert(lodging: Lodging): Result<Unit>
     suspend fun addLodging(lodging: Lodging): Result<Unit>
     suspend fun getLodgingDetails(id: Long): Result<Lodging>
+
 
     fun getAddfromFirebase(): Flow<AddModel>
 }

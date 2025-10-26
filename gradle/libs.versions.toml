@@ -26,6 +26,7 @@ firebaseMessaging = "25.0.1"
 datastore = "1.0.0"
 firebaseConfig = "23.0.1"
 foundation = "1.9.3"
+foundationVersion = "1.9.4"
 
 
 
@@ -67,6 +68,7 @@ firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging
 datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
+foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundationVersion" }
 
 
 [bundles]
