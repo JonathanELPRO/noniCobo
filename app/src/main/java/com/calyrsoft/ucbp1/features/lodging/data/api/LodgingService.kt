@@ -23,4 +23,12 @@ interface LodgingService {
 
     @GET("/rest/v1/lodgings")
     suspend fun getAllLodging(@Query("select") select: String = "*"): Response<List<LodgingResponseDto>>
+
+    @GET("/rest/v1/lodgings")
+    suspend fun searchLodgingsByName(@Query("select") select: String = "*",
+                                          @Query("name") name: String): Response<List<LodgingResponseDto>>
+    @GET("/rest/v1/lodgings")
+    suspend fun searchLodgingsByNameAndAdminId(@Query("select") select: String = "*",
+                                     @Query("name") name: String, @Query("ownerAdminId") ownerAdminId: String): Response<List<LodgingResponseDto>>
+
 }
