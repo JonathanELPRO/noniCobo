@@ -16,7 +16,7 @@ class AuthDataStore(
     private val context: Context
 ) {
     val isLoggedInFlow = context.dataStore.data.map { prefs ->
-        prefs[TOKEN] != null
+        prefs[TOKEN] != null && prefs[USER_EMAIL] != null && prefs[ROLE] != null && prefs[ID] != null
     }
 
     val userRoleFlow = context.dataStore.data.map { prefs ->
@@ -120,6 +120,7 @@ class AuthDataStore(
             preferences.remove(USER_EMAIL)
             preferences.remove(TOKEN)
             preferences.remove(ROLE)
+            preferences.remove(ID)
             preferences.clear()
         }
     }

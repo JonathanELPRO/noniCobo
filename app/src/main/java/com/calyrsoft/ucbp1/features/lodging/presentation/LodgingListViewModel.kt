@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 
+
 class LodgingListViewModel(
     private val getAllLodgingsByAdminUseCase: GetAllLodgingsByAdminUseCase,
     private val getAllLodgingsUseCase: GetAllLodgingsFromSupaBaseUseCase,
@@ -36,6 +37,17 @@ class LodgingListViewModel(
         data class Success(val lodgings: List<Lodging>) : LodgingListStateUI()
         data class Error(val message: String) : LodgingListStateUI()
     }
+
+    data class FilterOptions(
+        val type: FilterType = FilterType.ALL,
+        val address: String = "",
+        val availability: AvailabilityType = AvailabilityType.ALL
+    )
+
+    enum class FilterType { ALL, RESIDENCIAL, MOTEL }
+    enum class AvailabilityType { ALL, TRUE, FALSE }
+
+
 
     private val _state = MutableStateFlow<LodgingListStateUI>(LodgingListStateUI.Init)
     val state: StateFlow<LodgingListStateUI> = _state.asStateFlow()
@@ -56,7 +68,6 @@ class LodgingListViewModel(
                 .catch { /* log/ignore */ }
                 .collect { ad ->
                     _adUrl.value = ad.UrlImagen
-                    // Si cambió la URL, fuerza que se muestre (opcional):
                     _showAd.value = true
                 }
         }
@@ -70,19 +81,19 @@ class LodgingListViewModel(
 
         Log.d("LodgingListViewModel", "Loading lodgings for admin id: $id")
         viewModelScope.launch {
-            val result=getAllLodgingsByAdminUseCase(id)
+            val result = getAllLodgingsByAdminUseCase(id)
 
-                result.catch { e ->
-                    _state.value = LodgingListStateUI.Error(
-                        e.message ?: "Error al obtener los alojamientos"
-                    )
-                }
+            result.catch { e ->
+                _state.value = LodgingListStateUI.Error(
+                    e.message ?: "Error al obtener los alojamientos"
+                )
+            }
                 .collect { list ->
                     list.forEach { lodging ->
                         upsertLodgingUseCase(lodging)
                     }
                     _state.value = LodgingListStateUI.Success(list)
-
+                    applyFilters() // --- NUEVO ---
                 }
         }
     }
@@ -94,20 +105,18 @@ class LodgingListViewModel(
             getAllLodgingsUseCase()
                 .catch { e ->
                     observeLocalFallback()
-
                 }
                 .collect { list ->
                     list.forEach { lodging ->
                         upsertLodgingUseCase(lodging)
                     }
                     _state.value = LodgingListStateUI.Success(list)
+                    applyFilters() // --- NUEVO ---
                 }
         }
-
-
     }
 
-    private suspend fun observeLocalFallback() {
+    private suspend fun observeLocalFallback(name:String="") {
         observeAllLocalLodgingsUseCase()
             .catch { e ->
                 _state.value = LodgingListStateUI.Error(
@@ -117,7 +126,13 @@ class LodgingListViewModel(
             .collect { localList ->
                 if (localList.isNotEmpty()) {
                     Log.d("LodgingListViewModel", "Datos locales recuperados (${localList.size})")
-                    _state.value = LodgingListStateUI.Success(localList)
+                    if (name.isNotEmpty()) {
+                        val filteredByName = localList.filter { lodging ->
+                            lodging.name?.contains(name, true) == true
+                        }
+                        _state.value = LodgingListStateUI.Success(filteredByName)
+                    } else _state.value = LodgingListStateUI.Success(localList)
+                    applyFilters() // --- NUEVO ---
                 } else {
                     _state.value = LodgingListStateUI.Error("Sin conexión y sin datos locales disponibles")
                 }
@@ -129,38 +144,94 @@ class LodgingListViewModel(
 
         viewModelScope.launch {
             searchLodgingByName(name)
-                .catch { e ->
-                    observeLocalFallback()
-
+                .catch {
+                    observeLocalFallback(name)
                 }
                 .collect { list ->
                     list.forEach { lodging ->
                         upsertLodgingUseCase(lodging)
                     }
                     _state.value = LodgingListStateUI.Success(list)
+                    applyFilters()
                 }
         }
-
-
     }
 
-    fun searchByNameAndAdminId(name:String,adminId: Long) {
+    fun searchByNameAndAdminId(name:String, adminId: Long) {
         _state.value = LodgingListStateUI.Loading
 
         viewModelScope.launch {
-            searchByNameAndAdminIdUseCase(name,adminId)
-                .catch { e ->
+            searchByNameAndAdminIdUseCase(name, adminId)
+                .catch {
                     observeLocalFallback()
-
                 }
                 .collect { list ->
                     list.forEach { lodging ->
                         upsertLodgingUseCase(lodging)
                     }
                     _state.value = LodgingListStateUI.Success(list)
+                    applyFilters()
                 }
         }
+    }
 
+//estados y filtros
+    private val _filters = MutableStateFlow(FilterOptions())
+    val filters: StateFlow<FilterOptions> = _filters.asStateFlow()
 
+    private val _filteredList = MutableStateFlow<List<Lodging>>(emptyList())
+    val filteredList: StateFlow<List<Lodging>> = _filteredList.asStateFlow()
+
+    private val _isFilterActive = MutableStateFlow(false)
+    val isFilterActive: StateFlow<Boolean> = _isFilterActive.asStateFlow()
+
+    fun updateFilters(newFilters: FilterOptions) {
+        _filters.value = newFilters
+        applyFilters()
+    }
+
+    fun clearFilters() {
+        _filters.value = FilterOptions()
+        applyFilters()
+    }
+
+    private fun applyFilters() {
+
+        val uiState = state.value
+        if (uiState !is LodgingListStateUI.Success) {
+            _filteredList.value = emptyList()
+            return
+        }
+
+        val all = uiState.lodgings
+        val filter = _filters.value
+
+        val result = all.filter { lodging ->
+
+            val typeOk = when (filter.type) {
+                FilterType.ALL -> true
+                FilterType.RESIDENCIAL -> lodging.type?.name.equals("Residencial", true)
+                FilterType.MOTEL -> lodging.type?.name.equals("Motel", true)
+            }
+
+            val addressOk =
+                filter.address.isBlank() ||
+                        lodging.address?.contains(filter.address, true) == true
+
+            val availabilityOk = when (filter.availability) {
+                AvailabilityType.ALL -> true
+                AvailabilityType.TRUE -> lodging.open24h
+                AvailabilityType.FALSE -> !lodging.open24h
+            }
+
+            typeOk && addressOk && availabilityOk
+        }
+
+        _filteredList.value = result
+
+        _isFilterActive.value =
+            filter.type != FilterType.ALL ||
+                    filter.address.isNotEmpty() ||
+                    filter.availability != AvailabilityType.ALL
     }
 }
