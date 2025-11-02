@@ -51,11 +51,6 @@ fun LoginScreen2(
         }
     }
 
-//    Log.d("ID","idUsuario: $idUsuario")
-
-    Log.d("LoginScreen2", "userRole: $userRole")
-
-
 
     Scaffold(containerColor = Color(0xFFF4F4F4)) { padding ->
         Column(
@@ -109,7 +104,6 @@ fun LoginScreen2(
                 is LoginViewModel2.LoginUIState.Error -> Text(st.message, color = MaterialTheme.colorScheme.error)
                 is LoginViewModel2.LoginUIState.Success -> {
                     //si yo hago login se guarda: email, token y rol
-                    Log.d("USERROLE", "userRole: $userRole")
                     if (!userRole.isNullOrEmpty()) { // evita null
                         authViewModel.saveId(st.user.id)
                     }

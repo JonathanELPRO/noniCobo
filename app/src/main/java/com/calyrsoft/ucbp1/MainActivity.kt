@@ -116,7 +116,7 @@ fun NavigationDrawerHost(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userRole: String = "CLIENT") {
+fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userRole:String?) {
     val navController: NavHostController = rememberNavController()
     //creamos a quien realmente navegara entre pantallas
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -133,7 +133,6 @@ fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userR
     //    Otros metadatos de navegación.
 
     val navigationItemsAdmin= listOf(
-        NavigationDrawer.AuthRegister,
         NavigationDrawer.LodgingList,
         NavigationDrawer.LodgingEditor,
         NavigationDrawer.ReservationCreate,
@@ -142,14 +141,13 @@ fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userR
         NavigationDrawer.Logout,
     )
     val navigationItemsClient= listOf(
-        NavigationDrawer.AuthRegister,
         NavigationDrawer.LodgingList,
         NavigationDrawer.ReservationCreate,
         NavigationDrawer.ReservationHistory,
         NavigationDrawer.ReservationPayment,
         NavigationDrawer.Logout,
     )
-    val navigationDrawerItems = if(userRole == "ADMIN") navigationItemsAdmin else navigationItemsClient
+    val navigationDrawerItems = if(userRole!=null && userRole == "ADMIN") navigationItemsAdmin else navigationItemsClient
 //    val navigationDrawerItems = listOf(
 //        // --- Proyecto antiguo ---
 ////        NavigationDrawer.Profile,
@@ -181,7 +179,7 @@ fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userR
     val coroutineScope = rememberCoroutineScope()
     //lanzamos una corutina
 
-    if(isLoggedIn) {
+    if(isLoggedIn && userRole!=null) {
         ModalNavigationDrawer(
             drawerState = drawerState,
             //ModalNavigationDrawer es un composable de cajon que ya viene por defecto en kotlin
@@ -334,7 +332,7 @@ class MainActivity : ComponentActivity() {
 
                 val isLoggedIn by authViewModel.isLoggedIn.collectAsState(initial = false)
                 val userRole by authViewModel.userRole.collectAsState(initial = "CLIENT")
-                MainApp(navigationViewModel,isLoggedIn,userRole?:"CLIENT")
+                MainApp(navigationViewModel,isLoggedIn,userRole)
                 Column {
                     MaintenanceBanner()
 

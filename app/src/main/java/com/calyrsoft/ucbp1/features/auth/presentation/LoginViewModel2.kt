@@ -42,7 +42,7 @@ class LoginViewModel2(
 
             loginResult
                 .onFailure { e ->
-                    _state.value = LoginUIState.Error(e.message ?: "Error al iniciar sesión")
+                    _state.value = LoginUIState.Error(e.message ?: "Credenciales inválidos")
                     return@launch // 👈 Detenemos aquí si el login falla
                 }
 
@@ -51,7 +51,6 @@ class LoginViewModel2(
             userResult
                 .onSuccess { user ->
                     _state.value = LoginUIState.Success(user)
-                    Log.d("LoginViewModel2", "Usuario obtenido: $user")
                 }
                 .onFailure { e ->
                     _state.value = LoginUIState.Error(e.message ?: "Error al obtener información del usuario")
