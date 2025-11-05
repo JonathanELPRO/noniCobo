@@ -10,6 +10,8 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinSerialization)
+
 }
 
 ktlint {
@@ -124,6 +126,8 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-text")
     implementation("androidx.compose.material3:material3")
+    implementation(libs.kotlinx.serialization.json)
+
 
 
 }

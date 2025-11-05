@@ -82,6 +82,10 @@ import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetFavoritesUseCase
 import com.calyrsoft.ucbp1.features.movie.domain.usecase.InserteMyFavoriteMovieUseCase
 import com.calyrsoft.ucbp1.features.profile.presentation.LoginViewModel
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesViewModel
+import com.calyrsoft.ucbp1.features.payments.data.repository.PaymentRepository
+import com.calyrsoft.ucbp1.features.payments.domain.repository.IPaymentRepository
+import com.calyrsoft.ucbp1.features.payments.domain.usecase.SendPaymentWhatsAppUseCase
+import com.calyrsoft.ucbp1.features.payments.presentation.PaymentViewModel
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsViewModel
 import com.calyrsoft.ucbp1.features.profile.data.datasource.LoginDataStore
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetTokenUseCase
@@ -89,16 +93,6 @@ import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetUserNameUseCase
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveTokenUseCase
 import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveUserNameUseCase
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileViewModel
-import com.calyrsoft.ucbp1.features.reservation.data.datasource.ReservationLocalDataSource
-import com.calyrsoft.ucbp1.features.reservation.data.repository.PaymentRepository
-import com.calyrsoft.ucbp1.features.reservation.data.repository.ReservationRepository
-import com.calyrsoft.ucbp1.features.reservation.domain.repository.IPaymentRepository
-import com.calyrsoft.ucbp1.features.reservation.domain.repository.IReservationRepository
-import com.calyrsoft.ucbp1.features.reservation.domain.usecase.CreateReservationUseCase
-import com.calyrsoft.ucbp1.features.reservation.domain.usecase.GetReservationsByUserUseCase
-import com.calyrsoft.ucbp1.features.reservation.domain.usecase.RecordAdvancePaymentUseCase
-import com.calyrsoft.ucbp1.features.reservation.domain.usecase.RecordRemainingPaymentUseCase
-import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationViewModel
 import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappViewModel
 import com.calyrsoft.ucbp1.navigation.NavigationViewModel
 import com.example.imperium_reality.features.register.data.api.LodgingService
@@ -348,28 +342,23 @@ val appModule = module {
     viewModel { LodgingEditorViewModel(get(),get()) }
 
 
+    //payments
+    // --- REPOSITORIO ---
+    single<IPaymentRepository> { PaymentRepository(androidContext()) }
+
+    // --- CASOS DE USO ---
+    factory { SendPaymentWhatsAppUseCase(get()) }
+
+    // ---VIEWMODELS ---
+    viewModel { PaymentViewModel(get()) }
 
 
 
-    // DAOs
-    single { get<AppRoomDatabaseProject>().reservationDao() }
-    single { get<AppRoomDatabaseProject>().paymentDao() }
 
-    // DataSource
-    single { ReservationLocalDataSource(get(), get()) }
 
-    // Repositorios
-    single<IReservationRepository> { ReservationRepository(get()) }
-    single<IPaymentRepository> { PaymentRepository(get()) }
 
-    // Casos de uso
-    factory { CreateReservationUseCase(get()) }
-    factory { GetReservationsByUserUseCase(get()) }
-    factory { RecordAdvancePaymentUseCase(get()) }
-    factory { RecordRemainingPaymentUseCase(get()) }
 
-    // ViewModel
-    viewModel { ReservationViewModel(get(), get(), get(), get()) }
+
 
 
 

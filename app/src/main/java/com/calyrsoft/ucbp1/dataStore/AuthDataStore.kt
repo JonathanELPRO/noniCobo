@@ -36,6 +36,10 @@ class AuthDataStore(
 
         val ROLE = stringPreferencesKey("role")
 
+        val USERNAME = stringPreferencesKey("username")
+
+
+
     }
 
     // Guardar email
@@ -57,6 +61,12 @@ class AuthDataStore(
     suspend fun saveId(id: Long) {
         context.dataStore.edit { preferences ->
             preferences[ID] = id
+        }
+    }
+
+    suspend fun saveUsername(username: String) {
+        context.dataStore.edit { preferences ->
+            preferences[USERNAME] = username
         }
     }
 
@@ -100,6 +110,13 @@ class AuthDataStore(
         return preferences[ID]?.let {
             Result.success(it)
         } ?: Result.failure(Exception("Role not found"))
+    }
+
+    suspend fun getUsername(): Result<String> {
+        val preferences = context.dataStore.data.first()
+        return preferences[USERNAME]?.let {
+            Result.success(it)
+        } ?: Result.failure(Exception("Username not found"))
     }
 
     // Obtener ambos

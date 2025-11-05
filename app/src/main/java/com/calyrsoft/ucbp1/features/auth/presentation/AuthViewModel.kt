@@ -41,6 +41,24 @@ class AuthViewModel(
         }
     }
 
+    fun saveUsername(username: String?) {
+        viewModelScope.launch {
+            authDataStore.saveUsername(username?:"NoUsername")
+        }
+    }
+
+    suspend fun getId(): Long? {
+        val result = authDataStore.getId()
+        return result.getOrNull()
+    }
+
+    suspend fun getUsername(): String? {
+        val result = authDataStore.getUsername()
+        return result.getOrNull()
+    }
+
+
+
 
     // Cerrar sesión (logout)
     fun logout() {

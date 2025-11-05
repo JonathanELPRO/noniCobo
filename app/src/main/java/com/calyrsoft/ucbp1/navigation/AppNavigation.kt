@@ -23,13 +23,14 @@ import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
 import com.calyrsoft.ucbp1.features.logout.Logout
 import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
+import com.calyrsoft.ucbp1.features.payments.domain.model.PaymentModel
+import com.calyrsoft.ucbp1.features.payments.presentation.PaymentScreen
 import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
-import com.calyrsoft.ucbp1.features.reservation.presentation.HistoryScreen
-import com.calyrsoft.ucbp1.features.reservation.presentation.PaymentScreen
-import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationScreen
+import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
+import java.net.URLDecoder
 import java.net.URLEncoder
 
 
@@ -243,6 +244,29 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
             LodgingDetailsScreen(
                 id = id,
                 vm = koinViewModel(),
+                onBack = { navController.popBackStack() },
+                onPagos = { payment ->
+                    val paymentJson = Json.encodeToString(payment)
+                    val encodedPayment = URLEncoder.encode(paymentJson, "UTF-8")
+                    navController.navigate("${Screen.PaymentScreen.route}/${encodedPayment}")
+                }
+            )
+        }
+
+        composable(
+            route = "${Screen.PaymentScreen.route}/{payment}",
+            arguments = listOf(
+                navArgument("payment") { type = androidx.navigation.NavType.StringType }
+            )
+        ) { backStack ->
+            val encodedPayment = backStack.arguments?.getString("payment") ?: ""
+
+            val decodedJson = URLDecoder.decode(encodedPayment, "UTF-8")
+
+            val payment = Json.decodeFromString<PaymentModel>(decodedJson)
+
+            PaymentScreen(
+                model = payment,
                 onBack = { navController.popBackStack() }
             )
         }
@@ -259,38 +283,10 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
         }
 
         // 📅 RESERVATION
-        composable(
-            Screen.ReservationCreate.route,
-            arguments = listOf(
-                navArgument("userId") { type = androidx.navigation.NavType.LongType },
-                navArgument("lodgingId") { type = androidx.navigation.NavType.LongType }
-            )
-        ) { backStack ->
-            val userId = backStack.arguments!!.getLong("userId")
-            val lodgingId = backStack.arguments!!.getLong("lodgingId")
-            ReservationScreen(
-                vm = koinViewModel(),
-                userId = userId,
-                lodgingId = lodgingId,
-                onCreated = { navController.navigate("reservation_history/$userId") }
-            )
-        }
 
-        composable(
-            Screen.ReservationHistory.route,
-            arguments = listOf(navArgument("userId") { type = androidx.navigation.NavType.LongType })
-        ) { backStack ->
-            val userId = backStack.arguments!!.getLong("userId")
-            HistoryScreen(vm = koinViewModel(), userId = userId)
-        }
 
-        composable(
-            Screen.ReservationPayment.route,
-            arguments = listOf(navArgument("reservationId") { type = androidx.navigation.NavType.LongType })
-        ) { backStack ->
-            val reservationId = backStack.arguments!!.getLong("reservationId")
-            PaymentScreen(vm = koinViewModel(), reservationId = reservationId)
-        }
+
+
 
         composable(Screen.Logout.route) {
             Logout(

@@ -24,10 +24,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.model.RoomCategory
 import com.calyrsoft.ucbp1.features.lodging.domain.model.StayType
+import com.calyrsoft.ucbp1.features.payments.domain.model.PaymentModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +38,7 @@ fun LodgingDetailsScreen(
     id: Long,
     vm: LodgingDetailsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onBack: () -> Unit = {},
-    onPagos: () -> Unit = {},
+    onPagos: (PaymentModel) -> Unit = {},
     onResenas: () -> Unit = {}
 ) {
     val state by vm.state.collectAsState()
@@ -94,12 +97,24 @@ fun LodgingDetailsScreen(
 private fun LodgingDetailsContent(
     lodging: Lodging,
     onBack: () -> Unit,
-    onPagos: () -> Unit,
+    onPagos: (PaymentModel) -> Unit,
     onResenas: () -> Unit,
     padding: PaddingValues
 ) {
     val scroll = rememberScrollState()
     val context = LocalContext.current
+
+    val authViewModel: AuthViewModel = getViewModel()
+
+    var username by remember { mutableStateOf("Invitado") }
+
+    LaunchedEffect(Unit) {
+        val fetchedName = authViewModel.getUsername()
+        if (fetchedName != null) {
+            username = fetchedName
+        }
+    }
+
 
     var selectedRoom by remember {
         mutableStateOf(lodging.roomOptions.firstOrNull()?.category)
@@ -109,7 +124,7 @@ private fun LodgingDetailsContent(
         mutableStateOf(lodging.stayOptions.firstOrNull()?.type)
     }
 
-    var hours by remember { mutableStateOf("") }
+    var hours by remember { mutableStateOf("1") }
     var arrivalTime by remember { mutableStateOf("") }
 
     val timePickerDialog = TimePickerDialog(
@@ -165,10 +180,10 @@ private fun LodgingDetailsContent(
     val stayPrefix by remember(selectedStay) {
         derivedStateOf {
             when (selectedStay) {
-                StayType.POR_HORA -> "Bs/H."
+                StayType.POR_HORA -> "Bs."
                 StayType.POR_NOCHE -> "Bs/N."
                 StayType.POR_DIA -> "Bs/D."
-                else -> "Bs/H."
+                else -> "Bs."
             }
         }
     }
@@ -334,13 +349,26 @@ private fun LodgingDetailsContent(
                     Text("Reseñas", color = Color.White)
                 }
 
+
                 Button(
-                    onClick = onPagos,
+                    onClick = {
+                        val payment = PaymentModel(
+                            lodgingName = lodging.name,
+                            userName = username,
+                            selectedRoom = selectedRoom,
+                            selectedStay = selectedStay,
+                            selectedPrice = selectedPrice,
+                            arrivalTime = arrivalTime,
+                            hours = if (selectedStay == StayType.POR_HORA) hours else null,
+                            ownerNumber = lodging.contactPhone
+                        )
+                        onPagos(payment)
+                    },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020)),
                     shape = RoundedCornerShape(16.dp)
                 ) {
-                    Text("Pagos", color = Color.White)
+                    Text("Pagar", color = Color.White)
                 }
             }
         }
