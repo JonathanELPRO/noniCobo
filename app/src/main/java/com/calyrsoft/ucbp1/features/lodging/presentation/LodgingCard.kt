@@ -24,6 +24,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,14 +38,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.domain.model.RoomCategory
+import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun LodgingCard(lodging: Lodging, onDetails: (Long) -> Unit) {
+fun LodgingCard(lodging: Lodging, onDetails: (Long) -> Unit,  onEdit: (Lodging) -> Unit) {
     val simplePrice = lodging.roomOptions.find { it.category == RoomCategory.SIMPLE }?.price
         ?: lodging.roomOptions.firstOrNull()?.price ?: 0.0
-
+    val authViewModel: AuthViewModel = getViewModel()
+    val userRole by authViewModel.userRole.collectAsState()
     Card(
         modifier = Modifier.fillMaxWidth().clickable { lodging.id?.let(onDetails) },
         shape = RoundedCornerShape(20.dp),
@@ -96,10 +101,40 @@ fun LodgingCard(lodging: Lodging, onDetails: (Long) -> Unit) {
 
             Spacer(Modifier.width(8.dp))
 
-            Surface(onClick = { lodging.id?.let(onDetails) }, shape = RoundedCornerShape(14.dp), color = Color(0xFFB00020)) {
-                Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("Ver", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                    Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Surface(onClick = { lodging.id?.let(onDetails) }, shape = RoundedCornerShape(14.dp), color = Color(0xFFB00020)) {
+                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("Ver", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                    }
+                }
+
+                if(userRole=="ADMIN") {
+                    Surface(
+                        onClick = { onEdit(lodging) },
+                        shape = RoundedCornerShape(14.dp),
+                        color = Color(0xFF1976D2)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                "Editar",
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp
+                            )
+                            Icon(
+                                Icons.Default.ArrowForward,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
                 }
             }
         }

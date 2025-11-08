@@ -43,6 +43,7 @@ import androidx.compose.runtime.collectAsState
 fun LodgingListScreen(
     vm: LodgingListViewModel = koinViewModel(),
     onDetails: (Long) -> Unit = {},
+    onEdit: (Lodging) -> Unit,
     onBack: () -> Unit = {},
 ) {
     val authViewModel: AuthViewModel = getViewModel()
@@ -159,7 +160,8 @@ fun LodgingListScreen(
                             lodgings = filteredList,
                             isFilterActive = isFilterActive,
                             onClearFilters = { vm.clearFilters() },
-                            onDetails = onDetails
+                            onDetails = onDetails,
+                            onEdit= onEdit
                         )
                     }
                 }

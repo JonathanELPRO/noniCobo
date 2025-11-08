@@ -1,5 +1,6 @@
 package com.calyrsoft.ucbp1.navigation
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -7,10 +8,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.calyrsoft.ucbp1.dataStore.AuthDataStore
+import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
 //import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen
@@ -18,6 +21,7 @@ import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
 import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordScreen
 import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
+import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
@@ -29,6 +33,7 @@ import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
 import com.calyrsoft.ucbp1.features.reservation.presentation.HistoryScreen
 import com.calyrsoft.ucbp1.features.reservation.presentation.PaymentScreen
 import com.calyrsoft.ucbp1.features.reservation.presentation.ReservationScreen
+import com.google.gson.Gson
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
 
@@ -232,6 +237,13 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                         NavigationOptions.DEFAULT
                     )
                 },
+                onEdit = { lodging ->
+                    val json = Uri.encode(Gson().toJson(lodging))
+                    navigationViewModel.navigateTo(
+                        "lodging_edit?lodgingJson=$json",
+                        NavigationOptions.DEFAULT
+                    )
+                }
             )
         }
 
@@ -249,14 +261,33 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 
 
         composable(
-            Screen.LodgingEditor.route
-        ) {
-            LodgingEditorScreen(
-                currentRole = com.calyrsoft.ucbp1.features.auth.domain.model.Role.ADMIN,
-                vm = koinViewModel(),
-                onSaved = { navController.popBackStack() }
-            )
+            route = Screen.LodgingEditor.route,
+            arguments = listOf(navArgument("lodgingJson") {
+                type = NavType.StringType
+                defaultValue = ""
+                nullable = true
+            })
+        ) { backStackEntry ->
+            LodgingEditorScreen(lodgingToEdit = null, currentRole = Role.ADMIN)
         }
+
+        composable(
+            route = Screen.LodgingEdit.route,
+            arguments = listOf(navArgument("lodgingJson") {
+                type = NavType.StringType
+                defaultValue = ""
+                nullable = true
+            })
+        ) { backStackEntry ->
+            val lodgingJson = backStackEntry.arguments?.getString("lodgingJson")
+            val lodgingToEdit = if (!lodgingJson.isNullOrEmpty()) {
+                Gson().fromJson(lodgingJson, Lodging::class.java)
+            } else null
+
+
+            LodgingEditorScreen(lodgingToEdit = lodgingToEdit, currentRole = Role.ADMIN)
+        }
+
 
         // 📅 RESERVATION
         composable(

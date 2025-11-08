@@ -75,11 +75,12 @@ sealed class NavigationDrawer(
     )
 
     data object LodgingEditor : NavigationDrawer(
-        "Nuevo Alojamiento",
+        "Alojamiento",
         Icons.Filled.Create,
         Icons.Outlined.Create,
         Screen.LodgingEditor.route
     )
+
 
     // ======================================================
     // 📅 RESERVATION

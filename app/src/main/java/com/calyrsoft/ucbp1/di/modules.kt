@@ -64,6 +64,7 @@ import com.calyrsoft.ucbp1.features.lodging.data.datasource.RealTimeRemoteDataSo
 import com.calyrsoft.ucbp1.features.lodging.data.repository.LodgingRepository
 import com.calyrsoft.ucbp1.features.lodging.domain.repository.ILodgingRepository
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.AddLodgingUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.EditLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAddinRealTime
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsByAdminUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetAllLodgingsFromSupaBaseUseCase
@@ -332,6 +333,7 @@ val appModule = module {
 
     // --- CASOS DE USO ---
     factory { GetLodgingDetailsUseCase(get()) }
+    factory { EditLodgingUseCase(get()) }
     factory { UpsertLodgingUseCase(get()) }
     factory { AddLodgingUseCase(get()) }
     factory { GetAllLodgingsByAdminUseCase(get()) }
@@ -345,10 +347,7 @@ val appModule = module {
     // --- VIEWMODELS ---
     viewModel { LodgingListViewModel(get(),get(),get(), get(),get(),get(),get()) }
     viewModel { LodgingDetailsViewModel(get(),get()) }
-    viewModel { LodgingEditorViewModel(get(),get()) }
-
-
-
+    viewModel { LodgingEditorViewModel(get(),get(),get()) }
 
 
     // DAOs

@@ -1,5 +1,6 @@
 package com.calyrsoft.ucbp1.features.lodging.data.repository
 
+import android.util.Log
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingRemoteDataSource
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.RealTimeRemoteDataSource2
@@ -81,6 +82,34 @@ class LodgingRepository(
         }
     }
 
+    override suspend fun editLodging (id:Long?,lodging: Lodging): Result<Unit> {
+        return try {
+            Log.d("LodgingRemoteDataSource", "Editing lodging with ID: $id")
+
+            remoteDataSource.editLodging(id,
+                LodgingDto(
+                    id=lodging.id,
+                    lodging.name,
+                    lodging.type.name,
+                    lodging.address,
+                    lodging.address,
+                    lodging.contactPhone,
+                    lodging.open24h,
+                    lodging.ownerAdminId,
+                    lodging.latitude,
+                    lodging.longitude,
+                    lodging.stayOptions,
+                    lodging.roomOptions,
+                    lodging.placeImageUri,
+                    lodging.licenseImageUri
+                )
+
+            )
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
     override suspend fun addLodging (lodging: Lodging): Result<Unit> {
         return try {
 

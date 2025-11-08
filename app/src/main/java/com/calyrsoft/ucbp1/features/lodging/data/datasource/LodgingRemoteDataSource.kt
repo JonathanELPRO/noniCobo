@@ -15,15 +15,28 @@ class LodgingRemoteDataSource(
     private  val lodgingService: LodgingService,
 ) {
     suspend fun addLodging(lodgingDto: LodgingDto): Result<Unit> {
-        Log.d("Request", "Sending lodging data: $lodgingDto")
         val response = lodgingService.addLodging(lodgingDto)
-        Log.d("LodgingRemoteDataSource", "Response code: ${response.code()}")
-        Log.d("LodgingRemoteDataSource", "Response message: ${response.message()}")
-        if (!response.isSuccessful) {
-            val errorBody = response.errorBody()?.string()
-            Log.e("LodgingRemoteDataSource", "Error body: $errorBody")
+        return if (response.isSuccessful) {
+            if (response.code() == 201) {
+                // Creación exitosa, no hay body
+                Result.success(Unit)
+            } else {
+                // Para otras respuestas exitosas con body, si existieran
+                Result.success(Unit)
+            }
+        } else if (response.code() == 404) {
+            Result.failure(DataException.HttpNotFound)
+        } else {
+            Result.failure(DataException.Unknown(response.message()))
         }
+    }
 
+    suspend fun editLodging(id: Long?,lodgingDto: LodgingDto): Result<Unit> {
+        Log.d("LodgingRemoteDataSource", "Editing lodging with ID: $id")
+        if (id==null){
+            return Result.failure(DataException.Unknown("ID de alojamiento nulo"))
+        }
+        val response = lodgingService.updateLodging("eq.${id}",lodgingDto)
         return if (response.isSuccessful) {
             if (response.code() == 201) {
                 // Creación exitosa, no hay body
@@ -40,10 +53,7 @@ class LodgingRemoteDataSource(
     }
 
     suspend fun getLodgingDetail(id:Long): Result<LodgingDto> {
-        Log.d("LodgingRemoteDataSource", "Fetching lodging detail for ID: $id")
         val response = lodgingService.getLodgingDetail(id = "eq.${id}")
-        Log.d("LodgingRemoteDataSource", "Response code: ${response.code()}")
-        Log.d("LodgingRemoteDataSource", "Response message: ${response.message()}")
         if (!response.isSuccessful) {
             val errorBody = response.errorBody()?.string()
             Log.e("LodgingRemoteDataSource", "Error body: $errorBody")

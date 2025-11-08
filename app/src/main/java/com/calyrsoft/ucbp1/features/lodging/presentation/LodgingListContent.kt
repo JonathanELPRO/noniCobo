@@ -33,7 +33,8 @@ fun LodgingListContent(
     lodgings: List<Lodging>,
     isFilterActive: Boolean,
     onClearFilters: () -> Unit,
-    onDetails: (Long) -> Unit
+    onDetails: (Long) -> Unit,
+    onEdit: (Lodging) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -74,7 +75,7 @@ fun LodgingListContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(lodgings, key = { it.id ?: 0L }) { lodging ->
-                LodgingCard(lodging, onDetails)
+                LodgingCard(lodging, onDetails,onEdit)
             }
             item { Spacer(Modifier.height(16.dp)) }
         }

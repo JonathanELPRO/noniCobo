@@ -1,5 +1,9 @@
 package com.calyrsoft.ucbp1.navigation
 
+import android.net.Uri
+import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
+import com.google.gson.Gson
+
 sealed class Screen(val route: String) {
     object LoginScreen : Screen("login")
     object GithubScreen : Screen("github")
@@ -14,6 +18,7 @@ sealed class Screen(val route: String) {
     object ForgotPasswordScreen : Screen("forgot_password")
     object MoviesScreen : Screen("movies")
     object PostsScreen : Screen("posts")
+
 
 
 
@@ -38,7 +43,11 @@ sealed class Screen(val route: String) {
     object LodgingDetails : Screen("lodging_details/{lodgingId}")
 
     /** Editor o creación de alojamiento */
-    object LodgingEditor : Screen("lodging_editor/{userId}")
+    object LodgingEditor : Screen("lodging_editor?lodgingJson={lodgingJson}")
+
+    object LodgingEdit : Screen("lodging_edit?lodgingJson={lodgingJson}")
+
+
 
     // =======================================================
     // 📅 MÓDULO RESERVATION (Reservas y pagos)
