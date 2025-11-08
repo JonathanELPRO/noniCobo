@@ -3,29 +3,21 @@ package com.calyrsoft.ucbp1.navigation
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.calyrsoft.ucbp1.dataStore.AuthDataStore
 import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
-//import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen
-//import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordScreen
 import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
 import com.calyrsoft.ucbp1.features.logout.Logout
-import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
 import com.calyrsoft.ucbp1.features.payments.domain.model.PaymentModel
 import com.calyrsoft.ucbp1.features.payments.presentation.PaymentScreen
-import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
 import kotlinx.serialization.json.Json
@@ -146,11 +138,6 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 //        }
 
 
-        composable(Screen.Dollar.route) {
-            DollarScreen(viewModelDollar = koinViewModel())
-        }
-
-
         composable(Screen.ForgotPasswordScreen.route) {
             ForgotPasswordScreen(
                 modifier = modifier,
@@ -163,19 +150,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
             )
         }
 
-        composable(Screen.MoviesScreen.route) {
-            MoviesScreen(
-                modifier = modifier,
-                vm = koinViewModel()
-            )
-        }
 
-        composable(Screen.PostsScreen.route) {
-            PostsScreen(
-                modifier = modifier,
-                vm = koinViewModel()
-            )
-        }
 
 
         // 🔐 AUTH
