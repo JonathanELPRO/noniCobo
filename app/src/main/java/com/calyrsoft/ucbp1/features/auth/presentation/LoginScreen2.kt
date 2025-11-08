@@ -106,6 +106,8 @@ fun LoginScreen2(
                     //si yo hago login se guarda: email, token y rol
                     if (!userRole.isNullOrEmpty()) { // evita null
                         authViewModel.saveId(st.user.id)
+                        authViewModel.saveUsername(st.user.username.value)
+
                     }
                     //si tu haces login ya puedes monitorizar el rol y el id
                 }

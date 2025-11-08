@@ -63,6 +63,9 @@ sealed class Screen(val route: String) {
 
     object Logout : Screen("logout")
 
+    object PaymentScreen : Screen("payment_screen/{payment}")
+
+
 
 
 }
