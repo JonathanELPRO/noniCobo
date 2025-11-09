@@ -23,8 +23,17 @@ class AuthDataStore(
         prefs[ROLE]
     }
 
+    val userTokenFlow = context.dataStore.data.map { prefs ->
+        prefs[TOKEN]
+    }
+
+
     val userIdFlow = context.dataStore.data.map { prefs ->
         prefs[ID]
+    }
+
+    val userEmailFlow = context.dataStore.data.map { prefs ->
+        prefs[USER_EMAIL]
     }
 
     companion object {

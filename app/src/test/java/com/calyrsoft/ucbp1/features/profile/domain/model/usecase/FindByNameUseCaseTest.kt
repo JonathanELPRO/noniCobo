@@ -1,9 +1,6 @@
 package com.calyrsoft.ucbp1.features.profile.domain.model.usecase
 
-import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
 import com.calyrsoft.ucbp1.features.profile.domain.model.*
-import com.calyrsoft.ucbp1.features.profile.domain.repository.ILoginRepository
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameUseCase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

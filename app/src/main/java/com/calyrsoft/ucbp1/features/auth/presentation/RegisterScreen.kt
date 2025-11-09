@@ -102,7 +102,7 @@ fun RegisterScreen(
             // 🔹 Campos de registro
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = { username = it.replace(" ", "") },
                 label = { Text("Nombre de usuario") },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
@@ -110,10 +110,9 @@ fun RegisterScreen(
                     .padding(horizontal = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = it.replace(" ", "") },
                 label = { Text("Correo electrónico") },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
@@ -121,10 +120,9 @@ fun RegisterScreen(
                     .padding(horizontal = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = phone,
-                onValueChange = { phone = it },
+                onValueChange = { phone = it.replace(" ", "") },
                 label = { Text("Teléfono (opcional)") },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
@@ -132,10 +130,9 @@ fun RegisterScreen(
                     .padding(horizontal = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { password = it.replace(" ", "") },
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(50),

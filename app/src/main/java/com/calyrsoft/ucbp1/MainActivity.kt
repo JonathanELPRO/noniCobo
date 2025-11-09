@@ -133,6 +133,7 @@ fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userR
     //    Otros metadatos de navegación.
 
     val navigationItemsAdmin= listOf(
+        NavigationDrawer.Profile,
         NavigationDrawer.LodgingList,
         NavigationDrawer.LodgingEditor,
         NavigationDrawer.ReservationCreate,
@@ -141,6 +142,7 @@ fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userR
         NavigationDrawer.Logout,
     )
     val navigationItemsClient= listOf(
+        NavigationDrawer.Profile,
         NavigationDrawer.LodgingList,
         NavigationDrawer.ReservationCreate,
         NavigationDrawer.ReservationHistory,

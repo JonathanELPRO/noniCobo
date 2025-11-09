@@ -2,6 +2,7 @@ package com.calyrsoft.ucbp1.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material.icons.outlined.AddBox
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -57,6 +59,13 @@ sealed class NavigationDrawer(
         Screen.AuthLogin.route
     )
 
+    data object Profile : NavigationDrawer(
+        "Mi Perfil",
+        Icons.Filled.AccountBox,
+        Icons.Outlined.AccountBox,
+        Screen.ProfileScreen.route
+    )
+
     data object AuthRegister : NavigationDrawer(
         "Registrarse",
         Icons.Filled.AccountBox,
@@ -76,8 +85,8 @@ sealed class NavigationDrawer(
 
     data object LodgingEditor : NavigationDrawer(
         "Nuevo Alojamiento",
-        Icons.Filled.Create,
-        Icons.Outlined.Create,
+        Icons.Filled.AddBox,
+        Icons.Outlined.AddBox,
         Screen.LodgingEditor.route
     )
 
