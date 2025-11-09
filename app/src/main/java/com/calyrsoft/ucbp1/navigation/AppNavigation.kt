@@ -18,6 +18,7 @@ import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
 import com.calyrsoft.ucbp1.features.logout.Logout
 import com.calyrsoft.ucbp1.features.payments.domain.model.PaymentModel
 import com.calyrsoft.ucbp1.features.payments.presentation.PaymentScreen
+import com.calyrsoft.ucbp1.features.privacy.presentation.PrivacyScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
 import kotlinx.serialization.json.Json
@@ -192,6 +193,12 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                         Screen.AuthLogin.route,
                         NavigationOptions.REPLACE_HOME
                     )
+                },
+                goToPrivacy = {
+                    navigationViewModel.navigateTo(
+                        Screen.PrivacyScreen.route,
+                        NavigationOptions.DEFAULT
+                    )
                 }
             )
         }
@@ -274,6 +281,16 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                 }
             )
         }
+
+        composable(Screen.PrivacyScreen.route) {
+            PrivacyScreen(
+                goBack = {
+                    navigationViewModel.popBackStack(
+                    )
+                }
+            )
+        }
+
 
 
 
