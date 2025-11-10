@@ -16,6 +16,7 @@ import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
 import com.calyrsoft.ucbp1.features.logout.Logout
 import com.calyrsoft.ucbp1.features.payments.domain.model.PaymentModel
 import com.calyrsoft.ucbp1.features.payments.presentation.PaymentScreen
+import com.calyrsoft.ucbp1.features.privacy.presentation.PrivacyScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
 import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
@@ -126,6 +127,12 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                         Screen.AuthLogin.route,
                         NavigationOptions.REPLACE_HOME
                     )
+                },
+                goToPrivacy = {
+                    navigationViewModel.navigateTo(
+                        Screen.PrivacyScreen.route,
+                        NavigationOptions.DEFAULT
+                    )
                 }
             )
         }
@@ -208,6 +215,9 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                 }
             )
         }
+
+
+
 
     }
 }
