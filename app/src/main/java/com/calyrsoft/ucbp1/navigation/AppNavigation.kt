@@ -6,11 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
+import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
@@ -24,6 +27,7 @@ import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLDecoder
 import java.net.URLEncoder
+
 
 
 @Composable
@@ -198,14 +202,33 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 
 
         composable(
-            Screen.LodgingEditor.route
-        ) {
-            LodgingEditorScreen(
-                currentRole = com.calyrsoft.ucbp1.features.auth.domain.model.Role.ADMIN,
-                vm = koinViewModel(),
-                onSaved = { navController.popBackStack() }
-            )
+            route = Screen.LodgingEditor.route,
+            arguments = listOf(navArgument("lodgingJson") {
+                type = NavType.StringType
+                defaultValue = ""
+                nullable = true
+            })
+        ) { backStackEntry ->
+            LodgingEditorScreen(lodgingToEdit = null, currentRole = Role.ADMIN)
         }
+
+        composable(
+            route = Screen.LodgingEdit.route,
+            arguments = listOf(navArgument("lodgingJson") {
+                type = NavType.StringType
+                defaultValue = ""
+                nullable = true
+            })
+        ) { backStackEntry ->
+            val lodgingJson = backStackEntry.arguments?.getString("lodgingJson")
+            val lodgingToEdit = if (!lodgingJson.isNullOrEmpty()) {
+                Gson().fromJson(lodgingJson, Lodging::class.java)
+            } else null
+
+
+            LodgingEditorScreen(lodgingToEdit = lodgingToEdit, currentRole = Role.ADMIN)
+        }
+
 
         // 📅 RESERVATION
 
