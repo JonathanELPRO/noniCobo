@@ -120,13 +120,10 @@ class AuthRepository(
         if (email.isEmpty() || password.isEmpty()) {
             return Result.failure(Exception("Credenciales Invalidos."))
         }
-        Log.d("LoginRepository", "login: $email , $password")
         val response = remoteDataSource.login(email, password)
         response.fold(
             onSuccess = { it ->
                 authViewModel.saveUser(it.user.email, it.token, it.user.userMetadata.role)
-                Log.d("ROL", "${it.user.userMetadata.role}")
-                Log.d("TOKEN", "${it.token}")
 
                 return Result.success(
                     User.create(

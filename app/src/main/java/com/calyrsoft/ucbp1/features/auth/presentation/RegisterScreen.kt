@@ -1,17 +1,26 @@
 package com.calyrsoft.ucbp1.features.auth.presentation
 
+import android.content.Intent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.calyrsoft.ucbp1.R
@@ -21,7 +30,9 @@ import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 fun RegisterScreen(
     vm: RegisterViewModel,
     onRegisterSuccess: () -> Unit = {},
-    onBackToLogin: () -> Unit = {}
+    onBackToLogin: () -> Unit = {},
+    goToPrivacy: () -> Unit = {}
+
 ) {
     val state by vm.state.collectAsState()
     var username by remember { mutableStateOf("") }
@@ -31,6 +42,8 @@ fun RegisterScreen(
     var selectedRole by remember { mutableStateOf(Role.CLIENT) }
 
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
 
     // Control del popup
     var showDialog by remember { mutableStateOf(false) }
@@ -102,7 +115,7 @@ fun RegisterScreen(
             // 🔹 Campos de registro
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = { username = it.replace(" ", "") },
                 label = { Text("Nombre de usuario") },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
@@ -110,10 +123,9 @@ fun RegisterScreen(
                     .padding(horizontal = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = it.replace(" ", "") },
                 label = { Text("Correo electrónico") },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
@@ -121,10 +133,9 @@ fun RegisterScreen(
                     .padding(horizontal = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = phone,
-                onValueChange = { phone = it },
+                onValueChange = { phone = it.replace(" ", "") },
                 label = { Text("Teléfono (opcional)") },
                 shape = RoundedCornerShape(50),
                 modifier = Modifier
@@ -132,10 +143,9 @@ fun RegisterScreen(
                     .padding(horizontal = 32.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
-                onValueChange = { password = it },
+                onValueChange = { password = it.replace(" ", "") },
                 label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(50),
@@ -181,6 +191,49 @@ fun RegisterScreen(
             TextButton(onClick = onBackToLogin) {
                 Text("¿Ya tienes cuenta? Inicia sesión", color = Color.DarkGray)
             }
+
+
+            val annotatedText = buildAnnotatedString {
+                append("Al hacer clic en “Registrarte”, aceptas nuestra ")
+
+                pushStringAnnotation(
+                    tag = "PRIVACIDAD",
+                    annotation = "POLITICA_PRIVACIDAD"
+                )
+                withStyle(
+                    style = SpanStyle(
+                        color = Color(0xFFB00020), // color rojo institucional
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append("Política de privacidad")
+                }
+                pop()
+
+                append(".")
+            }
+
+            ClickableText(
+                text = annotatedText,
+                onClick = { offset ->
+                    annotatedText.getStringAnnotations(start = offset, end = offset)
+                        .firstOrNull { ann -> ann.tag == "PRIVACIDAD" }
+                        ?.let {
+                            goToPrivacy()
+                        }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                style = TextStyle(
+                    color = Color.DarkGray,
+                    fontSize = 13.sp,
+                    textAlign = TextAlign.Center
+                )
+            )
+
+
+
         }
     }
 }

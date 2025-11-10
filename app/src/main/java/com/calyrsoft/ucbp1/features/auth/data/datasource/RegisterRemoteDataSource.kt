@@ -10,6 +10,7 @@ import com.example.ucbp1.features.register.data.api.RegisterService
 import com.example.ucbp1.features.register.data.api.dto.RegisterRequestDto
 import com.example.ucbp1.features.register.data.api.dto.RegisterResponseDto
 import com.example.ucbp1.features.register.data.api.dto.RegisterUserDto
+import com.example.ucbp1.features.register.data.api.dto.UpdateUserDto
 import kotlin.toString
 
 

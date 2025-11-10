@@ -23,41 +23,9 @@ import com.calyrsoft.ucbp1.features.auth.domain.usecase.SaveUserDataStore
 import com.calyrsoft.ucbp1.features.auth.presentation.AuthViewModel
 import com.calyrsoft.ucbp1.features.auth.presentation.LoginViewModel2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterViewModel
-import com.calyrsoft.ucbp1.features.github.data.api.GithubService
-import com.calyrsoft.ucbp1.features.posts.data.api.PostsService
-import com.calyrsoft.ucbp1.features.movie.data.api.TmdbService
-import com.calyrsoft.ucbp1.features.dollar.data.database.AppRoomDatabase
-import com.calyrsoft.ucbp1.features.dollar.data.datasource.DollarLocalDataSource
-import com.calyrsoft.ucbp1.features.github.data.datasource.GithubRemoteDataSource
-import com.calyrsoft.ucbp1.features.movie.data.datasource.MoviesRemoteDataSource
-import com.calyrsoft.ucbp1.features.posts.data.datasource.PostsRemoteDataSource
-import com.calyrsoft.ucbp1.features.dollar.data.datasource.RealTimeRemoteDataSource
-import com.calyrsoft.ucbp1.features.dollar.data.repository.DollarRepository
-import com.calyrsoft.ucbp1.features.github.data.repository.GithubRepository
-import com.calyrsoft.ucbp1.features.profile.data.repository.LoginRepository
-import com.calyrsoft.ucbp1.features.movie.data.repository.MoviesRepository
-import com.calyrsoft.ucbp1.features.posts.data.repository.PostRepository
 import com.calyrsoft.ucbp1.features.whatsapp.data.repository.WhatsappRepository
-import com.calyrsoft.ucbp1.features.dollar.domain.repository.IDollarRepository
-import com.calyrsoft.ucbp1.features.github.domain.repository.IGithubRepository
-import com.calyrsoft.ucbp1.features.profile.domain.repository.ILoginRepository
-import com.calyrsoft.ucbp1.features.movie.domain.repository.IMoviesRepository
-import com.calyrsoft.ucbp1.features.posts.domain.repository.IPostRepository
 import com.calyrsoft.ucbp1.features.whatsapp.domain.repository.IWhatsappRepository
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.DeleteByTimeStampUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameAndPasswordUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameUseCase
-import com.calyrsoft.ucbp1.features.github.domain.usecase.FindByNickNameUseCase
-import com.calyrsoft.ucbp1.features.posts.domain.usecase.GetCommentsForOnePostUseCase
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.GetDollarFromFireBaseInMyLocalDBUseCase
 import com.calyrsoft.ucbp1.features.whatsapp.domain.usecase.GetFirstWhatsappNumberUseCase
-import com.calyrsoft.ucbp1.features.dollar.domain.usecase.GetHistoryOfDollarsFromMyLocalDBUseCase
-import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetPopularMoviesUseCase
-import com.calyrsoft.ucbp1.features.posts.domain.usecase.GetPostsUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserProfileUseCase
-import com.calyrsoft.ucbp1.features.dollar.presentation.DollarViewModel
-import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordViewModel
-import com.calyrsoft.ucbp1.features.github.presentation.GithubViewModel
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingLocalDataSource
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.LodgingRemoteDataSource
 import com.calyrsoft.ucbp1.features.lodging.data.datasource.RealTimeRemoteDataSource2
@@ -77,22 +45,16 @@ import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListViewModel
-import com.calyrsoft.ucbp1.features.movie.data.database.AppRoomDatabaseMovies
-import com.calyrsoft.ucbp1.features.movie.data.datasource.MovieLocalDataSource
-import com.calyrsoft.ucbp1.features.movie.domain.usecase.GetFavoritesUseCase
-import com.calyrsoft.ucbp1.features.movie.domain.usecase.InserteMyFavoriteMovieUseCase
-import com.calyrsoft.ucbp1.features.profile.presentation.LoginViewModel
-import com.calyrsoft.ucbp1.features.movie.presentation.MoviesViewModel
 import com.calyrsoft.ucbp1.features.payments.data.repository.PaymentRepository
 import com.calyrsoft.ucbp1.features.payments.domain.repository.IPaymentRepository
 import com.calyrsoft.ucbp1.features.payments.domain.usecase.SendPaymentWhatsAppUseCase
 import com.calyrsoft.ucbp1.features.payments.presentation.PaymentViewModel
-import com.calyrsoft.ucbp1.features.posts.presentation.PostsViewModel
-import com.calyrsoft.ucbp1.features.profile.data.datasource.LoginDataStore
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetTokenUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetUserNameUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveTokenUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.SaveUserNameUseCase
+import com.calyrsoft.ucbp1.features.profile.data.api.UpdateService
+import com.calyrsoft.ucbp1.features.profile.data.datasource.UpdateRemoteDataSource
+import com.calyrsoft.ucbp1.features.profile.data.repository.UpdateRepository
+import com.calyrsoft.ucbp1.features.profile.domain.repository.IUpdateRepository
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserPasswordUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserUseCase
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileViewModel
 import com.calyrsoft.ucbp1.features.whatsapp.presentation.WhatsappViewModel
 import com.calyrsoft.ucbp1.navigation.NavigationViewModel
@@ -112,11 +74,6 @@ val appModule = module {
 
 
     //BASES DE DATOS
-    single { AppRoomDatabase.getDatabase(get()) }
-    single { get<AppRoomDatabase>().dollarDao() }
-
-    single { AppRoomDatabaseMovies.getDatabase(get()) }
-    single { get<AppRoomDatabaseMovies>().movieDao() }
 
     // OkHttpClient
     single {
@@ -131,7 +88,7 @@ val appModule = module {
     //SUPABASE
     single(named("SUPABASE")) {
         Retrofit.Builder()
-            .baseUrl(BuildConfig.SUPABASE_URL) // e.g., "https://your-project.supabase.co/rest/v1/"
+            .baseUrl(BuildConfig.SUPABASE_URL)
             .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -164,25 +121,13 @@ val appModule = module {
 
 
 
-    // Services
-    single<GithubService> {
-        get<Retrofit>().create(GithubService::class.java)
-        //get<Retrofit>()busca en el contenedor un objeto que sea de tipo Retrofit.
-        //
-        //Como solo tienes uno registrado, Koin sabe perfectamente cuál retornar.
-        //en caso de tener varios retrofit deberas especificar su nombre mas adelante
-    }
+
     //lo de arriba dice oye koin crea un GithubService para que alguien mas lo use a futuro
     //la manera en la que lo tienes que crear esta entre {}
     //y lo que pasa entre {} es que retrofit tiene un metodo magico llamado create
     //que lo que hace es ver las rutas y metodos(GET,POST,etc) Qque se definierion en GithubService
     //y les da una implementacion por arte de magia porque como tal vos no los implementaste
-    single<TmdbService> {
-        get<Retrofit>(named("TMDB")).create(TmdbService::class.java)
-    }
-    single<PostsService> {
-        get<Retrofit>(named("PPS")).create(PostsService::class.java)
-    }
+
 
     //DATA STORE
     single { AuthDataStore(androidContext()) }
@@ -191,13 +136,7 @@ val appModule = module {
     viewModel { AuthViewModel(get()) }
 
     // DataSource
-    single{ GithubRemoteDataSource(get()) }
-    single { MoviesRemoteDataSource(get()) }
-    single { PostsRemoteDataSource(get()) }
-    single { RealTimeRemoteDataSource() }
-    single { MovieLocalDataSource(get())}
-    single { DollarLocalDataSource(get()) }
-    single { LoginDataStore(get()) }
+
 
 
 
@@ -205,13 +144,8 @@ val appModule = module {
 
 
     //repositorios
-    single<IGithubRepository>{ GithubRepository(get()) }
     //eso de ahi crea un singleton de GithubRepository la cosa es que este singleton podra ser usado solo si los programadores ponenIGithubRepository
-    single<ILoginRepository> { LoginRepository(get()) }
     single<IWhatsappRepository> { WhatsappRepository() }
-    single<IMoviesRepository> { MoviesRepository(get(), get()) }
-    single<IPostRepository> { PostRepository(get()) }
-    single<IDollarRepository> { DollarRepository(get(), get()) }
 
 
 
@@ -224,50 +158,17 @@ val appModule = module {
 
 
     //casos de uso
-    factory { FindByNickNameUseCase(get()) }
     //el get le inyecta la dependencia que necesita, en este caso le inyecta un singleton del github repository que creamos en la linea anterior
-    factory { FindByNameAndPasswordUseCase(get()) }
-    factory { FindByNameUseCase(get()) }
-    factory { UpdateUserProfileUseCase(get()) }
-    factory { GetDollarFromFireBaseInMyLocalDBUseCase(get()) }
     factory { GetFirstWhatsappNumberUseCase(get()) }
-    factory { GetPopularMoviesUseCase(get()) }
-    factory { GetPostsUseCase(get()) }
-    factory { GetCommentsForOnePostUseCase(get()) }
-    factory { GetHistoryOfDollarsFromMyLocalDBUseCase(get()) }
-    factory { DeleteByTimeStampUseCase(get()) }
-    factory { InserteMyFavoriteMovieUseCase(get()) }
-    factory { GetFavoritesUseCase(get()) }
-    factory { GetTokenUseCase(get()) }
-    factory { GetUserNameUseCase(get()) }
-    factory { SaveTokenUseCase(get()) }
-    factory { SaveUserNameUseCase(get()) }
     factory{ GetUserRole(get()) }
     factory { SaveUserDataStore(get()) }
 
 
 
-
-
-
-
-
-
-
-
     //view models
-    viewModel { GithubViewModel(get(), androidContext()) }
     //este get le inyecta el caso e uso que ya sabemos como crear en la linea anterior
-    viewModel { LoginViewModel(get(),get(),get()) }
-    viewModel { ProfileViewModel(get(), get(), get()) }
-    viewModel { DollarViewModel(get(),get(),get()) }
-    viewModel { ForgotPasswordViewModel(get(), get()) }
     viewModel { WhatsappViewModel(get ()) }
-    viewModel { MoviesViewModel(get(), get(), get()) }
-    viewModel { PostsViewModel(get(),get()) }
     viewModel { NavigationViewModel() }
-
-
 
 
     //proyecto
@@ -292,14 +193,20 @@ val appModule = module {
     single<GetUserService> {
         get<Retrofit>(named("SUPABASE")).create(GetUserService::class.java)
     }
+    single<UpdateService> {
+        get<Retrofit>(named("SUPABASE")).create(UpdateService::class.java)
+    }
+
     single{ RegisterRemoteDataSource(get(),get()) }
+    single{ UpdateRemoteDataSource(get()) }
     single{ GetUserRemoteDataSource(get()) }
+
 
     single{ RealTimeRemoteDataSource2() }
 
     // --- REPOSITORIO ---
     single<IAuthRepository> { AuthRepository(get(),get(),get(),get()) }
-
+    single<IUpdateRepository> { UpdateRepository(get()) }
     // --- CASOS DE USO ---
     factory { RegisterUserUseCase(get()) }
     factory { RegisterToSupabaseUserCase(get()) }
@@ -307,12 +214,14 @@ val appModule = module {
     factory { LoginWithSupabaseUseCase(get()) }
     factory { GetCurrentUserUseCase(get()) }
     factory { GetCurrentUserByEmailUseCase(get()) }
+    factory{ UpdateUserUseCase(get()) }
+    factory{ UpdateUserPasswordUseCase(get()) }
 
 
     // --- VIEWMODEL ---
     viewModel { LoginViewModel2(get(),get(),get(),get()) }
     viewModel { RegisterViewModel(get(), get(),get(),androidContext()) }
-
+    viewModel { ProfileViewModel(get(),get(),get()) }
 
 
     // --- BASE DE DATOS ---

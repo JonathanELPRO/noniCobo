@@ -10,7 +10,7 @@ sealed class Screen(val route: String) {
 
 
 
-    object ProfileScreen : Screen("profile_screen/{name}")
+    object ProfileScreen : Screen("profile")
 
 
 
@@ -64,6 +64,9 @@ sealed class Screen(val route: String) {
     object Logout : Screen("logout")
 
     object PaymentScreen : Screen("payment_screen/{payment}")
+
+    object PrivacyScreen : Screen("privacy")
+
 
 
 

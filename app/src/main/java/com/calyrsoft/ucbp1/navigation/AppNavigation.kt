@@ -4,34 +4,21 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.calyrsoft.ucbp1.dataStore.AuthDataStore
-import com.calyrsoft.ucbp1.features.auth.domain.model.Role
 import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen2
 import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
-//import com.calyrsoft.ucbp1.features.auth.presentation.LoginScreen
-//import com.calyrsoft.ucbp1.features.auth.presentation.RegisterScreen
-import com.calyrsoft.ucbp1.features.dollar.presentation.DollarScreen
-import com.calyrsoft.ucbp1.features.profile.presentation.ForgotPasswordScreen
-import com.calyrsoft.ucbp1.features.github.presentation.GithubScreen
-import com.calyrsoft.ucbp1.features.lodging.domain.model.Lodging
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorScreen
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingListScreen
 import com.calyrsoft.ucbp1.features.logout.Logout
-import com.calyrsoft.ucbp1.features.movie.presentation.MoviesScreen
 import com.calyrsoft.ucbp1.features.payments.domain.model.PaymentModel
 import com.calyrsoft.ucbp1.features.payments.presentation.PaymentScreen
-import com.calyrsoft.ucbp1.features.posts.presentation.PostsScreen
+import com.calyrsoft.ucbp1.features.privacy.presentation.PrivacyScreen
 import com.calyrsoft.ucbp1.features.profile.presentation.ProfileScreen
-import com.calyrsoft.ucbp1.features.profile.presentation.SigninPage
 import com.google.gson.Gson
 import kotlinx.serialization.json.Json
 import org.koin.androidx.compose.koinViewModel
@@ -78,66 +65,15 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
         //que se llama en el primer launched effect de main activity
         modifier = modifier
     ) {
-        composable(Screen.LoginScreen.route) {
-            SigninPage(
-                modifier = modifier,
-                vm = koinViewModel(),
-                onSuccess = { name ->
-                    val encodedName = URLEncoder.encode(name, "UTF-8")
-
-                    navController.navigate(
-                        "profile_screen/$encodedName"
-                    )
-                },
-                navToForgotPassword = {
-                    navController.navigate(Screen.ForgotPasswordScreen.route)
-                },
-                onMovies = {
-                    navController.navigate(Screen.MoviesScreen.route)
-                },
-                onDollar = {
-                    navController.navigate(Screen.Dollar.route)
-                }
-
-            )
-        }
 
         //En pocas palabras: la ruta (Screen.LoginScreen)
         // y la pantalla (SigninPage) están conectadas en el NavHost mediante el bloque composable.
-
-        composable(Screen.GithubScreen.route) {
-            GithubScreen(
-                modifier = modifier,
-                vm = koinViewModel()
-            )
-        }
-
         composable(
-            Screen.ProfileScreen.route,
-            arguments = listOf(
-                navArgument("name") { defaultValue = "" }
-                //,navArgument("age") { defaultValue = 0 },
-                )
-        ) { backStackEntry ->
-            val name = backStackEntry.arguments?.getString("name") ?: ""
-
-
+            Screen.ProfileScreen.route
+        ) {
             ProfileScreen(
                 modifier = modifier,
-                name = name,
-                vm = koinViewModel(),
-
-                onEndSession = {
-                    navController.navigate(
-                        Screen.LoginScreen.route
-                    )
-                },
-
-                onAskExchangeRate = {
-                    navController.navigate(
-                        Screen.Dollar.route
-                    )
-                }
+                vm= koinViewModel( )
             )
         }
 
@@ -151,36 +87,7 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 //        }
 
 
-        composable(Screen.Dollar.route) {
-            DollarScreen(viewModelDollar = koinViewModel())
-        }
 
-
-        composable(Screen.ForgotPasswordScreen.route) {
-            ForgotPasswordScreen(
-                modifier = modifier,
-                vm = koinViewModel(),
-                onBackToLogin = {
-                    navController.navigate(Screen.LoginScreen.route) {
-                        popUpTo(Screen.LoginScreen.route) { inclusive = true }
-                    }
-                }
-            )
-        }
-
-        composable(Screen.MoviesScreen.route) {
-            MoviesScreen(
-                modifier = modifier,
-                vm = koinViewModel()
-            )
-        }
-
-        composable(Screen.PostsScreen.route) {
-            PostsScreen(
-                modifier = modifier,
-                vm = koinViewModel()
-            )
-        }
 
 
         // 🔐 AUTH
@@ -221,6 +128,12 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
                     navigationViewModel.navigateTo(
                         Screen.AuthLogin.route,
                         NavigationOptions.REPLACE_HOME
+                    )
+                },
+                goToPrivacy = {
+                    navigationViewModel.navigateTo(
+                        Screen.PrivacyScreen.route,
+                        NavigationOptions.DEFAULT
                     )
                 }
             )
@@ -285,33 +198,14 @@ fun AppNavigation(navigationViewModel: NavigationViewModel, modifier: Modifier, 
 
 
         composable(
-            route = Screen.LodgingEditor.route,
-            arguments = listOf(navArgument("lodgingJson") {
-                type = NavType.StringType
-                defaultValue = ""
-                nullable = true
-            })
-        ) { backStackEntry ->
-            LodgingEditorScreen(lodgingToEdit = null, currentRole = Role.ADMIN)
+            Screen.LodgingEditor.route
+        ) {
+            LodgingEditorScreen(
+                currentRole = com.calyrsoft.ucbp1.features.auth.domain.model.Role.ADMIN,
+                vm = koinViewModel(),
+                onSaved = { navController.popBackStack() }
+            )
         }
-
-        composable(
-            route = Screen.LodgingEdit.route,
-            arguments = listOf(navArgument("lodgingJson") {
-                type = NavType.StringType
-                defaultValue = ""
-                nullable = true
-            })
-        ) { backStackEntry ->
-            val lodgingJson = backStackEntry.arguments?.getString("lodgingJson")
-            val lodgingToEdit = if (!lodgingJson.isNullOrEmpty()) {
-                Gson().fromJson(lodgingJson, Lodging::class.java)
-            } else null
-
-
-            LodgingEditorScreen(lodgingToEdit = lodgingToEdit, currentRole = Role.ADMIN)
-        }
-
 
         // 📅 RESERVATION
 

@@ -27,6 +27,12 @@ class AuthViewModel(
 
     val userId: StateFlow<Long?> = authDataStore.userIdFlow
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val userToken: StateFlow<String?> = authDataStore.userTokenFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val userEmail: StateFlow<String?> = authDataStore.userEmailFlow
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
     // Guardar usuario (login exitoso)
     fun saveUser(email: String, token: String, role: String) {
         viewModelScope.launch {
