@@ -36,52 +36,51 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 fun LodgingEditorScreen(
     currentRole: Role,
     vm: LodgingEditorViewModel = koinViewModel(),
+    lodgingToEdit: Lodging? = null,
     onSaved: () -> Unit = {}
 ) {
+    Log.d("LodgingEditorScreen", "llegue a el editor")
     val authViewModel: AuthViewModel = getViewModel()
     val userId by authViewModel.userId.collectAsState()
     val state by vm.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    //Guarda un valor en memoria mientras el Composable está en composición.
-    //Pero si la pantalla se destruye o gira el dispositivo, el valor se pierde.
-    //con remember Saveable podemos guardar este valor incluso si el usuario gira su pantalla
-    //y eso esta bien para nuestro formulario
 
-    LaunchedEffect(userId) {
-        Log.d("UserID", "Nuevo ID detectado en LodgingEditorScreen: $userId")
+    // Variables de formulario inicializadas según si es edición o creación
+    var name by rememberSaveable { mutableStateOf(lodgingToEdit?.name ?: "") }
+    var type by rememberSaveable { mutableStateOf(lodgingToEdit?.type ?: LodgingType.MOTEL) }
+    var district by rememberSaveable { mutableStateOf(lodgingToEdit?.district ?: "") }
+    var address by rememberSaveable { mutableStateOf(lodgingToEdit?.address ?: "") }
+    var contact by rememberSaveable { mutableStateOf(lodgingToEdit?.contactPhone ?: "") }
+    var open24h by rememberSaveable { mutableStateOf(lodgingToEdit?.open24h ?: false) }
+    var latitude by rememberSaveable { mutableStateOf(lodgingToEdit?.latitude?.toString() ?: "") }
+    var longitude by rememberSaveable { mutableStateOf(lodgingToEdit?.longitude?.toString() ?: "") }
+    var placeImageUri by rememberSaveable { mutableStateOf(lodgingToEdit?.placeImageUri) }
+    var licenseImageUri by rememberSaveable { mutableStateOf(lodgingToEdit?.licenseImageUri) }
+
+    // Precios según roomOptions
+    var priceSimple by rememberSaveable {
+        mutableStateOf(
+            lodgingToEdit?.roomOptions?.find { it.category == RoomCategory.SIMPLE }?.price?.toString() ?: ""
+        )
+    }
+    var priceBanio by rememberSaveable {
+        mutableStateOf(
+            lodgingToEdit?.roomOptions?.find { it.category == RoomCategory.CON_BAÑO }?.price?.toString() ?: ""
+        )
+    }
+    var priceBanioTV by rememberSaveable {
+        mutableStateOf(
+            lodgingToEdit?.roomOptions?.find { it.category == RoomCategory.CON_BAÑO_Y_TV }?.price?.toString() ?: ""
+        )
     }
 
-    // Variables de formulario
-    var name by rememberSaveable { mutableStateOf("") }
-    //mutableStateOf(valorInicial) crea una variable observable — o sea, una variable que si cambia, vuelve a dibujar el Composable automáticamente.
-    var type by rememberSaveable { mutableStateOf(LodgingType.MOTEL) }
-    var district by rememberSaveable { mutableStateOf("") }
-    var address by rememberSaveable { mutableStateOf("") }
-    var contact by rememberSaveable { mutableStateOf("") }
-    //var roomsCount by rememberSaveable { mutableStateOf("") }
-    var open24h by rememberSaveable { mutableStateOf(false) }
-    var latitude by rememberSaveable { mutableStateOf("") }
-    var longitude by rememberSaveable { mutableStateOf("") }
-
-    // Imagen del lugar
-    var placeImageUri by rememberSaveable { mutableStateOf<String?>(null) }
+    // Lanzadores de imágenes
     val launcherPlace = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        // Crea un lanzador (rememberLauncherForActivityResult)
-        // El lanzador abrirá la galería y hará que el usuario escoja una imagen (ActivityResultContracts.GetContent()),
-        // se nos devolverá una Uri que luego procesamos.
         uri?.let { placeImageUri = it.toString() }
     }
-
-    // Imagen de licencia
-    var licenseImageUri by rememberSaveable { mutableStateOf<String?>(null) }
     val launcherLicense = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let { licenseImageUri = it.toString() }
     }
-
-    // Precios por tipo de habitación
-    var priceSimple by rememberSaveable { mutableStateOf("") }
-    var priceBanio by rememberSaveable { mutableStateOf("") }
-    var priceBanioTV by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(state) {
         if (state is LodgingEditorViewModel.LodgingEditorStateUI.UpdateSuccess) {
@@ -89,9 +88,6 @@ fun LodgingEditorScreen(
             onSaved()
         }
     }
-    //si state cambia, lanza una corrutina, todo esto esta en una corrutina porque showSnackbar
-    //es algo que no se renderiza en el rpimer vistazo a esta pagina, puede ocurrir en cualquier momento si entramos
-    //al estado de update success
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -101,7 +97,7 @@ fun LodgingEditorScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(bottom = padding.calculateBottomPadding() )
                 .verticalScroll(scroll)
         ) {
             // Encabezado
@@ -118,26 +114,21 @@ fun LodgingEditorScreen(
                         .padding(top = 40.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("REGISTRO", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.White)
+                    Text(  text = if (lodgingToEdit!=null) "EDITAR" else "REGISTRAR", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color.White)
                     Spacer(Modifier.height(8.dp))
                     Icon(Icons.Default.AccountCircle, contentDescription = "Perfil", tint = Color.White, modifier = Modifier.size(50.dp))
                 }
             }
 
-            // ----------------------------
-            // CONTENIDO PRINCIPAL SEGÚN ESTADO
-            // ----------------------------
+            // Contenido según estado
             when (state) {
                 is LodgingEditorViewModel.LodgingEditorStateUI.Init -> {
                     FormContent(
                         name = name, onNameChange = { name = it },
-                        //cada atriuto de FormContent en este caso name, esta esperando recibir un primer valor
-                        //y una funcion que lo actualiza
                         type = type, onTypeChange = { type = it },
                         district = district, onDistrictChange = { district = it },
                         address = address, onAddressChange = { address = it },
                         contact = contact, onContactChange = { contact = it },
-                        //roomsCount = roomsCount, onRoomsCountChange = { roomsCount = it },
                         latitude = latitude, onLatitudeChange = { latitude = it },
                         longitude = longitude, onLongitudeChange = { longitude = it },
                         open24h = open24h, onOpen24hChange = { open24h = it },
@@ -154,13 +145,14 @@ fun LodgingEditorScreen(
                             )
 
                             val lodging = Lodging(
+                                id = lodgingToEdit?.id,
                                 name = name,
                                 type = type,
                                 district = district,
                                 address = address,
                                 contactPhone = contact,
                                 open24h = open24h,
-                                ownerAdminId = userId?:0,
+                                ownerAdminId = userId ?: 0,
                                 latitude = latitude.toDoubleOrNull(),
                                 longitude = longitude.toDoubleOrNull(),
                                 roomOptions = rooms,
@@ -174,24 +166,19 @@ fun LodgingEditorScreen(
                             )
                             vm.save(currentRole, lodging)
                         },
-                        isSaving = false
+                        isSaving = state is LodgingEditorViewModel.LodgingEditorStateUI.Updating
                     )
                 }
-
                 is LodgingEditorViewModel.LodgingEditorStateUI.Updating -> {
-                    // Mostramos indicador de carga
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(color = Color(0xFFB00020))
                     }
                 }
-
                 is LodgingEditorViewModel.LodgingEditorStateUI.UpdateSuccess -> {
-                    // Ya se maneja el snackbar en LaunchedEffect
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text("Guardado correctamente", color = Color(0xFF388E3C), fontSize = 18.sp)
                     }
                 }
-
                 is LodgingEditorViewModel.LodgingEditorStateUI.UpdateError -> {
                     val error = (state as LodgingEditorViewModel.LodgingEditorStateUI.UpdateError).message
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

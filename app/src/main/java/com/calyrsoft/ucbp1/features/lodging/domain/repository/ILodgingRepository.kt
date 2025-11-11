@@ -14,7 +14,10 @@ interface ILodgingRepository {
 
     suspend fun getDetails(id: Long): Result<Lodging>
     suspend fun upsert(lodging: Lodging): Result<Unit>
+
+    suspend fun editLodging(id:Long?,lodging: Lodging): Result<Unit>
     suspend fun addLodging(lodging: Lodging): Result<Unit>
+
     suspend fun getLodgingDetails(id: Long): Result<Lodging>
 
 

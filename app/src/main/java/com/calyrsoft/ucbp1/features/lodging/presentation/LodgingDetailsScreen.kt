@@ -62,7 +62,7 @@ fun LodgingDetailsScreen(
             is LodgingDetailsViewModel.LodgingDetailsStateUI.Error -> {
                 val message = st.message
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(padding),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -191,7 +191,7 @@ private fun LodgingDetailsContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)
+            .padding(bottom = padding.calculateBottomPadding() )
             .verticalScroll(scroll)
     ) {
         // Encabezado con imagen

@@ -6,12 +6,19 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface LodgingService {
     @POST("/rest/v1/lodgings")
     suspend fun addLodging(@Body lodgingRequestDto: LodgingDto): Response<Unit>
+
+    @PATCH("/rest/v1/lodgings")
+    suspend fun updateLodging(
+        @Query("id") lodgingIdFilter: String = "eq.0",
+        @Body lodgingDto: LodgingDto
+    ): Response<Unit>
 
     @GET("/rest/v1/lodgings")
     suspend fun getLodgingDetail(@Query("select") sortBy: String = "*",
