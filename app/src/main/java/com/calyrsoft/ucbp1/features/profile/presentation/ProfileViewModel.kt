@@ -2,87 +2,90 @@ package com.calyrsoft.ucbp1.features.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.calyrsoft.ucbp1.features.profile.domain.model.Email
-import com.calyrsoft.ucbp1.features.profile.domain.model.ImageUrl
-import com.calyrsoft.ucbp1.features.profile.domain.model.LoginUserModel
-import com.calyrsoft.ucbp1.features.profile.domain.model.Name
-import com.calyrsoft.ucbp1.features.profile.domain.model.Password
-import com.calyrsoft.ucbp1.features.profile.domain.model.Phone
-import com.calyrsoft.ucbp1.features.profile.domain.model.Summary
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.FindByNameUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.GetUserNameUseCase
-import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserProfileUseCase
+import com.calyrsoft.ucbp1.features.auth.domain.model.User
+import com.calyrsoft.ucbp1.features.auth.domain.usecase.GetCurrentUserByEmailUseCase
+import com.calyrsoft.ucbp1.features.auth.presentation.LoginViewModel2.LoginUIState
+import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel.LodgingEditorStateUI
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserPasswordUseCase
+import com.calyrsoft.ucbp1.features.profile.domain.usecase.UpdateUserUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    private val findByNameUseCase: FindByNameUseCase,
-    private val updateUserProfileUseCase: UpdateUserProfileUseCase,
-    private val getUserNameUseCase: GetUserNameUseCase
+    private val getCurrentUserByEmailUseCase: GetCurrentUserByEmailUseCase,
+    private val updateUserCase: UpdateUserUseCase,
+    private val updateUserPasswordUseCase: UpdateUserPasswordUseCase
 ) : ViewModel() {
 
     sealed class ProfileStateUI {
         object Init : ProfileStateUI()
         object Loading : ProfileStateUI()
         object Updating : ProfileStateUI()
-        data class UpdateSuccess(val user: LoginUserModel) : ProfileStateUI()
+        object UpdateSuccess : ProfileStateUI()
         class UpdateError(val message: String) : ProfileStateUI()
-
-        class DataLoaded(val user: LoginUserModel) : ProfileStateUI()
+        data class DataLoaded(val user: User) : ProfileStateUI()
     }
 
     private val _state = MutableStateFlow<ProfileStateUI>(ProfileStateUI.Init)
     val state: StateFlow<ProfileStateUI> = _state.asStateFlow()
 
-    fun loadProfile(userId: String? = null) {
+    suspend fun loadProfile(userEmail: String) {
         _state.value = ProfileStateUI.Loading
-
+        val userResult = getCurrentUserByEmailUseCase(userEmail)
         viewModelScope.launch {
-            val name = userId ?: getUserNameUseCase().getOrNull()
-            if (name == null) {
-                _state.value = ProfileStateUI.UpdateError("Usuario no encontrado")
-                return@launch
-            }
-
-            val result = findByNameUseCase(Name.create(name).value)
-            result.fold(
-                onSuccess = { user -> _state.value = ProfileStateUI.DataLoaded(user) },
-                onFailure = { error -> _state.value = ProfileStateUI.UpdateError(error.message ?: "Error al cargar perfil") }
+            userResult.fold(
+                onSuccess = { user ->
+                    _state.value = ProfileStateUI.DataLoaded(user)
+                },
+                onFailure = { error ->
+                    _state.value = ProfileStateUI.UpdateError(
+                        error.message ?: "Error al cargar el perfil"
+                    )
+                }
             )
         }
     }
 
     fun updateProfile(
-        name: String,
-        newName: String? = null,
-        newPhone: String? = null,
-        newImageUrl: String? = null,
-        newPassword: String? = null,
-        newEmail: String? = null,
-        newSummary: String? = null
+        id:Long,
+        newName: String ,
+        newPhone: String,
     ) {
         _state.value = ProfileStateUI.Updating
-        try {
-            val result = updateUserProfileUseCase(
-                name = Name.create(name).value,
-                newName = newName?.let { Name.create(it).value },
-                newPhone = newPhone?.let { Phone.create(it).value },
-                newImageUrl = newImageUrl?.let { ImageUrl.create(it).value },
-                newPassword = newPassword?.let { Password.create(it).value },
-                newEmail = newEmail?.let { Email.create(it).value },
-                newSummary = newSummary?.let { Summary.create(it).value }
-            )
-
+        viewModelScope.launch {
+            val result = updateUserCase(id,newName, newPhone)
             result.fold(
-                onSuccess = { updatedUser -> _state.value = ProfileStateUI.UpdateSuccess(updatedUser) },
-                onFailure = { error -> _state.value = ProfileStateUI.UpdateError(error.message ?: "Error al actualizar perfil") }
+                onSuccess = {
+                    _state.value = ProfileStateUI.UpdateSuccess
+                            },
+                onFailure = { error ->
+                    _state.value = ProfileStateUI.UpdateError(
+                        error.message ?: "Error al guardar alojamiento"
+                    )
+                }
             )
-        } catch (e: Exception) {
-            _state.value = ProfileStateUI.UpdateError(e.message ?: "Error de validación")
         }
     }
 
-
+    fun updateUserPassword(
+        newPassword: String,
+        token:String
+    ) {
+        _state.value = ProfileStateUI.Updating
+        viewModelScope.launch {
+            val result = updateUserPasswordUseCase(newPassword,token)
+            result.fold(
+                onSuccess = {
+                    _state.value = ProfileStateUI.UpdateSuccess
+                },
+                onFailure = { error ->
+                    _state.value = ProfileStateUI.UpdateError(
+                        error.message ?: "Error al guardar alojamiento"
+                    )
+                }
+            )
+        }
+    }
 }
