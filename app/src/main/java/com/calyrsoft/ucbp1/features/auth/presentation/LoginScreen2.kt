@@ -107,6 +107,7 @@ fun LoginScreen2(
                     if (!userRole.isNullOrEmpty()) { // evita null
                         authViewModel.saveId(st.user.id)
                         authViewModel.saveUsername(st.user.username.value)
+                        authViewModel.savePhone(st.user.phone!!.value)
 
                     }
                     //si tu haces login ya puedes monitorizar el rol y el id

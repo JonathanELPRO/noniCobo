@@ -53,6 +53,12 @@ class AuthViewModel(
         }
     }
 
+    fun savePhone(phone: String?) {
+        viewModelScope.launch {
+            authDataStore.savePhone(phone?:"NoPhone")
+        }
+    }
+
     suspend fun getId(): Long? {
         val result = authDataStore.getId()
         return result.getOrNull()
@@ -60,6 +66,11 @@ class AuthViewModel(
 
     suspend fun getUsername(): String? {
         val result = authDataStore.getUsername()
+        return result.getOrNull()
+    }
+
+    suspend fun getPhone(): String? {
+        val result = authDataStore.getPhone()
         return result.getOrNull()
     }
 

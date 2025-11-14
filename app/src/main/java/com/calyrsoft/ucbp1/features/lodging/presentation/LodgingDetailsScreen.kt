@@ -108,11 +108,14 @@ private fun LodgingDetailsContent(
 
     var username by remember { mutableStateOf("Invitado") }
 
+
+
     LaunchedEffect(Unit) {
         val fetchedName = authViewModel.getUsername()
         if (fetchedName != null) {
             username = fetchedName
         }
+
     }
 
 

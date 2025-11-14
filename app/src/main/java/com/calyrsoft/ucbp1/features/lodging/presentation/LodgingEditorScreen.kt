@@ -39,18 +39,43 @@ fun LodgingEditorScreen(
     lodgingToEdit: Lodging? = null,
     onSaved: () -> Unit = {}
 ) {
+
+
+
     Log.d("LodgingEditorScreen", "llegue a el editor")
     val authViewModel: AuthViewModel = getViewModel()
+
+    var phone by remember { mutableStateOf("") }
+
+
+    LaunchedEffect(Unit) {
+        val fetchedPhone = authViewModel.getPhone()
+        if (fetchedPhone != null) {
+            phone = fetchedPhone
+        }
+
+    }
+
     val userId by authViewModel.userId.collectAsState()
     val state by vm.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+
 
     // Variables de formulario inicializadas según si es edición o creación
     var name by rememberSaveable { mutableStateOf(lodgingToEdit?.name ?: "") }
     var type by rememberSaveable { mutableStateOf(lodgingToEdit?.type ?: LodgingType.MOTEL) }
     var district by rememberSaveable { mutableStateOf(lodgingToEdit?.district ?: "") }
     var address by rememberSaveable { mutableStateOf(lodgingToEdit?.address ?: "") }
-    var contact by rememberSaveable { mutableStateOf(lodgingToEdit?.contactPhone ?: "") }
+    var contact by rememberSaveable { mutableStateOf(lodgingToEdit?.contactPhone ?:phone) }
+
+    LaunchedEffect(phone) {
+        if (lodgingToEdit == null && contact.isEmpty()) {
+            contact = phone
+        }
+    }
+
+    Log.d("phone", phone)
     var open24h by rememberSaveable { mutableStateOf(lodgingToEdit?.open24h ?: false) }
     var latitude by rememberSaveable { mutableStateOf(lodgingToEdit?.latitude?.toString() ?: "") }
     var longitude by rememberSaveable { mutableStateOf(lodgingToEdit?.longitude?.toString() ?: "") }

@@ -47,6 +47,9 @@ class AuthDataStore(
 
         val USERNAME = stringPreferencesKey("username")
 
+        val PHONE = stringPreferencesKey("phone")
+
+
 
 
     }
@@ -89,6 +92,14 @@ class AuthDataStore(
         }
     }
 
+    suspend fun savePhone(phone: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PHONE] = phone
+        }
+    }
+
+
+
     // Obtener email
     suspend fun getUserEmail(): Result<String> {
         val preferences = context.dataStore.data.first()
@@ -126,6 +137,13 @@ class AuthDataStore(
         return preferences[USERNAME]?.let {
             Result.success(it)
         } ?: Result.failure(Exception("Username not found"))
+    }
+
+    suspend fun getPhone(): Result<String> {
+        val preferences = context.dataStore.data.first()
+        return preferences[PHONE]?.let {
+            Result.success(it)
+        } ?: Result.failure(Exception("Phone not found"))
     }
 
     // Obtener ambos
