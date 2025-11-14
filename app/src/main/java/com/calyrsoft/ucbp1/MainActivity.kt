@@ -136,17 +136,17 @@ fun MainApp( navigationViewModel: NavigationViewModel, isLoggedIn: Boolean,userR
         NavigationDrawer.Profile,
         NavigationDrawer.LodgingList,
         NavigationDrawer.LodgingEditor,
-        NavigationDrawer.ReservationCreate,
-        NavigationDrawer.ReservationHistory,
-        NavigationDrawer.ReservationPayment,
+//        NavigationDrawer.ReservationCreate,
+//        NavigationDrawer.ReservationHistory,
+//        NavigationDrawer.ReservationPayment,
         NavigationDrawer.Logout,
     )
     val navigationItemsClient= listOf(
         NavigationDrawer.Profile,
         NavigationDrawer.LodgingList,
-        NavigationDrawer.ReservationCreate,
-        NavigationDrawer.ReservationHistory,
-        NavigationDrawer.ReservationPayment,
+//        NavigationDrawer.ReservationCreate,
+//        NavigationDrawer.ReservationHistory,
+//        NavigationDrawer.ReservationPayment,
         NavigationDrawer.Logout,
     )
     val navigationDrawerItems = if(userRole!=null && userRole == "ADMIN") navigationItemsAdmin else navigationItemsClient
