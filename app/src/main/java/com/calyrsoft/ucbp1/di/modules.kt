@@ -41,6 +41,7 @@ import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsUseC
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.ObserveAllLocalLodgingsUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.SearchByNameAndAdminIdUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.SearchLodgingByNameUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UploadImageToSupabaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel
@@ -61,6 +62,8 @@ import com.calyrsoft.ucbp1.navigation.NavigationViewModel
 import com.example.imperium_reality.features.register.data.api.LodgingService
 import com.example.ucbp1.features.register.data.api.RegisterService
 import com.example.ucbp1.interceptors.supabase.SupabaseAuthInterceptor
+import com.calyrsoft.ucbp1.features.supabase.SupabaseStorageDataSource
+import com.calyrsoft.ucbp1.features.supabase.SupabaseStorageService
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -78,7 +81,7 @@ val appModule = module {
     // OkHttpClient
     single {
         OkHttpClient.Builder()
-            .addInterceptor(SupabaseAuthInterceptor(BuildConfig.SUPABASE_KEY))
+            .addInterceptor(SupabaseAuthInterceptor(BuildConfig.SUPABASE_KEY, get()))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -184,6 +187,10 @@ val appModule = module {
     single<RegisterService> {
         get<Retrofit>(named("SUPABASE")).create(RegisterService::class.java)
     }
+    single<SupabaseStorageService> {
+        get<Retrofit>(named("SUPABASE")).create(SupabaseStorageService::class.java)
+    }
+    single { SupabaseStorageDataSource(get()) }
     single<LodgingService> {
         get<Retrofit>(named("SUPABASE")).create(LodgingService::class.java)
     }
@@ -246,6 +253,7 @@ val appModule = module {
     factory{ SearchLodgingByNameUseCase(get()) }
     factory { SearchByNameAndAdminIdUseCase(get()) }
     factory{ EditLodgingUseCase(get()) }
+    factory { UploadImageToSupabaseUseCase(get(), androidContext()) }
 
     // --- VIEWMODELS ---
     viewModel { LodgingListViewModel(get(),get(),get(), get(),get(),get(),get()) }

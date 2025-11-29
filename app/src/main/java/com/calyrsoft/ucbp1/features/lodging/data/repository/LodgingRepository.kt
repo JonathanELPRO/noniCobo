@@ -112,6 +112,9 @@ class LodgingRepository(
     }
     override suspend fun addLodging (lodging: Lodging): Result<Unit> {
         return try {
+            Log.d("LodgingRepository", "Guardando lodging con URLs:")
+            Log.d("LodgingRepository", "placeImageUri: ${lodging.placeImageUri}")
+            Log.d("LodgingRepository", "licenseImageUri: ${lodging.licenseImageUri}")
 
             remoteDataSource.addLodging(
                 LodgingDto(
@@ -134,6 +137,7 @@ class LodgingRepository(
             )
             Result.success(Unit)
         } catch (e: Exception) {
+            Log.e("LodgingRepository", "Error al guardar lodging: ${e.message}", e)
             Result.failure(e)
         }
     }
