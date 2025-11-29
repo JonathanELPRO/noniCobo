@@ -41,6 +41,7 @@ import com.calyrsoft.ucbp1.features.lodging.domain.usecase.GetLodgingDetailsUseC
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.ObserveAllLocalLodgingsUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.SearchByNameAndAdminIdUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.SearchLodgingByNameUseCase
+import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UploadImageToSupabaseUseCase
 import com.calyrsoft.ucbp1.features.lodging.domain.usecase.UpsertLodgingUseCase
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingDetailsViewModel
 import com.calyrsoft.ucbp1.features.lodging.presentation.LodgingEditorViewModel
@@ -252,11 +253,12 @@ val appModule = module {
     factory{ SearchLodgingByNameUseCase(get()) }
     factory { SearchByNameAndAdminIdUseCase(get()) }
     factory{ EditLodgingUseCase(get()) }
+    factory { UploadImageToSupabaseUseCase(get(), androidContext()) }
 
     // --- VIEWMODELS ---
     viewModel { LodgingListViewModel(get(),get(),get(), get(),get(),get(),get()) }
     viewModel { LodgingDetailsViewModel(get(),get()) }
-    viewModel { LodgingEditorViewModel(get(),get(),get(), get(), androidContext()) }
+    viewModel { LodgingEditorViewModel(get(),get(),get()) }
 
 
     //payments
