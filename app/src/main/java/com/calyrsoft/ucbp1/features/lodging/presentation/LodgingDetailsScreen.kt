@@ -343,14 +343,14 @@ private fun LodgingDetailsContent(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Button(
-                    onClick = onResenas,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020)),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text("Reseñas", color = Color.White)
-                }
+//                Button(
+//                    onClick = onResenas,
+//                    modifier = Modifier.weight(1f),
+//                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB00020)),
+//                    shape = RoundedCornerShape(16.dp)
+//                ) {
+//                    Text("Reseñas", color = Color.White)
+//                }
 
 
                 Button(
