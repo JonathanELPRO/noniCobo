@@ -61,6 +61,8 @@ import com.calyrsoft.ucbp1.navigation.NavigationViewModel
 import com.example.imperium_reality.features.register.data.api.LodgingService
 import com.example.ucbp1.features.register.data.api.RegisterService
 import com.example.ucbp1.interceptors.supabase.SupabaseAuthInterceptor
+import com.calyrsoft.ucbp1.features.supabase.SupabaseStorageDataSource
+import com.calyrsoft.ucbp1.features.supabase.SupabaseStorageService
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -78,7 +80,7 @@ val appModule = module {
     // OkHttpClient
     single {
         OkHttpClient.Builder()
-            .addInterceptor(SupabaseAuthInterceptor(BuildConfig.SUPABASE_KEY))
+            .addInterceptor(SupabaseAuthInterceptor(BuildConfig.SUPABASE_KEY, get()))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -184,6 +186,10 @@ val appModule = module {
     single<RegisterService> {
         get<Retrofit>(named("SUPABASE")).create(RegisterService::class.java)
     }
+    single<SupabaseStorageService> {
+        get<Retrofit>(named("SUPABASE")).create(SupabaseStorageService::class.java)
+    }
+    single { SupabaseStorageDataSource(get()) }
     single<LodgingService> {
         get<Retrofit>(named("SUPABASE")).create(LodgingService::class.java)
     }
@@ -250,7 +256,7 @@ val appModule = module {
     // --- VIEWMODELS ---
     viewModel { LodgingListViewModel(get(),get(),get(), get(),get(),get(),get()) }
     viewModel { LodgingDetailsViewModel(get(),get()) }
-    viewModel { LodgingEditorViewModel(get(),get(),get()) }
+    viewModel { LodgingEditorViewModel(get(),get(),get(), get(), androidContext()) }
 
 
     //payments
